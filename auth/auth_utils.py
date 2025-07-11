@@ -1,5 +1,4 @@
 import streamlit as st
-from End.Operations import SheetOperations 
 
 def is_oidc_available():
     """Verifica se o login OIDC está configurado e disponível"""
