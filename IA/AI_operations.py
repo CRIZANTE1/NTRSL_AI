@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
-from AI_container.credentials.api_load import load_api
+from IA.load import load_api
 import time
 import tempfile
 import numpy as np
@@ -10,8 +10,7 @@ import re
 import os
 import pandas as pd
 import logging
-from End.Operations import SheetOperations
-from prompts import PROMPT_HEALTH_EXPERT # Importa o prompt do arquivo prompts.py
+from prompts import PROMPT_HEALTH_EXPERT 
 
 class PDFQA:
     def __init__(self):
