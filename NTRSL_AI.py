@@ -16,8 +16,8 @@ def main():
     show_logout_button()
 
     # Título e descrição da aplicação
-    st.title("Bem-vindo ao NutriSlit")
-    st.caption('Aplicação simples de monitoramento diário de dieta e exercícios')
+    st.title("Bem-vindo ao Ntrsl IA")
+    st.caption('Aplicação simples e inteligênte de monitoramento diário de dieta e exercícios')
    
     # Navegação entre páginas
     pages = {
