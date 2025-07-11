@@ -4,7 +4,7 @@ from operations.sobre import sobre
 from auth.login_page import show_login_page, show_user_header, show_logout_button
 from auth.auth_utils import is_user_logged_in
 
-st.set_page_config(page_title="NTRSL AI", page_icon="🍏", layout="wide")
+st.set_page_config(page_title="NTRSL AI", page_icon="🥗", layout="wide")
 
 def main():
     if not is_user_logged_in():
