@@ -16,12 +16,12 @@ from prompts import PROMPT_HEALTH_EXPERT # Importa o prompt do arquivo prompts.p
 class PDFQA:
     def __init__(self):
         load_api()  
-        self.model = genai.GenerativeModel('gemini-2.5-flash-preview-04-17')
+        self.model = genai.GenerativeModel('gemini-1.5-flash-002')
         self.embedding_model = 'models/embedding-001'
 
     def clean_text(self, text):
         text = re.sub(r'\s+', ' ', text)
-        text = re.sub(r'[^\w\s,.!?'"-]', '', text)
+        text = re.sub(r'[^\\w\\s,.!?\"\\\'-]', '', text)
         return text.strip()
 
     def ask_gemini(self, full_prompt_text):
