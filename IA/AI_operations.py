@@ -26,7 +26,7 @@ class PDFQA:
     def ask_gemini(self, full_prompt_text):
         try:
             st.info("Enviando pergunta para o modelo Gemini...")
-            time.sleep(1) # Adiciona um atraso de 1 segundo para mitigar limites de taxa
+            time.sleep(1)
             response = self.model.generate_content(full_prompt_text)
             st.success("Resposta recebida do modelo Gemini.")
             return response.text
@@ -38,8 +38,6 @@ class PDFQA:
         start_time = time.time()
 
         try:
-            # Formata o prompt principal com a pergunta específica do usuário
-            # O argumento pdf_files não é usado aqui, mas é mantido para compatibilidade da assinatura.
             full_prompt_for_gemini = PROMPT_HEALTH_EXPERT.format(question=question)
 
             with st.spinner("Gerando resposta com o modelo Gemini..."):
