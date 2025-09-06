@@ -35,6 +35,12 @@ Este projeto foi desenvolvido como o Trabalho Final da disciplina de **Atividade
 
 ---
 
+### ⚠️ Aviso Importante sobre o Uso da IA
+
+Este projeto utiliza a API gratuita do Google Gemini para fornecer as recomendações inteligentes. Para garantir a sustentabilidade do protótipo e evitar a exaustão da cota de uso, foi implementado um **período de espera (cooldown) de 30 minutos** entre cada solicitação de análise por usuário.
+
+Isso significa que, após receber uma recomendação da IA, você precisará aguardar 30 minutos antes de poder solicitar uma nova análise. Agradecemos a sua compreensão!
+
 ## ✨ Funcionalidades Principais
 
 -   🔐 **Sistema de Login Seguro:** Autenticação de usuário via OIDC (Google), garantindo a privacidade dos dados.
