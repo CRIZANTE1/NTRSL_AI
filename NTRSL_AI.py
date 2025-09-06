@@ -7,7 +7,7 @@ import time
 
 st.set_page_config(page_title="NTRSL AI", page_icon="🥗", layout="wide")
 
-MAX_REQUESTS_PER_MINUTE = 20
+MAX_REQUESTS_PER_MINUTE = 60
 TIME_WINDOW_SECONDS = 60
 
 def main():
