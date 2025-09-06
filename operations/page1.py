@@ -10,6 +10,29 @@ def frontpage():
     exercicios = carregar_exercicios()
     calorias_alimentos = carregar_calorias()
 
+    with st.expander("📖 Como Usar o Aplicativo? (Clique para ver o guia)"):
+        manual_text = """
+        ### **1. Introdução**
+        Bem-vindo ao **NTRSL AI**! Este guia rápido irá ajudá-lo a usar todas as funcionalidades.
+
+        ### **2. Registrando seu Dia**
+        **Passo 1: Registrar Exercícios 🏃‍♀️**
+        - Na seção "Registrar Exercícios", selecione as atividades que você praticou e insira a duração total em minutos.
+
+        **Passo 2: Registrar Alimentos 🍎**
+        - Em "Registrar Alimentos Consumidos", escolha os alimentos e informe a quantidade em gramas (ou litros para água).
+
+        **Passo 3: Calcular Resumo 📊**
+        - Clique em **"Calcular Resumo Nutricional"** para ver seu balanço de calorias e o gráfico de macronutrientes.
+
+        ### **3. Obtendo Recomendações da IA ✨**
+        1.  Após calcular o resumo, vá para a seção "Receba Recomendações Inteligentes".
+        2.  Descreva suas metas, como se sentiu e suas dificuldades na caixa de texto.
+        3.  Clique em **"Obter Recomendações da IA"** para receber uma análise completa e um plano de ação personalizado.
+        """
+        st.markdown(manual_text, unsafe_allow_html=True)
+        st.warning("⚠️ **Aviso:** Existe um intervalo de 30 minutos entre cada solicitação à IA para garantir o bom funcionamento do serviço gratuito.")
+
     st.markdown("### Registre seu dia e receba insights personalizados! ✨")
     st.markdown("---")
 
