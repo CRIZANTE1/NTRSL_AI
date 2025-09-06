@@ -15,7 +15,7 @@ from prompts import PROMPT_HEALTH_EXPERT
 class PDFQA:
     def __init__(self):
         load_api()  
-        self.model = genai.GenerativeModel('gemini-1.5-flash-002')
+        self.model = genai.GenerativeModel('gemini-2.5-flash')
         self.embedding_model = 'models/embedding-001'
 
     def clean_text(self, text):
