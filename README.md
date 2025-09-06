@@ -49,14 +49,14 @@ Este projeto foi desenvolvido como o Trabalho Final da disciplina de **Atividade
 
 O aplicativo está hospedado e pode ser acessado publicamente através do Streamlit Cloud.
 
-**[➡️ Acesse o NTRSL AI aqui!](SEU_LINK_AQUI)**  <!-- Substitua pelo link do seu app -->
+**[➡️ Acesse o NTRSL AI aqui!](https://ntrslai.streamlit.app/)**  
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
 -   **Backend e Frontend:** Python com a biblioteca **Streamlit**.
--   **Inteligência Artificial:** API do **Google Gemini** (`gemini-1.5-flash`).
+-   **Inteligência Artificial:** API do **Google Gemini** (`gemini-2.5-flash`).
 -   **Autenticação:** Funcionalidade nativa OIDC do Streamlit.
 -   **Gestão de Dependências:** `pip` e `requirements.txt`.
 -   **Controle de Versão:** Git e GitHub.
