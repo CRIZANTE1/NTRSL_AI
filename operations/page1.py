@@ -1,6 +1,9 @@
 import streamlit as st
 from operations.operations import calcular_calorias, carregar_calorias, carregar_exercicios, calcular_nutricao
 from IA.AI_operations import PDFQA
+import time
+from datetime import datetime, timedelta
+import random
 
 def frontpage():
     # Carregar dados
@@ -100,13 +103,33 @@ def frontpage():
         placeholder="Ex: 'Meu objetivo é perder peso. Achei difícil evitar doces hoje. Que dicas vocês me dão?'"
     )
 
+    if 'captcha_answer' not in st.session_state:
+        num1 = random.randint(1, 10)
+        num2 = random.randint(1, 10)
+        st.session_state.captcha_answer = num1 + num2
+        st.session_state.captcha_question = f"Quanto é {num1} + {num2}?"
+
+    user_captcha_answer = st.number_input(st.session_state.captcha_question, step=1)
+
     if st.button("Obter Recomendações da IA", type="primary"):
+        if int(user_captcha_answer) != st.session_state.captcha_answer:
+            st.error("Resposta incorreta. Por favor, tente novamente.")
+            del st.session_state.captcha_answer
+            return
+
         if 'resumo_dia' not in st.session_state:
             st.warning("Por favor, clique em 'Calcular Resumo Nutricional' primeiro para fornecer o contexto para a IA.", icon="⚠️")
         elif not user_input_ia:
             st.warning("Por favor, descreva suas metas para a IA poder te ajudar melhor.", icon="ℹ️")
         else:
-       
+            now = datetime.now()
+            if 'last_ai_usage' in st.session_state:
+                last_usage = st.session_state['last_ai_usage']
+                if now - last_usage < timedelta(minutes=30):
+                    st.warning(f"Você deve esperar 30 minutos entre as solicitações à IA. Por favor, tente novamente em {(last_usage + timedelta(minutes=30) - now).seconds // 60} minutos.")
+                    return
+
+            st.session_state['last_ai_usage'] = now
             resumo_contexto = st.session_state.resumo_dia
             contexto_para_ia = f"""
             Aqui estão os dados do meu dia para análise:
@@ -133,3 +156,5 @@ def frontpage():
                     st.warning("Não foi possível obter recomendações da IA. Tente novamente.", icon="⚠️")
             except Exception as e:
                 st.error(f"Ocorreu um erro ao processar a solicitação da IA: {e}", icon="❌")
+            finally:
+                del st.session_state.captcha_answer

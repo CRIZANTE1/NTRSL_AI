@@ -3,10 +3,28 @@ from operations.page1 import frontpage
 from operations.sobre import sobre
 from auth.login_page import show_login_page, show_user_header, show_logout_button
 from auth.auth_utils import is_user_logged_in
+import time
 
 st.set_page_config(page_title="NTRSL AI", page_icon="🥗", layout="wide")
 
+MAX_REQUESTS_PER_MINUTE = 20
+TIME_WINDOW_SECONDS = 60
+
 def main():
+    if 'request_timestamps' not in st.session_state:
+        st.session_state.request_timestamps = []
+
+    current_time = time.time()
+    st.session_state.request_timestamps = [
+        t for t in st.session_state.request_timestamps if current_time - t < TIME_WINDOW_SECONDS
+    ]
+
+    if len(st.session_state.request_timestamps) >= MAX_REQUESTS_PER_MINUTE:
+        st.error("Muitas solicitações em um curto período de tempo. Por favor, tente novamente em alguns instantes.")
+        return
+
+    st.session_state.request_timestamps.append(current_time)
+
     if not is_user_logged_in():
         show_login_page()
         return
