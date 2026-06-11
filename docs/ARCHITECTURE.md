@@ -1,5 +1,7 @@
 # Arquitetura
 
+> Descreve o estado **v1.2.0**. Versões anteriores: [versions/](./versions/README.md)
+
 ## Visão geral
 
 ```mermaid
@@ -115,7 +117,7 @@ Fonte: `src/data/calorias.json`, `src/data/exercicios.json`
 
 ## Segurança
 
-- Chave Gemini **somente nos secrets das Edge Functions** (`GOOGLE_API_KEY`)
+- Chave Gemini **somente nos secrets das Edge Functions** (`GOOGLE_API_KEY`) — ver [GEMINI_SECRETS.md](./GEMINI_SECRETS.md); nunca `VITE_GEMINI_API_KEY` no cliente
 - JWT Supabase enviado no header `Authorization` para as Edge Functions
 - Credenciais biométricas em secure storage (nativo)
 - Auditoria de erros críticos via `security_audit_events` (quando configurado)

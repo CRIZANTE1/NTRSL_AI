@@ -1,5 +1,7 @@
 # Supabase
 
+> Schema e auth da **v1.2.0**. Histórico de releases: [versions/v1.2.0.md](./versions/v1.2.0.md)
+
 ## Auth
 
 O app usa **Supabase Auth** com e-mail e senha (`signInWithPassword` / `signUp`).

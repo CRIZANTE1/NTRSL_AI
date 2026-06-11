@@ -34,6 +34,12 @@ VITE_ENABLE_PUSH=true
 
 Sem `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`, o app exibe `ConfigMissingScreen` em vez de carregar.
 
+### ⚠️ Gemini: não use `VITE_GEMINI_API_KEY`
+
+A chave do Gemini **não** vai no `.env.local`. Configure `GOOGLE_API_KEY` nos **secrets das Edge Functions** no Supabase.
+
+→ Guia passo a passo: **[GEMINI_SECRETS.md](./GEMINI_SECRETS.md)**
+
 ## Desenvolvimento web
 
 ```bash
@@ -65,10 +71,8 @@ Após alterar plugins Capacitor ou `capacitor.config.ts`, execute `npm run cap:s
 
 As funções ficam em `supabase/functions/`. Para resumo nutricional e recomendações IA:
 
-1. Instale a [Supabase CLI](https://supabase.com/docs/guides/cli)
-2. Vincule ao projeto: `supabase link --project-ref <id>`
-3. Configure o secret: `supabase secrets set GOOGLE_API_KEY=<chave>`
-4. Deploy: `supabase functions deploy nutrition-summary ai-recommendations ai-cooldown`
+1. Configure **`GOOGLE_API_KEY`** no Supabase — ver **[GEMINI_SECRETS.md](./GEMINI_SECRETS.md)** (Dashboard ou CLI).
+2. Deploy (se ainda não feito): `supabase functions deploy nutrition-summary ai-recommendations ai-cooldown push-register`
 
 Detalhes dos contratos em [API.md](./API.md).
 
@@ -87,6 +91,7 @@ npm run build       # verifica build de produção
 | Problema | Solução |
 |----------|---------|
 | Tela branca / config missing | Verifique `.env.local` e reinicie `npm run dev` |
-| IA retorna erro de rede | Edge Functions não deployadas ou `GOOGLE_API_KEY` ausente |
+| IA retorna erro / só cálculo local | `GOOGLE_API_KEY` ausente nos secrets — ver [GEMINI_SECRETS.md](./GEMINI_SECRETS.md) |
+| Tinha `VITE_GEMINI_API_KEY` no `.env.local` | Remova; não é usada e vaza no bundle — use secret no Supabase |
 | OAuth / sessão não persiste | Confirme PKCE e redirect URIs no Supabase |
 | Mudanças não aparecem no APK | `npm run cap:sync` após `npm run build` |

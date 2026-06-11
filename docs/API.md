@@ -1,6 +1,10 @@
 # API — Supabase Edge Functions + Gemini
 
+> Introduzido na **v1.1.0**; `push-register` na **v1.2.0**. Ver [versions/README.md](./versions/README.md).
+
 O cliente em `src/lib/api.ts` chama Edge Functions do Supabase. A chave Gemini fica **somente** nos secrets do Supabase (`GOOGLE_API_KEY`).
+
+**Configuração da chave:** [GEMINI_SECRETS.md](./GEMINI_SECRETS.md) — não use `VITE_GEMINI_API_KEY` no app.
 
 **Base URL:** `{VITE_SUPABASE_URL}/functions/v1/<nome-da-função>`
 
