@@ -4,12 +4,15 @@ import { ExercisePicker } from '../components/ExercisePicker';
 import { FoodPicker } from '../components/FoodPicker';
 import { MacroChart } from '../components/MacroChart';
 import { CooldownBanner } from '../components/CooldownBanner';
+import { useAuth } from '../contexts/AuthContext';
+import { fetchDailyLog, parseDailyLogRow, saveDailyLog } from '../lib/data/dailyLogs';
 import { buildSummary } from '../lib/nutrition';
-import { getAiCooldown, postAiRecommendations } from '../lib/api';
+import { getAiCooldown, postAiRecommendations, postNutritionSummary } from '../lib/api';
 import { colors } from '../theme/colors';
 import type { ExerciseEntry, FoodEntry, NutritionSummary } from '../types/nutrition';
 
 export default function NutritionHomePage() {
+  const { session } = useAuth();
   const [exercises, setExercises] = useState<ExerciseEntry[]>([]);
   const [foods, setFoods] = useState<FoodEntry[]>([]);
   const [summary, setSummary] = useState<NutritionSummary | null>(null);
@@ -18,6 +21,9 @@ export default function NutritionHomePage() {
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiResponse, setAiResponse] = useState<string | null>(null);
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
+  const [calcLoading, setCalcLoading] = useState(false);
+  const [calcNotice, setCalcNotice] = useState<string | null>(null);
+  const [dayLoading, setDayLoading] = useState(true);
 
   const loadCooldown = useCallback(async () => {
     try {
@@ -32,11 +38,67 @@ export default function NutritionHomePage() {
     void loadCooldown();
   }, [loadCooldown]);
 
-  const handleCalculate = () => {
-    const result = buildSummary(exercises, foods);
-    setSummary(result);
+  useEffect(() => {
+    const userId = session?.user?.id;
+    if (!userId) {
+      setDayLoading(false);
+      return;
+    }
+
+    let alive = true;
+    void (async () => {
+      try {
+        const row = await fetchDailyLog(userId);
+        if (!alive || !row) return;
+        const parsed = parseDailyLogRow(row);
+        setExercises(parsed.exercises);
+        setFoods(parsed.foods);
+        setSummary(parsed.summary);
+      } catch {
+        // mantém estado vazio se falhar
+      } finally {
+        if (alive) setDayLoading(false);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [session?.user?.id]);
+
+  const handleCalculate = async () => {
+    setCalcLoading(true);
+    setCalcNotice(null);
     setAiResponse(null);
     setAiError(null);
+
+    let result: NutritionSummary;
+    try {
+      result = await postNutritionSummary(exercises, foods);
+      setSummary(result);
+    } catch (err) {
+      result = buildSummary(exercises, foods);
+      setSummary(result);
+      const message = err instanceof Error ? err.message : 'Falha ao calcular com IA.';
+      setCalcNotice(`Cálculo local (offline): ${message}`);
+    }
+
+    const userId = session?.user?.id;
+    if (userId) {
+      const { synced } = await saveDailyLog({
+        userId,
+        exercises,
+        foods,
+        summary: result,
+      });
+      if (!synced) {
+        setCalcNotice((prev) =>
+          prev ? `${prev} Registro salvo localmente para sincronizar depois.` : 'Registro salvo localmente para sincronizar depois.',
+        );
+      }
+    }
+
+    setCalcLoading(false);
   };
 
   const handleAiRequest = async () => {
@@ -72,6 +134,11 @@ export default function NutritionHomePage() {
         <p className="text-sm mt-1" style={{ color: colors.textSecondary }}>
           Registre exercícios e alimentos para acompanhar calorias e macros.
         </p>
+        {dayLoading && (
+          <p className="text-xs mt-2" style={{ color: colors.textMuted }}>
+            Carregando registro de hoje…
+          </p>
+        )}
       </div>
 
       <section className="space-y-3">
@@ -90,12 +157,26 @@ export default function NutritionHomePage() {
 
       <button
         type="button"
-        onClick={handleCalculate}
-        className="w-full rounded-2xl py-3.5 font-semibold"
+        disabled={calcLoading}
+        onClick={() => void handleCalculate()}
+        className="w-full rounded-2xl py-3.5 font-semibold disabled:opacity-60"
         style={{ background: colors.accent, color: colors.textPrimary }}
       >
-        Calcular resumo
+        {calcLoading ? 'Calculando com IA…' : 'Calcular resumo'}
       </button>
+
+      {calcNotice && (
+        <p
+          className="text-sm rounded-xl px-3 py-2 border"
+          style={{
+            background: colors.surfaceWarm,
+            borderColor: colors.border,
+            color: colors.textSecondary,
+          }}
+        >
+          {calcNotice}
+        </p>
+      )}
 
       {summary && (
         <section className="space-y-4">

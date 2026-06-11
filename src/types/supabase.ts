@@ -1,91 +1,270 @@
-/**
- * Tipos mínimos do schema Supabase para NTRSL AI.
- * Regenerar com `supabase gen types` quando o projeto de banco estiver provisionado.
- */
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
-export interface Database {
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
-      daily_logs: {
-        Row: {
-          id: string;
-          user_id: string;
-          log_date: string;
-          exercises: Json;
-          foods: Json;
-          summary: Json | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          log_date: string;
-          exercises?: Json;
-          foods?: Json;
-          summary?: Json | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          log_date?: string;
-          exercises?: Json;
-          foods?: Json;
-          summary?: Json | null;
-          created_at?: string;
-        };
-        Relationships: [];
-      };
       ai_usage: {
         Row: {
-          user_id: string;
-          last_request_at: string;
-        };
+          last_request_at: string
+          user_id: string
+        }
         Insert: {
-          user_id: string;
-          last_request_at: string;
-        };
+          last_request_at?: string
+          user_id: string
+        }
         Update: {
-          user_id?: string;
-          last_request_at?: string;
-        };
-        Relationships: [];
-      };
+          last_request_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      daily_logs: {
+        Row: {
+          created_at: string
+          exercises: Json
+          foods: Json
+          id: string
+          log_date: string
+          summary: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          exercises?: Json
+          foods?: Json
+          id?: string
+          log_date: string
+          summary?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          exercises?: Json
+          foods?: Json
+          id?: string
+          log_date?: string
+          summary?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
-          id: string;
-          display_name: string | null;
-          created_at: string | null;
-        };
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
         Insert: {
-          id: string;
-          display_name?: string | null;
-          created_at?: string | null;
-        };
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
         Update: {
-          id?: string;
-          display_name?: string | null;
-          created_at?: string | null;
-        };
-        Relationships: [];
-      };
-      security_audit_events: {
-        Row: Record<string, unknown>;
-        Insert: Record<string, unknown>;
-        Update: Record<string, unknown>;
-        Relationships: [];
-      };
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       push_tokens: {
-        Row: Record<string, unknown>;
-        Insert: Record<string, unknown>;
-        Update: Record<string, unknown>;
-        Relationships: [];
-      };
-    };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
-    Enums: Record<string, never>;
-    CompositeTypes: Record<string, never>;
-  };
+        Row: {
+          created_at: string
+          fcm_token: string
+          id: string
+          platform: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          fcm_token: string
+          id?: string
+          platform: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          fcm_token?: string
+          id?: string
+          platform?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      security_audit_events: {
+        Row: {
+          action: string | null
+          actor_email: string | null
+          actor_role: string | null
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          kind: string
+          message: string | null
+          metadata: Json | null
+          organization_id: string | null
+          route: string | null
+          severity: string | null
+          stack: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action?: string | null
+          actor_email?: string | null
+          actor_role?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          kind: string
+          message?: string | null
+          metadata?: Json | null
+          organization_id?: string | null
+          route?: string | null
+          severity?: string | null
+          stack?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string | null
+          actor_email?: string | null
+          actor_role?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          kind?: string
+          message?: string | null
+          metadata?: Json | null
+          organization_id?: string | null
+          route?: string | null
+          severity?: string | null
+          stack?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
 }
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never

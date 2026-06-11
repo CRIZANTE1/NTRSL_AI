@@ -95,6 +95,11 @@ export default function ProfileScreen() {
       });
       if (updateError) throw updateError;
 
+      await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', session.user.id);
+
       setLocalAvatarUrl(`${publicUrl}${publicUrl.includes('?') ? '&' : '?'}v=${Date.now()}`);
       setAvatarError(false);
       await refreshProfile();

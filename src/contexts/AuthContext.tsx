@@ -62,14 +62,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     setProfileError(null);
-    setProfile(profileFromSession(sess));
+    const fallback = profileFromSession(sess);
 
     try {
-      const { data } = await supabase.auth.getUser();
-      const url = (data.user?.user_metadata as { avatar_url?: string } | undefined)?.avatar_url ?? null;
-      setAvatarUrl(typeof url === 'string' && url.length ? url : null);
-    } catch {
-      setAvatarUrl(null);
+      const { data: row, error } = await supabase
+        .from('profiles')
+        .select('display_name, avatar_url')
+        .eq('id', sess.user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (!row) {
+        await supabase.from('profiles').upsert({
+          id: sess.user.id,
+          display_name: fallback.display_name,
+        });
+      }
+
+      const meta = sess.user.user_metadata as { avatar_url?: string } | undefined;
+      const avatarFromMeta =
+        typeof meta?.avatar_url === 'string' && meta.avatar_url.length ? meta.avatar_url : null;
+
+      setProfile({
+        id: sess.user.id,
+        email: sess.user.email ?? null,
+        display_name: row?.display_name ?? fallback.display_name,
+      });
+      setAvatarUrl(row?.avatar_url ?? avatarFromMeta);
+    } catch (err) {
+      setProfile(fallback);
+      setProfileError(err instanceof Error ? err : new Error(String(err)));
+      const meta = sess.user.user_metadata as { avatar_url?: string } | undefined;
+      const url = typeof meta?.avatar_url === 'string' && meta.avatar_url.length ? meta.avatar_url : null;
+      setAvatarUrl(url);
     }
   }, []);
 

@@ -1,0 +1,11 @@
+[functions.nutrition-summary]
+verify_jwt = true
+
+[functions.ai-recommendations]
+verify_jwt = true
+
+[functions.ai-cooldown]
+verify_jwt = true
+
+[functions.push-register]
+verify_jwt = true

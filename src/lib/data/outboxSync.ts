@@ -19,7 +19,9 @@ async function applyRow(row: OutboxRow): Promise<void> {
   }
 
   if (row.table_name === 'daily_logs' && row.operation === 'upsert') {
-    const { error } = await supabase.from('daily_logs').upsert(payload as DailyLogInsert);
+    const { error } = await supabase
+      .from('daily_logs')
+      .upsert(payload as DailyLogInsert, { onConflict: 'user_id,log_date' });
     if (error) throw new Error(error.message);
     return;
   }

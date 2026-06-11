@@ -7,14 +7,14 @@ flowchart TB
     subgraph client [App React + Capacitor]
         UI[Telas e componentes]
         NutritionLib[lib/nutrition.ts offline]
-        ApiClient[lib/api.ts]
+        ApiClient[lib/api.ts + edgeFunctions]
         AuthCtx[AuthContext + Supabase]
         LocalDb[SQLite / localStorage]
     end
 
     subgraph cloud [Nuvem]
         Supabase[Supabase Auth + DB]
-        FastAPI[FastAPI + Gemini]
+        EdgeFn[Edge Functions + Gemini]
     end
 
     UI --> NutritionLib
@@ -22,8 +22,8 @@ flowchart TB
     UI --> AuthCtx
     UI --> LocalDb
     AuthCtx --> Supabase
-    ApiClient -->|"JWT Bearer"| FastAPI
-    FastAPI --> Supabase
+    ApiClient -->|"JWT Bearer"| EdgeFn
+    EdgeFn --> Supabase
     LocalDb -->|"outbox daily_logs"| Supabase
 ```
 
@@ -53,7 +53,7 @@ src/
 ├── contexts/AuthContext.tsx
 ├── lib/
 │   ├── nutrition.ts      # Cálculo offline
-│   ├── api.ts            # Cliente FastAPI
+│   ├── api.ts            # Cliente Edge Functions (Gemini)
 │   ├── supabase.ts
 │   ├── localDb/          # Cache + fila offline
 │   └── data/outboxSync.ts
@@ -82,10 +82,10 @@ src/
 ## Fluxo principal (Home)
 
 1. Usuário seleciona exercícios (`ExercisePicker`) e alimentos (`FoodPicker`)
-2. **Calcular resumo** → `buildSummary()` em `nutrition.ts` (offline)
+2. **Calcular resumo** → `postNutritionSummary()` (Edge Function `nutrition-summary` + Gemini); fallback offline em `buildSummary()`
 3. Exibe kcal gastas/consumidas, balanço e `MacroChart`
-4. **Pedir recomendação IA** → `POST /api/ai/recommendations` com JWT
-5. Cooldown consultado via `GET /api/ai/cooldown` (`CooldownBanner`)
+4. **Pedir recomendação IA** → Edge Function `ai-recommendations` com JWT
+5. Cooldown consultado via `ai-cooldown` (`CooldownBanner`)
 
 ## Cálculo nutricional (cliente)
 
@@ -115,7 +115,7 @@ Fonte: `src/data/calorias.json`, `src/data/exercicios.json`
 
 ## Segurança
 
-- Chave Gemini **somente no backend**
-- JWT Supabase enviado no header `Authorization` para a API
+- Chave Gemini **somente nos secrets das Edge Functions** (`GOOGLE_API_KEY`)
+- JWT Supabase enviado no header `Authorization` para as Edge Functions
 - Credenciais biométricas em secure storage (nativo)
 - Auditoria de erros críticos via `security_audit_events` (quando configurado)

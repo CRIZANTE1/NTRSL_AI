@@ -14,3 +14,5 @@ android/.idea/
 # Artefatos temporários de deploy MCP (Supabase Edge Functions)
 deploy-args-*.json
 mcp-deploy-*.json
+.deploy-*.json
+.tmp-*.json

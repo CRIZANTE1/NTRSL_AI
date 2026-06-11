@@ -16,9 +16,24 @@ Para Android com deep link:
 2. Redirect: `com.ntrsl.ai://login-callback` ou App Link verificado
 3. Plugin `@capacitor/app` para `appUrlOpen`
 
-## Tabelas sugeridas
+## Schema (provisionado)
 
-Script de referência para o MVP + Fase 4:
+Migrations em `supabase/migrations/`:
+
+- `20260611120000_ntrsl_initial_schema.sql` — tabelas, RLS, trigger de perfil, bucket `avatars`
+- `20260611120100_ntrsl_security_hardening.sql` — revoke RPC do trigger, `search_path` fixo
+
+### Tabelas
+
+| Tabela | Uso |
+|--------|-----|
+| `profiles` | Perfil do usuário (criado automaticamente no cadastro) |
+| `daily_logs` | Registro diário (exercícios, alimentos, resumo) |
+| `ai_usage` | Cooldown de recomendações IA |
+| `push_tokens` | Tokens FCM |
+| `security_audit_events` | Auditoria de erros/ações |
+
+Script de referência original:
 
 ```sql
 -- Perfil (estende auth.users)

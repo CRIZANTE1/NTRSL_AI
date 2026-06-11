@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import type { Json } from '../types/supabase';
 
 export type AuditAction =
   | 'users.update'
@@ -20,7 +21,7 @@ export async function logAuditEvent(params: {
   const actor_email = params.actor_email ?? null;
   if (!actor_email) return;
 
-  await (supabase as any).from('security_audit_events').insert({
+  await supabase.from('security_audit_events').insert({
     organization_id: params.organization_id,
     kind: 'action',
     actor_user_id: params.actor_user_id,
@@ -34,7 +35,7 @@ export async function logAuditEvent(params: {
     stack: null,
     route: null,
     user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
-    metadata: params.metadata ?? null,
+    metadata: (params.metadata ?? null) as Json | null,
   });
 }
 
@@ -52,7 +53,7 @@ export async function logCriticalError(params: {
   const actor_email = params.actor_email ?? null;
   if (!actor_email) return;
 
-  await (supabase as any).from('security_audit_events').insert({
+  await supabase.from('security_audit_events').insert({
     organization_id: params.organization_id,
     kind: 'critical_error',
     actor_user_id: params.actor_user_id,
@@ -66,7 +67,7 @@ export async function logCriticalError(params: {
     stack: params.stack ?? null,
     route: params.route ?? null,
     user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
-    metadata: params.metadata ?? null,
+    metadata: (params.metadata ?? null) as Json | null,
   });
 }
 

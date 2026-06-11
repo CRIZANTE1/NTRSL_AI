@@ -24,7 +24,6 @@ Crie `.env.local` na raiz do projeto:
 ```env
 VITE_SUPABASE_URL=https://<project>.supabase.co
 VITE_SUPABASE_ANON_KEY=<anon-key>
-VITE_API_BASE_URL=http://localhost:8000
 ```
 
 Opcional (push nativo):
@@ -62,15 +61,18 @@ npm run cap:open
 
 Após alterar plugins Capacitor ou `capacitor.config.ts`, execute `npm run cap:sync` novamente.
 
-## Backend API (FastAPI)
+## Edge Functions (Gemini)
 
-A pasta `api/` ainda não está neste repositório. Para testar recomendações IA:
+As funções ficam em `supabase/functions/`. Para resumo nutricional e recomendações IA:
 
-1. Implemente a API conforme [API.md](./API.md)
-2. Rode localmente na porta 8000 (ou ajuste `VITE_API_BASE_URL`)
-3. Configure CORS para `http://localhost:3000` e `capacitor://localhost`
+1. Instale a [Supabase CLI](https://supabase.com/docs/guides/cli)
+2. Vincule ao projeto: `supabase link --project-ref <id>`
+3. Configure o secret: `supabase secrets set GOOGLE_API_KEY=<chave>`
+4. Deploy: `supabase functions deploy nutrition-summary ai-recommendations ai-cooldown`
 
-O resumo nutricional funciona **sem API** — o cálculo é feito no cliente via `src/lib/nutrition.ts`.
+Detalhes dos contratos em [API.md](./API.md).
+
+**Fallback offline:** se a Edge Function falhar, a Home usa `buildSummary()` em `src/lib/nutrition.ts`.
 
 ## Qualidade de código
 
@@ -85,6 +87,6 @@ npm run build       # verifica build de produção
 | Problema | Solução |
 |----------|---------|
 | Tela branca / config missing | Verifique `.env.local` e reinicie `npm run dev` |
-| IA retorna erro de rede | API offline ou `VITE_API_BASE_URL` incorreto |
+| IA retorna erro de rede | Edge Functions não deployadas ou `GOOGLE_API_KEY` ausente |
 | OAuth / sessão não persiste | Confirme PKCE e redirect URIs no Supabase |
 | Mudanças não aparecem no APK | `npm run cap:sync` após `npm run build` |

@@ -1,22 +1,16 @@
-# API REST (FastAPI)
+# API — Supabase Edge Functions + Gemini
 
-Contratos esperados pelo cliente em `src/lib/api.ts`. O backend deve ser implementado separadamente (pasta `api/`).
+O cliente em `src/lib/api.ts` chama Edge Functions do Supabase. A chave Gemini fica **somente** nos secrets do Supabase (`GOOGLE_API_KEY`).
 
-**Base URL:** valor de `VITE_API_BASE_URL` (padrão `http://localhost:8000`)
+**Base URL:** `{VITE_SUPABASE_URL}/functions/v1/<nome-da-função>`
 
-**Autenticação:** `Authorization: Bearer <supabase_access_token>`
-
----
-
-## `GET /health`
-
-Health check. Retorno sugerido: `{ "status": "ok" }`
+**Autenticação:** `Authorization: Bearer <supabase_access_token>` + header `apikey: <anon_key>`
 
 ---
 
-## `POST /api/nutrition/summary`
+## `nutrition-summary` (POST)
 
-Valida payload e retorna resumo calculado (espelha `nutrition.ts`).
+Calcula resumo nutricional via **Gemini**, usando as tabelas embarcadas de alimentos e exercícios.
 
 **Body:**
 
@@ -33,11 +27,13 @@ Valida payload e retorna resumo calculado (espelha `nutrition.ts`).
 
 **Response:** objeto `NutritionSummary` (ver `src/types/nutrition.ts`)
 
+**Fallback no app:** se a função falhar (rede/offline), a Home usa `buildSummary()` local.
+
 ---
 
-## `POST /api/ai/recommendations`
+## `ai-recommendations` (POST)
 
-Gera recomendação via Gemini. Requer JWT válido.
+Gera recomendação de coach via Gemini. Requer JWT válido.
 
 **Body:**
 
@@ -69,14 +65,13 @@ Gera recomendação via Gemini. Requer JWT válido.
 **Regras server-side:**
 
 - Cooldown **30 minutos** por `user_id` (tabela `ai_usage`)
-- Rate limit global (ex.: 60 req/min por IP ou usuário)
-- Modelo sugerido: `gemini-2.5-flash`
+- Modelo padrão: `gemini-2.5-flash` (override com secret `GEMINI_MODEL`)
 
 ---
 
-## `GET /api/ai/cooldown`
+## `ai-cooldown` (GET)
 
-Retorna tempo restante até próxima solicitação permitida.
+Retorna tempo restante até próxima solicitação de recomendação permitida.
 
 **Response:**
 
@@ -94,19 +89,43 @@ Retorna tempo restante até próxima solicitação permitida.
 | HTTP | Situação |
 |------|----------|
 | 401 | Token ausente ou inválido |
-| 429 | Rate limit ou cooldown IA |
+| 429 | Cooldown IA ativo |
 | 502 | Falha na API Gemini |
+| 500 | Secret ou configuração ausente |
 
 ---
 
-## Variáveis de ambiente (servidor)
+## Deploy
 
-```env
-GOOGLE_API_KEY=...
-SUPABASE_URL=...
-SUPABASE_SERVICE_ROLE_KEY=...
-SUPABASE_JWT_SECRET=...
-CORS_ORIGINS=http://localhost:3000,capacitor://localhost,https://localhost
+```bash
+# Na raiz do projeto, com Supabase CLI logado no projeto
+supabase secrets set GOOGLE_API_KEY=<gemini-api-key>
+# Opcional:
+supabase secrets set GEMINI_MODEL=gemini-2.5-flash
+
+supabase functions deploy nutrition-summary
+supabase functions deploy ai-recommendations
+supabase functions deploy ai-cooldown
 ```
 
+Variáveis injetadas automaticamente pelo Supabase em runtime:
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
 > Nunca expor `GOOGLE_API_KEY` no app mobile.
+
+---
+
+## Código-fonte
+
+```
+supabase/functions/
+├── nutrition-summary/
+├── ai-recommendations/
+├── ai-cooldown/
+└── _shared/          # auth, cors, gemini, dados JSON
+```
+
+Cliente: `src/lib/edgeFunctions.ts`, `src/lib/api.ts`
