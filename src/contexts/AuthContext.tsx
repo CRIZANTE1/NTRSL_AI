@@ -1,0 +1,171 @@
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import type { Session } from '@supabase/supabase-js';
+import { supabase } from '../lib/supabase';
+import type { UserProfile } from '../types/profile';
+
+interface AuthContextValue {
+  session: Session | null;
+  profile: UserProfile | null;
+  loading: boolean;
+  profileError: Error | null;
+  avatarUrl: string | null;
+  refreshProfile: () => Promise<void>;
+  signInWithPassword: (
+    email: string,
+    password: string,
+  ) => Promise<{ error: Error | null }>;
+  signUpWithPassword: (
+    email: string,
+    password: string,
+    displayName?: string,
+  ) => Promise<{ error: Error | null; needsEmailConfirmation: boolean }>;
+  signOut: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+function profileFromSession(sess: Session): UserProfile {
+  const meta = sess.user.user_metadata as Record<string, unknown> | undefined;
+  const displayName =
+    (typeof meta?.full_name === 'string' && meta.full_name) ||
+    (typeof meta?.name === 'string' && meta.name) ||
+    (typeof meta?.display_name === 'string' && meta.display_name) ||
+    null;
+
+  return {
+    id: sess.user.id,
+    email: sess.user.email ?? null,
+    display_name: displayName,
+  };
+}
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [profileError, setProfileError] = useState<Error | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  const loadProfile = useCallback(async (sess: Session | null) => {
+    if (!sess?.user?.id) {
+      setProfile(null);
+      setProfileError(null);
+      setAvatarUrl(null);
+      return;
+    }
+
+    setProfileError(null);
+    setProfile(profileFromSession(sess));
+
+    try {
+      const { data } = await supabase.auth.getUser();
+      const url = (data.user?.user_metadata as { avatar_url?: string } | undefined)?.avatar_url ?? null;
+      setAvatarUrl(typeof url === 'string' && url.length ? url : null);
+    } catch {
+      setAvatarUrl(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (!mounted) return;
+      setSession(s);
+      loadProfile(s).finally(() => {
+        if (mounted) setLoading(false);
+      });
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, s) => {
+      setSession(s);
+      setLoading(true);
+      loadProfile(s).finally(() => setLoading(false));
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [loadProfile]);
+
+  const refreshProfile = useCallback(async () => {
+    await loadProfile(session);
+  }, [loadProfile, session]);
+
+  const signInWithPassword = useCallback(
+    async (email: string, password: string) => {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      return { error: error as Error | null };
+    },
+    [],
+  );
+
+  const signUpWithPassword = useCallback(
+    async (email: string, password: string, displayName?: string) => {
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: displayName
+          ? { data: { full_name: displayName.trim(), display_name: displayName.trim() } }
+          : undefined,
+      });
+      return {
+        error: error as Error | null,
+        needsEmailConfirmation: !data?.session,
+      };
+    },
+    [],
+  );
+
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
+    setProfile(null);
+  }, []);
+
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      session,
+      profile,
+      loading,
+      profileError,
+      avatarUrl,
+      refreshProfile,
+      signInWithPassword,
+      signUpWithPassword,
+      signOut,
+    }),
+    [
+      session,
+      profile,
+      loading,
+      profileError,
+      avatarUrl,
+      refreshProfile,
+      signInWithPassword,
+      signUpWithPassword,
+      signOut,
+    ],
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth(): AuthContextValue {
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return ctx;
+}

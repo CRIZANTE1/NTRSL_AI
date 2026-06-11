@@ -1,0 +1,16 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# IDE
+.idea/
+android/.idea/
+
+# Artefatos temporários de deploy MCP (Supabase Edge Functions)
+deploy-args-*.json
+mcp-deploy-*.json
