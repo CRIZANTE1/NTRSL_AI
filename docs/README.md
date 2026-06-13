@@ -35,6 +35,7 @@ O NTRSL AI permite:
 - Registrar exercícios e alimentos do dia (busca remota USDA + WGER com fallback offline)
 - Calcular resumo via **Gemini** (Edge Function), com fallback offline
 - Salvar e consultar histórico em **`daily_logs`**
+- Dashboard (`/dashboard`) com filtro por dia via **`CalendarStrip`** — anéis, gráficos e stat cards por data
 - Solicitar recomendações de coach via **Gemini**
 - Autenticar com Supabase (e-mail/senha; Google OAuth em v1.3.0)
 

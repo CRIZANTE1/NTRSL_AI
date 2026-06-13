@@ -51,7 +51,7 @@ src/
 ├── routes/AppRoutes.tsx  # Definição de rotas
 ├── layouts/AppLayout.tsx # Header + bottom nav + outlet
 ├── pages/                # Telas por rota
-├── components/           # UI reutilizável
+├── components/           # UI reutilizável (CalendarStrip, FoodPicker, MacroChart, …)
 ├── contexts/AuthContext.tsx
 ├── lib/
 │   ├── nutrition.ts      # Cálculo offline
@@ -74,7 +74,8 @@ src/
 | `/cadastro` | Não | Registro |
 | `/` | Sim | Redireciona para `/home` ou `/login` |
 | `/home` | Sim | Registro do dia + resumo + IA |
-| `/historico` | Sim | Histórico (stub Fase 4) |
+| `/dashboard` | Sim | Resumo nutricional com filtro por dia (`CalendarStrip`) |
+| `/historico` | Sim | Histórico por mês |
 | `/sobre` | Sim | Página institucional |
 | `/profile` | Sim | Perfil e logout |
 | `/settings` | Sim | Tema e atalhos |
@@ -90,6 +91,16 @@ src/
 3. Exibe kcal gastas/consumidas, balanço e `MacroChart`
 4. **Pedir recomendação IA** → Edge Function `ai-recommendations` com JWT
 5. Cooldown consultado via `ai-cooldown` (`CooldownBanner`)
+
+## Fluxo do Dashboard (`/dashboard`)
+
+1. **`CalendarStrip`** — faixa scrollável com 7 dias (hoje ±3); dia selecionado em pill escuro; dots vermelhos (`colors.badge`) em dias com `summary` no histórico carregado
+2. **Histórico** — `fetchDailyLogHistory(userId, 30)` na montagem; alimenta gráficos semanais, streak e `eventDates`
+3. **Dia selecionado** — `fetchDailyLog(userId, logDate)` a cada mudança de data; atualiza anéis (`ProgressRings`), exercícios e balanço
+4. **Gráficos semanais** — janela de 7 dias **terminando** no dia selecionado (`buildLast7Days(anchor)`); barra destacada = dia filtrado
+5. **Sequência (streak)** — sempre calculada a partir de **hoje**, independente do filtro
+
+Componente reutilizável: `src/components/CalendarStrip.tsx` (origem: ESM_ANDROID). Props: `selectedDate`, `onDateSelect`, `visibleDays?`, `eventDates?`. Sem dependências externas de calendário.
 
 ## Cálculo nutricional (cliente)
 

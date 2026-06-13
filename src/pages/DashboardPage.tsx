@@ -16,6 +16,7 @@ import {
   parseDailyLogRow,
 } from '../lib/data/dailyLogs';
 import { colors } from '../theme/colors';
+import CalendarStrip from '../components/CalendarStrip';
 import type { ExerciseEntry, NutritionSummary } from '../types/nutrition';
 import type { Database } from '../types/supabase';
 
@@ -29,15 +30,6 @@ const GOALS = {
 
 const DAY_LABELS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'] as const;
 
-function formatHeaderDate(date = new Date()): string {
-  const weekday = date.toLocaleDateString('pt-BR', { weekday: 'long' }).toUpperCase();
-  const dayMonth = date
-    .toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })
-    .replace('.', '')
-    .toUpperCase();
-  return `${weekday}, ${dayMonth}`;
-}
-
 function parseLogDate(logDate: string): Date {
   const [y, m, d] = logDate.split('-').map(Number);
   return new Date(y, (m ?? 1) - 1, d ?? 1);
@@ -47,12 +39,11 @@ function dayLabelFromLogDate(logDate: string): string {
   return DAY_LABELS[parseLogDate(logDate).getDay()];
 }
 
-function buildLast7Days(): string[] {
+function buildLast7Days(anchor = new Date()): string[] {
   const days: string[] = [];
-  const today = new Date();
   for (let i = 6; i >= 0; i -= 1) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
+    const d = new Date(anchor);
+    d.setDate(anchor.getDate() - i);
     days.push(localLogDate(d));
   }
   return days;
@@ -91,8 +82,8 @@ interface RingMetric {
 function ProgressRings({ metrics }: { metrics: RingMetric[] }) {
   const size = 128;
   const center = size / 2;
-  const strokeWidth = 9;
-  const gap = 5;
+  const strokeWidth = 16;
+  const gap = 3;
   const radii = [
     center - strokeWidth / 2,
     center - strokeWidth / 2 - (strokeWidth + gap),
@@ -151,7 +142,7 @@ function ProgressRings({ metrics }: { metrics: RingMetric[] }) {
                   </span>
                 </span>
               </div>
-              <div className="h-1 rounded-full overflow-hidden" style={{ background: colors.border }}>
+              <div className="h-3 rounded-full overflow-hidden" style={{ background: colors.border }}>
                 <div
                   className="h-full rounded-full"
                   style={{
@@ -276,12 +267,15 @@ function StatCard({
 export default function DashboardPage() {
   const { session } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [dayLoading, setDayLoading] = useState(false);
   const [summary, setSummary] = useState<NutritionSummary | null>(null);
   const [exercises, setExercises] = useState<ExerciseEntry[]>([]);
   const [history, setHistory] = useState<DailyLogRow[]>([]);
+  const [selectedDate, setSelectedDate] = useState(() => new Date());
 
-  const todayKey = localLogDate();
+  const selectedKey = localLogDate(selectedDate);
 
+  // Carrega o histórico dos últimos 30 dias uma única vez por sessão de usuário
   useEffect(() => {
     const userId = session?.user?.id;
     if (!userId) {
@@ -292,18 +286,8 @@ export default function DashboardPage() {
     let alive = true;
     void (async () => {
       try {
-        const [todayRow, historyRows] = await Promise.all([
-          fetchDailyLog(userId),
-          fetchDailyLogHistory(userId, 30),
-        ]);
+        const historyRows = await fetchDailyLogHistory(userId, 30);
         if (!alive) return;
-
-        if (todayRow) {
-          const parsed = parseDailyLogRow(todayRow);
-          setSummary(parsed.summary);
-          setExercises(parsed.exercises);
-        }
-
         setHistory(historyRows);
       } catch {
         // mantém estado vazio
@@ -316,6 +300,40 @@ export default function DashboardPage() {
       alive = false;
     };
   }, [session?.user?.id]);
+
+  // Carrega os dados do dia selecionado sempre que ele mudar
+  useEffect(() => {
+    const userId = session?.user?.id;
+    if (!userId) return;
+
+    let alive = true;
+    setDayLoading(true);
+    void (async () => {
+      try {
+        const row = await fetchDailyLog(userId, selectedKey);
+        if (!alive) return;
+        if (row) {
+          const parsed = parseDailyLogRow(row);
+          setSummary(parsed.summary);
+          setExercises(parsed.exercises);
+        } else {
+          setSummary(null);
+          setExercises([]);
+        }
+      } catch {
+        if (alive) {
+          setSummary(null);
+          setExercises([]);
+        }
+      } finally {
+        if (alive) setDayLoading(false);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [session?.user?.id, selectedKey]);
 
   const ringMetrics = useMemo<RingMetric[]>(
     () => [
@@ -346,24 +364,29 @@ export default function DashboardPage() {
 
   const weeklyData = useMemo(() => {
     const byDate = new Map(history.map((row) => [row.log_date, parseDailyLogRow(row)]));
-    const last7 = buildLast7Days();
+    const last7 = buildLast7Days(selectedDate);
 
     const consumidas: WeeklyBar[] = last7.map((date) => ({
       label: dayLabelFromLogDate(date),
       value: byDate.get(date)?.summary?.consumidas ?? 0,
-      isToday: date === todayKey,
+      isToday: date === selectedKey,
     }));
 
     const gastas: WeeklyBar[] = last7.map((date) => ({
       label: dayLabelFromLogDate(date),
       value: byDate.get(date)?.summary?.gastas ?? 0,
-      isToday: date === todayKey,
+      isToday: date === selectedKey,
     }));
 
     return { consumidas, gastas };
-  }, [history, todayKey]);
+  }, [history, selectedDate, selectedKey]);
 
   const streak = useMemo(() => computeStreak(history), [history]);
+
+  const eventDatesFromHistory = useMemo(
+    () => history.filter((row) => row.summary != null).map((row) => parseLogDate(row.log_date)),
+    [history],
+  );
 
   const exerciseMinutes = totalExerciseMinutes(exercises);
   const balance = summary ? summary.gastas - summary.consumidas : 0;
@@ -371,18 +394,25 @@ export default function DashboardPage() {
 
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-hidden pt-1 gap-2">
-      <header className="shrink-0 flex items-baseline justify-between">
-        <h1 className="text-lg font-bold leading-tight" style={{ color: colors.textPrimary }}>
+      <header className="shrink-0">
+        <h1 className="text-lg font-bold leading-tight mb-2" style={{ color: colors.textPrimary }}>
           Resumo
         </h1>
-        <p className="text-[10px] font-medium uppercase tracking-wide" style={{ color: colors.textMuted }}>
-          {formatHeaderDate()}
-        </p>
+        <CalendarStrip
+          selectedDate={selectedDate}
+          onDateSelect={setSelectedDate}
+          eventDates={eventDatesFromHistory}
+        />
       </header>
 
       <section
         className="shrink-0 rounded-xl border p-3"
-        style={{ background: colors.surface, borderColor: colors.border }}
+        style={{
+          background: colors.surface,
+          borderColor: colors.border,
+          opacity: dayLoading ? 0.6 : 1,
+          transition: 'opacity 0.2s ease',
+        }}
       >
         <ProgressRings metrics={ringMetrics} />
       </section>

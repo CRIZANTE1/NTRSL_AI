@@ -145,7 +145,7 @@ Definidas em `src/routes/AppRoutes.tsx`. Bottom nav (`BottomNav.tsx`): Home, Das
 | `/cadastro` | Não | Registro |
 | `/` | Sim | Redireciona (`RootRedirect`) |
 | `/home` | Sim | Registro do dia, pickers, resumo, IA |
-| `/dashboard` | Sim | Gráficos 7 dias, metas calorias/macros |
+| `/dashboard` | Sim | Resumo com `CalendarStrip` (filtro por dia), anéis de macros, gráficos 7 dias |
 | `/historico` | Sim | Histórico (em evolução) |
 | `/sobre` | Sim | Institucional |
 | `/profile` | Sim | Perfil, avatar, logout, link admin |
@@ -299,7 +299,11 @@ supabase/functions/_shared/
 
 ### Dashboard
 
-- `fetchDailyLogHistory` — últimos 7 dias, gráficos Recharts, metas fixas (2000 kcal etc.)
+- **`CalendarStrip`** (`src/components/CalendarStrip.tsx`) — 7 dias (hoje ±3), dots em dias com registro
+- Estado: `selectedDate` → `fetchDailyLog(userId, localLogDate(selectedDate))` para anéis e stat cards
+- Histórico: `fetchDailyLogHistory(userId, 30)` na montagem → gráficos Recharts, streak, `eventDates`
+- Gráficos semanais: janela de 7 dias terminando no dia selecionado; metas fixas (2000 kcal etc.)
+- Streak: sempre relativo a **hoje**, não ao dia filtrado
 
 ---
 
@@ -409,7 +413,7 @@ npx supabase functions deploy food-search --project-ref aumvxnccdhcrftvnliwa
 - Refactor buscas: `rankCandidates`, `search-dictionary`, aliases estáticos
 - Deploy remoto: `food-search` v37, `exercise-search` v10
 - Admin panel `/admin`, roles em profiles
-- Dashboard semanal
+- `CalendarStrip` no Dashboard — filtro por dia conectado a `fetchDailyLog`
 - Limpeza de scripts MCP temporários
 - Pasta `android/` adicionada ao repo
 
@@ -434,6 +438,8 @@ npx supabase functions deploy food-search --project-ref aumvxnccdhcrftvnliwa
 | Auth | `src/contexts/AuthContext.tsx` |
 | Picker alimentos | `src/components/FoodPicker.tsx` |
 | Picker exercícios | `src/components/ExercisePicker.tsx` |
+| Calendário (dashboard) | `src/components/CalendarStrip.tsx` |
+| Dashboard | `src/pages/DashboardPage.tsx` |
 | Lógica offline | `src/lib/nutrition.ts` |
 | Edge food-search | `supabase/functions/food-search/index.ts` |
 | Edge exercise-search | `supabase/functions/exercise-search/index.ts` |

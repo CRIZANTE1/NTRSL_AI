@@ -7,6 +7,9 @@ Documentação detalhada por release: [`docs/versions/`](./docs/versions/README.
 
 ### Adicionado
 
+- `CalendarStrip` — faixa horizontal de dias (port do ESM_ANDROID) em `src/components/CalendarStrip.tsx`
+- Filtro por dia no **Dashboard** (`/dashboard`): anéis de macros, stat cards e gráficos semanais reagem à data selecionada; dots indicam dias com registro nos últimos 30 dias
+
 - Edge Function `exercise-search` — busca de exercícios (local + cache + WGER; dicionário estático, sem Gemini)
 - Tabela `exercise_catalog` (migration `20260612160000_exercise_catalog.sql`)
 - `ExercisePicker` com busca remota, debounce e fallback local (espelha `FoodPicker`)
@@ -23,6 +26,9 @@ Documentação detalhada por release: [`docs/versions/`](./docs/versions/README.
 - Modelo Gemini padrão: `gemini-2.5-flash` → **`gemini-3.1-flash-lite`** (`_shared/gemini.ts`; override via secret `GEMINI_MODEL`)
 
 ### Documentação
+
+- [ARCHITECTURE.md](./docs/ARCHITECTURE.md) — fluxo do Dashboard com `CalendarStrip`
+- [CLAUDE_HANDOFF.md](./docs/CLAUDE_HANDOFF.md) — seção Dashboard e mapa de arquivos
 
 - [GEMINI_SECRETS.md](./docs/GEMINI_SECRETS.md) — seção **Modelo Gemini (padrão)**; `gemini-3.1-flash-lite`
 - [API.md](./docs/API.md) — contrato `exercise-search`, deploy via Supabase CLI
