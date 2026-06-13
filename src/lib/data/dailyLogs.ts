@@ -56,6 +56,34 @@ export async function fetchDailyLogHistory(
   return data ?? [];
 }
 
+export async function fetchDailyLogsByRange(
+  userId: string,
+  startDate: string,
+  endDate: string,
+): Promise<DailyLogRow[]> {
+  const { data, error } = await supabase
+    .from('daily_logs')
+    .select('*')
+    .eq('user_id', userId)
+    .gte('log_date', startDate)
+    .lte('log_date', endDate)
+    .order('log_date', { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+export async function fetchDailyLogCount(userId: string): Promise<number> {
+  const { count, error } = await supabase
+    .from('daily_logs')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .not('summary', 'is', null);
+
+  if (error) throw new Error(error.message);
+  return count ?? 0;
+}
+
 export async function saveDailyLog(params: {
   userId: string;
   logDate?: string;

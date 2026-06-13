@@ -6,7 +6,8 @@ export function getGeminiModel(): GenerativeModel {
     throw new Response(JSON.stringify({ error: 'GOOGLE_API_KEY não configurada.' }), { status: 500 });
   }
 
-  const modelName = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-flash';
+  // Padrão documentado em docs/GEMINI_SECRETS.md; override via secret GEMINI_MODEL.
+  const modelName = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3.1-flash-lite';
   const genAI = new GoogleGenerativeAI(apiKey);
   return genAI.getGenerativeModel({ model: modelName });
 }

@@ -9,7 +9,7 @@ export function AppLayout() {
   return (
     <AppBackground>
       <HeaderApp />
-      <main className={`flex-1 px-6 min-w-0 w-full ${MAIN_BOTTOM_PADDING_CLASS}`}>
+      <main className={`flex-1 flex flex-col min-h-0 px-6 min-w-0 w-full ${MAIN_BOTTOM_PADDING_CLASS}`}>
         <Outlet />
       </main>
       <BottomNav />

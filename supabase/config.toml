@@ -9,3 +9,9 @@ verify_jwt = true
 
 [functions.push-register]
 verify_jwt = true
+
+[functions.food-search]
+verify_jwt = true
+
+[functions.exercise-search]
+verify_jwt = true

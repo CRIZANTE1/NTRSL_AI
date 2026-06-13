@@ -5,8 +5,31 @@ Documentação detalhada por release: [`docs/versions/`](./docs/versions/README.
 
 ## [Unreleased]
 
+### Adicionado
+
+- Edge Function `exercise-search` — busca de exercícios (local + cache + WGER; dicionário estático, sem Gemini)
+- Tabela `exercise_catalog` (migration `20260612160000_exercise_catalog.sql`)
+- `ExercisePicker` com busca remota, debounce e fallback local (espelha `FoodPicker`)
+- `postExerciseSearch()` em `src/lib/api.ts`; tipos `ExerciseSearchResult` / `ExerciseSearchResponse`
+- Secret `WEGER_API_KEY` nos secrets do Supabase (opcional; evita rate-limit na WGER)
+- Scripts: `build-search-aliases.mjs`, `backfill-catalog-pt.mjs`, `test-food-search.mjs`
+
+- Roles `user` e `admin` em `profiles` (enum `app_role`, RLS, trigger anti auto-promoção)
+- Painel `/admin` para admins gerenciarem roles
+- `AuthContext.isAdmin`, badge de role no perfil
+
+### Alterado
+
+- Modelo Gemini padrão: `gemini-2.5-flash` → **`gemini-3.1-flash-lite`** (`_shared/gemini.ts`; override via secret `GEMINI_MODEL`)
+
 ### Documentação
 
+- [GEMINI_SECRETS.md](./docs/GEMINI_SECRETS.md) — seção **Modelo Gemini (padrão)**; `gemini-3.1-flash-lite`
+- [API.md](./docs/API.md) — contrato `exercise-search`, deploy via Supabase CLI
+- [GEMINI_SECRETS.md](./docs/GEMINI_SECRETS.md) — secret `WEGER_API_KEY`
+- [SUPABASE.md](./docs/SUPABASE.md) — tabela `exercise_catalog`
+- [ARCHITECTURE.md](./docs/ARCHITECTURE.md) — fluxo de busca remota no `ExercisePicker`
+- [ANDROID.md](./docs/ANDROID.md) — sync Capacitor; APK gerado no Android Studio (não via CLI)
 - [GEMINI_SECRETS.md](./docs/GEMINI_SECRETS.md) — configuração de `GOOGLE_API_KEY` no Supabase; proibição de `VITE_GEMINI_API_KEY` no cliente
 
 ---

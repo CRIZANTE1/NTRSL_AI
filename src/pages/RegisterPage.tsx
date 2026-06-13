@@ -71,7 +71,7 @@ export default function RegisterPage() {
 
     void hapticsSuccess();
     void soundSuccess();
-    navigate('/home', { replace: true });
+    navigate('/dashboard', { replace: true });
   };
 
   return (

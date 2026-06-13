@@ -84,6 +84,8 @@ src/
 ## Fluxo principal (Home)
 
 1. Usuário seleciona exercícios (`ExercisePicker`) e alimentos (`FoodPicker`)
+   - **Exercícios:** busca remota via `exercise-search` (local → cache → WGER + Gemini); fallback offline em `exercicios.json`
+   - **Alimentos:** busca remota via `food-search` (local → cache → USDA FDC + Gemini); fallback offline em `calorias.json`
 2. **Calcular resumo** → `postNutritionSummary()` (Edge Function `nutrition-summary` + Gemini); fallback offline em `buildSummary()`
 3. Exibe kcal gastas/consumidas, balanço e `MacroChart`
 4. **Pedir recomendação IA** → Edge Function `ai-recommendations` com JWT
@@ -95,9 +97,9 @@ Portado do protótipo Streamlit:
 
 - Alimentos: macros proporcionais à quantidade em **gramas** (`qty / 100`)
 - Água: quantidade em **litros** → convertida para ml (`× 1000`) antes do fator
-- Exercícios: `calorias_queimadas_por_minuto × duração`
+- Exercícios: `calorias_queimadas_por_minuto × duração` (prioriza `caloriasPorMinuto` do entry quando veio da busca WGER)
 
-Fonte: `src/data/calorias.json`, `src/data/exercicios.json`
+Fonte local: `src/data/calorias.json`, `src/data/exercicios.json` · cache remoto: `food_catalog`, `exercise_catalog`
 
 ## Offline e sincronização
 
@@ -118,6 +120,8 @@ Fonte: `src/data/calorias.json`, `src/data/exercicios.json`
 ## Segurança
 
 - Chave Gemini **somente nos secrets das Edge Functions** (`GOOGLE_API_KEY`) — ver [GEMINI_SECRETS.md](./GEMINI_SECRETS.md); nunca `VITE_GEMINI_API_KEY` no cliente
+- Modelo padrão: `gemini-3.1-flash-lite` em `_shared/gemini.ts` (override: secret `GEMINI_MODEL`)
+- Chaves de APIs externas (`FDC_API_KEY`, `WEGER_API_KEY`) também **somente nos secrets** — nunca `VITE_*` no bundle
 - JWT Supabase enviado no header `Authorization` para as Edge Functions
 - Credenciais biométricas em secure storage (nativo)
 - Auditoria de erros críticos via `security_audit_events` (quando configurado)

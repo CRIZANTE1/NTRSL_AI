@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Calendar, Info } from 'lucide-react';
+import { Home, LayoutDashboard, Calendar, Info } from 'lucide-react';
 import { colors } from '../theme/colors';
 import { NAV_BOTTOM_CLASS } from '../lib/layout';
 
@@ -92,7 +92,8 @@ const GlassEffect: React.FC<{ children: React.ReactNode; className?: string }> =
 );
 
 const tabs = [
-  { to: '/home', end: true, icon: Home, label: 'Início' },
+  { to: '/dashboard', end: true, icon: LayoutDashboard, label: 'Início' },
+  { to: '/home', end: false, icon: Home, label: 'Seu dia' },
   { to: '/historico', end: false, icon: Calendar, label: 'Histórico' },
   { to: '/sobre', end: false, icon: Info, label: 'Sobre' },
 ];

@@ -64,7 +64,7 @@ export function routeFromPushPayload(data: Record<string, string>): string | nul
     return '/historico';
   }
 
-  return '/home';
+  return '/dashboard';
 }
 
 function stringifyData(data: Record<string, unknown> | undefined): Record<string, string> {

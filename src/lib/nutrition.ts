@@ -27,9 +27,43 @@ export function getExerciseNames(): string[] {
   return Object.keys(exercicios).sort((a, b) => a.localeCompare(b, 'pt-BR'));
 }
 
-export function calcularCaloriasExercicio(exercicio: string, duracao: number): number {
-  const caloriasPorMinuto = exercicios[exercicio]?.calorias_queimadas_por_minuto ?? 0;
+export function calcularCaloriasExercicio(
+  exercicio: string,
+  duracao: number,
+  caloriasPorMinutoOverride?: number,
+): number {
+  const caloriasPorMinuto =
+    caloriasPorMinutoOverride ??
+    exercicios[exercicio]?.calorias_queimadas_por_minuto ??
+    0;
   return caloriasPorMinuto * duracao;
+}
+
+export function calcularCaloriasExercicioFromEntry(exercise: ExerciseEntry): number {
+  return calcularCaloriasExercicio(
+    exercise.localKey ?? exercise.name,
+    exercise.durationMinutes,
+    exercise.caloriasPorMinuto,
+  );
+}
+
+function scalePer100g(
+  alimento: string,
+  quantidade: number,
+  per100g: { calorias: number; proteina: number; carboidratos: number; gordura: number },
+): MacroTotals {
+  let qty = quantidade;
+  if (alimento.toLowerCase() === 'água') {
+    qty = quantidade * 1000;
+  }
+
+  const factor = qty / 100;
+  return {
+    calorias: per100g.calorias * factor,
+    proteina: per100g.proteina * factor,
+    carboidratos: per100g.carboidratos * factor,
+    gordura: per100g.gordura * factor,
+  };
 }
 
 export function calcularNutricao(alimento: string, quantidade: number): MacroTotals {
@@ -40,18 +74,19 @@ export function calcularNutricao(alimento: string, quantidade: number): MacroTot
     gordura: 0,
   };
 
-  let qty = quantidade;
-  if (alimento.toLowerCase() === 'água') {
-    qty = quantidade * 1000;
-  }
+  return scalePer100g(alimento, quantidade, {
+    calorias: info.calorias,
+    proteina: info.proteína,
+    carboidratos: info.carboidratos,
+    gordura: info.gordura,
+  });
+}
 
-  const factor = qty / 100;
-  return {
-    calorias: info.calorias * factor,
-    proteina: info.proteína * factor,
-    carboidratos: info.carboidratos * factor,
-    gordura: info.gordura * factor,
-  };
+export function calcularNutricaoFromEntry(food: FoodEntry): MacroTotals {
+  if (food.per100g) {
+    return scalePer100g(food.name, food.quantity, food.per100g);
+  }
+  return calcularNutricao(food.localKey ?? food.name, food.quantity);
 }
 
 export function buildSummary(
@@ -63,7 +98,7 @@ export function buildSummary(
   const exercicioNomes: string[] = [];
 
   for (const ex of exercises) {
-    gastas += calcularCaloriasExercicio(ex.name, ex.durationMinutes);
+    gastas += calcularCaloriasExercicioFromEntry(ex);
     duracao += ex.durationMinutes;
     exercicioNomes.push(`${ex.name} (${ex.durationMinutes} min)`);
   }
@@ -75,7 +110,7 @@ export function buildSummary(
   const alimentoNomes: string[] = [];
 
   for (const food of foods) {
-    const macros = calcularNutricao(food.name, food.quantity);
+    const macros = calcularNutricaoFromEntry(food);
     consumidas += macros.calorias;
     proteina += macros.proteina;
     carboidratos += macros.carboidratos;

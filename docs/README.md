@@ -20,7 +20,8 @@ Changelog resumido: [`CHANGELOG.md`](../CHANGELOG.md) na raiz.
 
 | Documento | Conteúdo |
 |-----------|----------|
-| [SETUP.md](./SETUP.md) | Pré-requisitos, variáveis de ambiente, dev web e Android |
+| [SETUP.md](./SETUP.md) | Pré-requisitos, variáveis de ambiente, dev web |
+| [ANDROID.md](./ANDROID.md) | **Capacitor → pasta `android/` + APK no Android Studio** |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Stack, pastas, rotas, fluxos e offline |
 | [API.md](./API.md) | Edge Functions Supabase + Gemini |
 | [GEMINI_SECRETS.md](./GEMINI_SECRETS.md) | **Onde configurar `GOOGLE_API_KEY`** (e por que não no `.env.local`) |
@@ -31,7 +32,7 @@ Changelog resumido: [`CHANGELOG.md`](../CHANGELOG.md) na raiz.
 
 O NTRSL AI permite:
 
-- Registrar exercícios e alimentos do dia
+- Registrar exercícios e alimentos do dia (busca remota USDA + WGER com fallback offline)
 - Calcular resumo via **Gemini** (Edge Function), com fallback offline
 - Salvar e consultar histórico em **`daily_logs`**
 - Solicitar recomendações de coach via **Gemini**

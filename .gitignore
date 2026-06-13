@@ -11,8 +11,19 @@ coverage/
 .idea/
 android/.idea/
 
-# Artefatos temporários de deploy MCP (Supabase Edge Functions)
+# Supabase CLI / deploy local
+supabase/.temp/
+
+# Artefatos temporários de deploy (MCP/CLI) — não versionar
+deploy-*.json
+tmp-*.json
 deploy-args-*.json
 mcp-deploy-*.json
+.mcp-*.json
 .deploy-*.json
 .tmp-*.json
+scripts/.*/
+scripts/**/.*/
+scripts/food-search-deploy-steps/
+scripts/exercise-search-deploy-steps/
+scripts/.food-deploy-chunks/

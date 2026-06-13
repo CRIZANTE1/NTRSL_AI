@@ -1,17 +1,47 @@
 # Chave Gemini — onde configurar (e onde não)
 
-As Edge Functions (`nutrition-summary`, `ai-recommendations`) chamam a API do Google Gemini **no servidor**. A chave **nunca** deve estar no app React, no `.env.local` do Vite nem em variáveis `VITE_*`.
+As Edge Functions **`nutrition-summary`** e **`ai-recommendations`** chamam a API do Google Gemini **no servidor**. As buscas **`food-search`** e **`exercise-search`** usam dicionário estático (sem Gemini). A chave **nunca** deve estar no app React, no `.env.local` do Vite nem em variáveis `VITE_*`.
 
 ## Regra de ouro
 
 | Local | Variável | Usar? |
 |-------|----------|-------|
 | Supabase → Edge Functions → **Secrets** | `GOOGLE_API_KEY` | ✅ Sim |
+| Supabase → Edge Functions → **Secrets** | `FDC_API_KEY` | ✅ Sim (busca USDA — `food-search`) |
+| Supabase → Edge Functions → **Secrets** | `WEGER_API_KEY` | ✅ Opcional (`exercise-search`; busca pública funciona sem chave) |
 | Supabase → Edge Functions → **Secrets** | `GEMINI_MODEL` (opcional) | ✅ Opcional |
 | `.env.local` do app | `VITE_GEMINI_API_KEY` | ❌ **Não** |
+| `.env.local` do app | `VITE_FDC_API_KEY` | ❌ **Não** |
+| `.env.local` do app | `VITE_WGER_API_KEY` | ❌ **Não** |
 | Código em `src/` | qualquer chave Gemini | ❌ **Não** |
 
 O cliente em `src/lib/api.ts` só envia o **JWT do Supabase** para as Edge Functions. Quem lê `GOOGLE_API_KEY` é o runtime Deno em `supabase/functions/_shared/gemini.ts`.
+
+## Modelo Gemini (padrão)
+
+| Item | Valor |
+|------|-------|
+| **Modelo padrão** | `gemini-3.1-flash-lite` |
+| **Definido em** | `supabase/functions/_shared/gemini.ts` (`getGeminiModel`) |
+| **Override** | Secret `GEMINI_MODEL` no Supabase (opcional) |
+| **Redeploy** | Não obrigatório ao mudar só o secret; obrigatório se alterar o fallback no código |
+
+Funções que usam o modelo (via `getGeminiModel` / `generateJson`):
+
+| Edge Function | Uso do Gemini |
+|---------------|----------------|
+| `nutrition-summary` | Cálculo nutricional a partir de listas |
+| `ai-recommendations` | Texto do coach |
+
+`food-search` e `exercise-search` **não** usam Gemini — dicionário estático em `_shared/data/*-aliases.json` (regenerar com `npm run build:search-aliases`).
+
+Para fixar o modelo em produção sem depender do fallback do código:
+
+```bash
+supabase secrets set GEMINI_MODEL=gemini-3.1-flash-lite
+```
+
+> **Histórico:** até jun/2026 o padrão era `gemini-2.5-flash`. Se o secret antigo ainda existir no projeto, ele **sobrescreve** o fallback do código — atualize ou remova `GEMINI_MODEL` no Dashboard.
 
 ## Por que não usar `VITE_GEMINI_API_KEY`?
 
@@ -32,11 +62,11 @@ Se você tinha `VITE_GEMINI_API_KEY` no `.env.local`, **remova** e configure o s
    - **Value:** sua chave da [Google AI Studio](https://aistudio.google.com/apikey) ou Google Cloud (API Gemini habilitada).
 6. Salve.
 
-Opcional — modelo alternativo:
+Opcional — modelo (recomendado alinhar ao padrão do app):
 
 | Name | Value | Exemplo |
 |------|-------|---------|
-| `GEMINI_MODEL` | ID do modelo | `gemini-2.5-flash` |
+| `GEMINI_MODEL` | ID do modelo Google | `gemini-3.1-flash-lite` |
 
 Os secrets ficam disponíveis automaticamente para **todas** as Edge Functions do projeto via `Deno.env.get('GOOGLE_API_KEY')`.
 
@@ -53,7 +83,13 @@ supabase link --project-ref <seu-project-ref>
 supabase secrets set GOOGLE_API_KEY=<sua-chave-gemini>
 
 # Opcional:
-supabase secrets set GEMINI_MODEL=gemini-2.5-flash
+supabase secrets set GEMINI_MODEL=gemini-3.1-flash-lite
+
+# Busca de alimentos (USDA FDC):
+supabase secrets set FDC_API_KEY=<sua-chave-fdc>
+
+# Busca de exercícios (WGER — token permanente do perfil em wger.de):
+supabase secrets set WEGER_API_KEY=<seu-token-wger>
 ```
 
 Listar secrets (nomes apenas, valores mascarados):
@@ -85,6 +121,7 @@ Modelo completo: [`.env.example`](../.env.example).
 2. Na Home, adicione exercícios/alimentos e clique em **Calcular resumo**.
 3. Se `GOOGLE_API_KEY` estiver ausente no Supabase, a função retorna erro e o app usa **cálculo local** (fallback) com aviso na tela.
 4. Clique em **Pedir recomendação da IA** — deve retornar texto do coach (cooldown de 30 min entre pedidos).
+5. Na Home, busque um **exercício** (ex.: "agachamento") ou **alimento** (ex.: "frango") — deve retornar resultados com badge Local / Cache / WGER ou USDA.
 
 Erros comuns no Dashboard → **Edge Functions** → **Logs**:
 
@@ -93,6 +130,7 @@ Erros comuns no Dashboard → **Edge Functions** → **Logs**:
 | `GOOGLE_API_KEY não configurada` | Secret não criado ou nome errado (tem que ser exatamente `GOOGLE_API_KEY`) |
 | `401` / token | Sessão expirada — faça login de novo |
 | `502` / Gemini | Chave inválida, quota ou modelo indisponível |
+| `502` / WGER | API WGER indisponível ou rate-limit (configure `WEGER_API_KEY`) |
 
 ## Rotação da chave (se vazou)
 

@@ -1,5 +1,11 @@
 import { callEdgeFunction } from './edgeFunctions';
-import type { AISummary, CooldownStatus, NutritionSummary } from '../types/nutrition';
+import type {
+  AISummary,
+  CooldownStatus,
+  ExerciseSearchResponse,
+  FoodSearchResponse,
+  NutritionSummary,
+} from '../types/nutrition';
 
 export async function postNutritionSummary(
   exercises: { name: string; durationMinutes: number }[],
@@ -21,4 +27,19 @@ export async function postAiRecommendations(
 
 export async function getAiCooldown(): Promise<CooldownStatus> {
   return callEdgeFunction<CooldownStatus>('ai-cooldown', { method: 'GET' });
+}
+
+export async function postFoodSearch(query: string, limit = 12): Promise<FoodSearchResponse> {
+  return callEdgeFunction<FoodSearchResponse>('food-search', {
+    body: { query, limit },
+  });
+}
+
+export async function postExerciseSearch(
+  query: string,
+  limit = 12,
+): Promise<ExerciseSearchResponse> {
+  return callEdgeFunction<ExerciseSearchResponse>('exercise-search', {
+    body: { query, limit },
+  });
 }

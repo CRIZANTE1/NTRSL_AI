@@ -25,7 +25,8 @@ function getPublicAvatarUrl(path: string) {
 
 export default function ProfileScreen() {
   const navigate = useNavigate();
-  const { session, profile, loading, profileError, signOut, avatarUrl, refreshProfile } = useAuth();
+  const { session, profile, loading, profileError, signOut, avatarUrl, refreshProfile, isAdmin } =
+    useAuth();
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | null>(null);
   const [avatarError, setAvatarError] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -222,9 +223,19 @@ export default function ProfileScreen() {
         <h2 className="text-base font-bold leading-tight" style={{ color: colors.textPrimary }}>
           {displayName}
         </h2>
-        <p className="text-[11px] mb-4" style={{ color: colors.textSecondary }}>
+        <p className="text-[11px]" style={{ color: colors.textSecondary }}>
           {displayEmail}
         </p>
+        <span
+          className="inline-block mt-2 mb-4 text-[10px] font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full border"
+          style={{
+            background: isAdmin ? colors.surfaceWarm : colors.surface,
+            borderColor: colors.border,
+            color: isAdmin ? colors.accent : colors.textSecondary,
+          }}
+        >
+          {profile.role === 'admin' ? 'Administrador' : 'Usuário'}
+        </span>
       </div>
 
       <div className="p-6 space-y-3">
@@ -295,6 +306,28 @@ export default function ProfileScreen() {
           className="rounded-3xl overflow-hidden shadow-sm border"
           style={{ background: colors.surface, borderColor: colors.border }}
         >
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => navigate('/admin')}
+              className="w-full p-4 flex items-center justify-between border-b transition-all hover:brightness-95 active:brightness-90"
+              style={{ borderColor: colors.border }}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className="p-2 rounded-xl border"
+                  style={{ background: colors.surfaceWarm, borderColor: colors.border }}
+                >
+                  <Shield className="w-5 h-5" style={{ color: colors.accent }} />
+                </div>
+                <span className="text-sm font-medium" style={{ color: colors.textPrimary }}>
+                  Administração
+                </span>
+              </div>
+              <ChevronRight className="w-4 h-4" style={{ color: colors.textMuted }} />
+            </button>
+          )}
+
           <button
             type="button"
             onClick={() => navigate('/settings/privacy')}

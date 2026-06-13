@@ -27,7 +27,7 @@ export function AuditErrorReporter({ children }: { children: React.ReactNode }) 
         organization_id: null,
         actor_user_id: profile?.id ?? null,
         actor_email: email,
-        actor_role: null,
+        actor_role: profile?.role ?? null,
         message,
         stack: stack ?? null,
         route: location.pathname,

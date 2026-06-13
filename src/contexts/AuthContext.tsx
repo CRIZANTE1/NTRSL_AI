@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import type { UserProfile } from '../types/profile';
+import { isAdminRole, type AppRole, type UserProfile } from '../types/profile';
 
 interface AuthContextValue {
   session: Session | null;
@@ -27,6 +27,7 @@ interface AuthContextValue {
     displayName?: string,
   ) => Promise<{ error: Error | null; needsEmailConfirmation: boolean }>;
   signOut: () => Promise<void>;
+  isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -43,6 +44,7 @@ function profileFromSession(sess: Session): UserProfile {
     id: sess.user.id,
     email: sess.user.email ?? null,
     display_name: displayName,
+    role: 'user',
   };
 }
 
@@ -67,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { data: row, error } = await supabase
         .from('profiles')
-        .select('display_name, avatar_url')
+        .select('display_name, avatar_url, role, email')
         .eq('id', sess.user.id)
         .maybeSingle();
 
@@ -77,6 +79,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await supabase.from('profiles').upsert({
           id: sess.user.id,
           display_name: fallback.display_name,
+          email: sess.user.email ?? null,
+          role: 'user',
         });
       }
 
@@ -84,10 +88,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const avatarFromMeta =
         typeof meta?.avatar_url === 'string' && meta.avatar_url.length ? meta.avatar_url : null;
 
+      const role = (row?.role as AppRole | undefined) ?? 'user';
       setProfile({
         id: sess.user.id,
-        email: sess.user.email ?? null,
+        email: row?.email ?? sess.user.email ?? null,
         display_name: row?.display_name ?? fallback.display_name,
+        role,
       });
       setAvatarUrl(row?.avatar_url ?? avatarFromMeta);
     } catch (err) {
@@ -160,6 +166,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setProfile(null);
   }, []);
 
+  const isAdmin = isAdminRole(profile?.role);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       session,
@@ -171,6 +179,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signInWithPassword,
       signUpWithPassword,
       signOut,
+      isAdmin,
     }),
     [
       session,
@@ -182,6 +191,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signInWithPassword,
       signUpWithPassword,
       signOut,
+      isAdmin,
     ],
   );
 

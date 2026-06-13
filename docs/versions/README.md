@@ -24,7 +24,7 @@ Estes guias são válidos para a versão atual e evoluem com o projeto:
 | [API.md](../API.md) | Edge Functions + Gemini |
 | [SUPABASE.md](../SUPABASE.md) | Schema, auth, RLS, storage |
 | [DESIGN_SYSTEM.md](../DESIGN_SYSTEM.md) | Tokens de cor e UI |
-| [GEMINI_SECRETS.md](../GEMINI_SECRETS.md) | Chave Gemini (`GOOGLE_API_KEY`) — só no Supabase |
+| [GEMINI_SECRETS.md](../GEMINI_SECRETS.md) | Chave Gemini (`GOOGLE_API_KEY`), modelo `gemini-3.1-flash-lite` — só no Supabase |
 
 ## Linha do tempo
 

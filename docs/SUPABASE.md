@@ -24,6 +24,32 @@ Migrations em `supabase/migrations/`:
 
 - `20260611120000_ntrsl_initial_schema.sql` — tabelas, RLS, trigger de perfil, bucket `avatars`
 - `20260611120100_ntrsl_security_hardening.sql` — revoke RPC do trigger, `search_path` fixo
+- `20260612120000_profile_roles.sql` — roles `user` / `admin`, RLS e painel `/admin`
+- `20260612140000_food_catalog.sql` — cache de alimentos (local + USDA FDC)
+- `20260612160000_exercise_catalog.sql` — cache de exercícios (local + WGER)
+
+### Roles (`profiles.role`)
+
+| Role | Padrão | Permissões |
+|------|--------|------------|
+| `user` | Sim (cadastro) | Acessa apenas os próprios dados (RLS) |
+| `admin` | Não | Lê todos os `profiles`, `daily_logs` e `security_audit_events`; altera roles na UI `/admin` |
+
+Regras:
+
+- Novos usuários recebem `role = 'user'` via trigger `handle_new_user`.
+- Usuários **não** podem promover a si mesmos (trigger `protect_profile_role`).
+- Função `public.is_admin()` usada nas políticas RLS.
+
+**Promover o primeiro administrador** (SQL Editor no Supabase):
+
+```sql
+update public.profiles
+set role = 'admin'
+where email = 'seu-email@exemplo.com';
+```
+
+Depois faça login e acesse **Perfil → Administração** ou `/admin`.
 
 ### Tabelas
 
@@ -34,6 +60,10 @@ Migrations em `supabase/migrations/`:
 | `ai_usage` | Cooldown de recomendações IA |
 | `push_tokens` | Tokens FCM |
 | `security_audit_events` | Auditoria de erros/ações |
+| `food_catalog` | Cache de alimentos (USDA FDC + local); upsert via `food-search` |
+| `exercise_catalog` | Cache de exercícios (WGER + local); upsert via `exercise-search` |
+
+**RLS dos catálogos:** leitura (`SELECT`) para usuários autenticados; escrita somente via Edge Function (service role).
 
 Script de referência original:
 

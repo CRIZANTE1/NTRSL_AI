@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { PageSkeleton } from '../components/PageSkeleton';
+import { AdminRoute } from '../components/routing/AdminRoute';
 import { ProtectedRoute } from '../components/routing/ProtectedRoute';
 import { RootRedirect } from '../components/routing/RootRedirect';
 import { AppLayout } from '../layouts/AppLayout';
@@ -12,8 +13,10 @@ const SettingsPage = lazy(() => import('../pages/SettingsPage'));
 const PrivacySettingsPage = lazy(() => import('../pages/PrivacySettingsPage'));
 const PersonalizationPage = lazy(() => import('../pages/PersonalizationPage'));
 const NutritionHomePage = lazy(() => import('../pages/NutritionHomePage'));
+const DashboardPage = lazy(() => import('../pages/DashboardPage'));
 const HistoricoPage = lazy(() => import('../pages/HistoricoPage'));
 const AboutPage = lazy(() => import('../pages/AboutPage'));
+const AdminPage = lazy(() => import('../pages/AdminPage'));
 
 function LazyAuth({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<PageSkeleton variant="auth" />}>{children}</Suspense>;
@@ -51,6 +54,14 @@ export function AppRoutes() {
             element={
               <LazyApp>
                 <NutritionHomePage />
+              </LazyApp>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <LazyApp>
+                <DashboardPage />
               </LazyApp>
             }
           />
@@ -104,6 +115,17 @@ export function AppRoutes() {
             </LazyApp>
           }
         />
+
+        <Route element={<AdminRoute />}>
+          <Route
+            path="/admin"
+            element={
+              <LazyApp>
+                <AdminPage />
+              </LazyApp>
+            }
+          />
+        </Route>
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

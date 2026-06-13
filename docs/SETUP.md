@@ -50,33 +50,46 @@ Abra `http://localhost:3000`. Use as ferramentas de dispositivo móvel do navega
 
 ## Android (Capacitor)
 
-1. Gere a pasta nativa (primeira vez):
+Responsabilidade do **repositório**: build web + pasta `android/` sincronizada.  
+Responsabilidade do **Android Studio**: compilar APK/AAB e rodar em emulador ou device.
+
+**Primeira vez:**
 
 ```bash
+npm run build
 npx cap add android
 ```
 
-2. Build e sincronize:
+**Depois de alterar o frontend ou plugins:**
 
 ```bash
 npm run cap:sync
 npm run cap:open
 ```
 
-3. No Android Studio: escolha um emulador ou dispositivo físico e rode o app.
+No Studio: **▶ Run** ou **Build → Build APK(s)**.
 
-Após alterar plugins Capacitor ou `capacitor.config.ts`, execute `npm run cap:sync` novamente.
+→ Guia detalhado: **[ANDROID.md](./ANDROID.md)** (`local.properties`, debug vs release, troubleshooting).
 
 ## Edge Functions (Gemini)
 
-As funções ficam em `supabase/functions/`. Para resumo nutricional e recomendações IA:
+As funções ficam em `supabase/functions/`. Para resumo nutricional, recomendações IA e buscas:
 
-1. Configure **`GOOGLE_API_KEY`** no Supabase — ver **[GEMINI_SECRETS.md](./GEMINI_SECRETS.md)** (Dashboard ou CLI).
-2. Deploy (se ainda não feito): `supabase functions deploy nutrition-summary ai-recommendations ai-cooldown push-register`
+1. Configure secrets no Supabase — ver **[GEMINI_SECRETS.md](./GEMINI_SECRETS.md)** (Dashboard ou CLI):
+   - `GOOGLE_API_KEY` (obrigatório para IA e buscas)
+   - `GEMINI_MODEL` (opcional; padrão do app: `gemini-3.1-flash-lite`)
+   - `FDC_API_KEY` (busca de alimentos — `food-search`)
+   - `WEGER_API_KEY` (opcional — busca de exercícios — `exercise-search`)
+2. Deploy (se ainda não feito):
+
+```bash
+supabase functions deploy nutrition-summary ai-recommendations ai-cooldown push-register
+supabase functions deploy food-search exercise-search
+```
 
 Detalhes dos contratos em [API.md](./API.md).
 
-**Fallback offline:** se a Edge Function falhar, a Home usa `buildSummary()` em `src/lib/nutrition.ts`.
+**Fallback offline:** se a Edge Function falhar, a Home usa `buildSummary()` em `src/lib/nutrition.ts`. Os pickers (`FoodPicker`, `ExercisePicker`) mostram sugestões locais quando a busca remota está indisponível.
 
 ## Qualidade de código
 
@@ -92,6 +105,8 @@ npm run build       # verifica build de produção
 |----------|---------|
 | Tela branca / config missing | Verifique `.env.local` e reinicie `npm run dev` |
 | IA retorna erro / só cálculo local | `GOOGLE_API_KEY` ausente nos secrets — ver [GEMINI_SECRETS.md](./GEMINI_SECRETS.md) |
+| Busca de alimentos offline | `food-search` indisponível — picker usa `calorias.json` local |
+| Busca de exercícios offline | `exercise-search` indisponível — picker usa `exercicios.json` local |
 | Tinha `VITE_GEMINI_API_KEY` no `.env.local` | Remova; não é usada e vaza no bundle — use secret no Supabase |
 | OAuth / sessão não persiste | Confirme PKCE e redirect URIs no Supabase |
 | Mudanças não aparecem no APK | `npm run cap:sync` após `npm run build` |

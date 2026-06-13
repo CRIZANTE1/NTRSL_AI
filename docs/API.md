@@ -12,6 +12,121 @@ O cliente em `src/lib/api.ts` chama Edge Functions do Supabase. A chave Gemini f
 
 ---
 
+## `food-search` (POST)
+
+Busca alimentos com **dicionário estático pt↔en** (gerado de `calorias.json`), correspondência **fuzzy cross-lingual** (local + cache + USDA FDC) e **upsert** automático em `food_catalog` (traduz `name_pt` uma vez no cache).
+
+**Secrets necessários:** `FDC_API_KEY` (ver [GEMINI_SECRETS.md](./GEMINI_SECRETS.md)). **Não usa Gemini.**
+
+**Regenerar dicionário:** `npm run build:search-aliases`
+
+**Body:**
+
+```json
+{
+  "query": "frango grelhado",
+  "limit": 12
+}
+```
+
+**Response:**
+
+```json
+{
+  "results": [
+    {
+      "id": "uuid-ou-null",
+      "name": "Frango grelhado",
+      "nameEn": "Chicken, grilled",
+      "source": "fdc",
+      "fdcId": 173944,
+      "localKey": null,
+      "matchScore": 0.91,
+      "per100g": { "calorias": 165, "proteina": 31, "carboidratos": 0, "gordura": 3.6 }
+    }
+  ],
+  "meta": {
+    "query": "frango grelhado",
+    "translatedTerms": ["grilled chicken", "chicken breast grilled"],
+    "fromLocal": 1,
+    "fromCache": 0,
+    "fromFdc": 2
+  }
+}
+```
+
+**Fluxo server-side:**
+
+1. `queryToEnTerms` (dicionário) traduz consulta pt→en para busca FDC
+2. Fuzzy com aliases em local (`calorias.json`), cache (`food_catalog`) e candidatos FDC
+3. `rankCandidates` ordena com boost: local > cache > fdc
+4. Item FDC novo: `resolveNamePt` + `aliases` → upsert em `food_catalog` (pt-BR persistido)
+
+---
+
+## `exercise-search` (POST)
+
+Busca exercícios com **dicionário estático pt↔en** (gerado de `exercicios.json`), tradução **WGER nativa (pt)**, fuzzy cross-lingual e upsert em `exercise_catalog`.
+
+**Secrets necessários:** `WEGER_API_KEY` (opcional — ver [GEMINI_SECRETS.md](./GEMINI_SECRETS.md)). **Não usa Gemini.**
+
+**Regenerar dicionário:** `npm run build:search-aliases`
+
+**Body:**
+
+```json
+{
+  "query": "agachamento",
+  "limit": 12
+}
+```
+
+**Response:**
+
+```json
+{
+  "results": [
+    {
+      "id": "uuid-ou-null",
+      "name": "Agachamento",
+      "nameEn": "Squat",
+      "source": "wger",
+      "wgerId": 124,
+      "localKey": null,
+      "matchScore": 0.89,
+      "caloriasPorMinuto": 5.0,
+      "category": "Legs"
+    }
+  ],
+  "meta": {
+    "query": "agachamento",
+    "translatedTerms": ["squat", "bodyweight squat"],
+    "fromLocal": 1,
+    "fromCache": 0,
+    "fromWger": 2
+  }
+}
+```
+
+**Campos de `source`:**
+
+| Valor | Significado |
+|-------|-------------|
+| `local` | Lista embarcada `exercicios.json` |
+| `cache` | Já persistido em `exercise_catalog` |
+| `wger` | Recém-buscado na API WGER e salvo no cache |
+
+**Fluxo server-side:**
+
+1. `queryToEnTerms` (dicionário) + busca WGER em `pt` com fallback `en`
+2. Fuzzy com aliases em local (`exercicios.json`), cache e WGER
+3. `rankCandidates` com boost: local > cache > wger
+4. Item WGER novo: nome pt (WGER ou dicionário) + aliases → upsert; calorias estimadas da lista local
+
+**Cliente:** `postExerciseSearch()` em `src/lib/api.ts` · UI: `ExercisePicker` (debounce 400 ms, fallback local se offline)
+
+---
+
 ## `nutrition-summary` (POST)
 
 Calcula resumo nutricional via **Gemini**, usando as tabelas embarcadas de alimentos e exercícios.
@@ -69,7 +184,7 @@ Gera recomendação de coach via Gemini. Requer JWT válido.
 **Regras server-side:**
 
 - Cooldown **30 minutos** por `user_id` (tabela `ai_usage`)
-- Modelo padrão: `gemini-2.5-flash` (override com secret `GEMINI_MODEL`)
+- Modelo padrão: `gemini-3.1-flash-lite` (override com secret `GEMINI_MODEL`)
 
 ---
 
@@ -94,7 +209,7 @@ Retorna tempo restante até próxima solicitação de recomendação permitida.
 |------|----------|
 | 401 | Token ausente ou inválido |
 | 429 | Cooldown IA ativo |
-| 502 | Falha na API Gemini |
+| 502 | Falha na API Gemini, FDC ou WGER |
 | 500 | Secret ou configuração ausente |
 
 ---
@@ -104,13 +219,27 @@ Retorna tempo restante até próxima solicitação de recomendação permitida.
 ```bash
 # Na raiz do projeto, com Supabase CLI logado no projeto
 supabase secrets set GOOGLE_API_KEY=<gemini-api-key>
+supabase secrets set FDC_API_KEY=<usda-fdc-key>      # food-search
+supabase secrets set WEGER_API_KEY=<wger-token>      # exercise-search (opcional)
 # Opcional:
-supabase secrets set GEMINI_MODEL=gemini-2.5-flash
+supabase secrets set GEMINI_MODEL=gemini-3.1-flash-lite
 
 supabase functions deploy nutrition-summary
 supabase functions deploy ai-recommendations
 supabase functions deploy ai-cooldown
+supabase functions deploy food-search
+supabase functions deploy exercise-search
 ```
+
+**Scripts úteis** (pasta `scripts/`):
+
+```bash
+npm run build:search-aliases          # gera food/exercise-aliases.json
+node scripts/backfill-catalog-pt.mjs  # corrige name_pt no catálogo (requer service role)
+node scripts/test-food-search.mjs       # teste manual da Edge Function
+```
+
+Configure `SUPABASE_ACCESS_TOKEN` no `.env` (local, gitignored) ou rode `supabase login` antes do deploy CLI.
 
 Variáveis injetadas automaticamente pelo Supabase em runtime:
 
@@ -129,7 +258,9 @@ supabase/functions/
 ├── nutrition-summary/
 ├── ai-recommendations/
 ├── ai-cooldown/
-└── _shared/          # auth, cors, gemini, dados JSON
+├── food-search/
+├── exercise-search/
+└── _shared/          # auth, cors, gemini, fuzzy, search-dictionary, fdc, wger, catálogos
 ```
 
-Cliente: `src/lib/edgeFunctions.ts`, `src/lib/api.ts`
+Cliente: `src/lib/edgeFunctions.ts`, `src/lib/api.ts` (`postFoodSearch`, `postExerciseSearch`)

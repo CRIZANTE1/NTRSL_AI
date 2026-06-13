@@ -31,6 +31,10 @@ Modelo: [`.env.example`](./.env.example)
 
 Configure `GOOGLE_API_KEY` nos **secrets do Supabase** — **não** use `VITE_GEMINI_API_KEY` no `.env.local`.
 
+Modelo Gemini padrão nas Edge Functions: **`gemini-3.1-flash-lite`** (override opcional: secret `GEMINI_MODEL`).
+
+Para buscas remotas, configure também `FDC_API_KEY` (alimentos) e `WEGER_API_KEY` (exercícios, opcional) nos secrets.
+
 → **[docs/GEMINI_SECRETS.md](./docs/GEMINI_SECRETS.md)** (Dashboard, CLI, troubleshooting, rotação de chave)
 
 ```bash
@@ -39,12 +43,20 @@ supabase secrets set GOOGLE_API_KEY=<sua-chave-gemini>
 
 Contratos das funções: [`docs/API.md`](./docs/API.md).
 
-## Build Android (Capacitor)
+## Android (Capacitor)
+
+O repo prepara a pasta `android/`; o **APK você gera no Android Studio**.
 
 ```bash
+# Primeira vez (se não existir android/):
+npm run build && npx cap add android
+
+# Após mudanças no código web:
 npm run cap:sync
 npm run cap:open
 ```
+
+Guia completo: **[docs/ANDROID.md](./docs/ANDROID.md)** — sync, `local.properties`, APK debug/release.
 
 ## Documentação
 
