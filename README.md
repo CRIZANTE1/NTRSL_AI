@@ -66,6 +66,8 @@ Guia completo: **[docs/ANDROID.md](./docs/ANDROID.md)** — sync, `local.propert
 | Changelog | [`CHANGELOG.md`](./CHANGELOG.md) |
 | Setup | [`docs/SETUP.md`](./docs/SETUP.md) |
 | Arquitetura | [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) |
+| UX Seu dia | [`docs/UX_SEU_DIA.md`](./docs/UX_SEU_DIA.md) |
+| UX melhorias | [`docs/UX_MELHORIAS_USUARIO.md`](./docs/UX_MELHORIAS_USUARIO.md) |
 | API / Gemini | [`docs/API.md`](./docs/API.md) |
 | Supabase | [`docs/SUPABASE.md`](./docs/SUPABASE.md) |
 | Design System | [`docs/DESIGN_SYSTEM.md`](./docs/DESIGN_SYSTEM.md) |

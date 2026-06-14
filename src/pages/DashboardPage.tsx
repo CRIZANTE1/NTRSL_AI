@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   Bar,
   BarChart,
@@ -9,31 +10,18 @@ import {
 } from 'recharts';
 import { Flame, TrendingDown, TrendingUp, Dumbbell } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { localLogDate, parseDailyLogRow } from '../lib/data/dailyLogs';
+import { localLogDate, parseDailyLogRow, computeStreak, parseLogDateString } from '../lib/data/dailyLogs';
 import { colors } from '../theme/colors';
 import CalendarStrip from '../components/CalendarStrip';
 import { useDailyLog } from '../hooks/useDailyLog';
 import { useDailyLogHistory } from '../hooks/useDailyLogHistory';
+import { useUserGoals } from '../hooks/useUserGoals';
 import type { ExerciseEntry, NutritionSummary } from '../types/nutrition';
-import type { Database } from '../types/supabase';
-
-type DailyLogRow = Database['public']['Tables']['daily_logs']['Row'];
-
-const GOALS = {
-  calorias: 2000,
-  proteina: 50,
-  carboidratos: 250,
-} as const;
 
 const DAY_LABELS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'] as const;
 
-function parseLogDate(logDate: string): Date {
-  const [y, m, d] = logDate.split('-').map(Number);
-  return new Date(y, (m ?? 1) - 1, d ?? 1);
-}
-
 function dayLabelFromLogDate(logDate: string): string {
-  return DAY_LABELS[parseLogDate(logDate).getDay()];
+  return DAY_LABELS[parseLogDateString(logDate).getDay()];
 }
 
 function buildLast7Days(anchor = new Date()): string[] {
@@ -44,24 +32,6 @@ function buildLast7Days(anchor = new Date()): string[] {
     days.push(localLogDate(d));
   }
   return days;
-}
-
-function computeStreak(rows: DailyLogRow[]): number {
-  const byDate = new Map(
-    rows
-      .filter((row) => row.summary != null)
-      .map((row) => [row.log_date, row]),
-  );
-
-  let streak = 0;
-  const cursor = new Date();
-  while (true) {
-    const key = localLogDate(cursor);
-    if (!byDate.has(key)) break;
-    streak += 1;
-    cursor.setDate(cursor.getDate() - 1);
-  }
-  return streak;
 }
 
 function totalExerciseMinutes(exercises: ExerciseEntry[]): number {
@@ -282,9 +252,14 @@ function StatCard({
 export default function DashboardPage() {
   const { session } = useAuth();
   const userId = session?.user?.id;
-  const [selectedDate, setSelectedDate] = useState(() => new Date());
+  const [searchParams] = useSearchParams();
+  const paramDate = searchParams.get('date');
+  const [selectedDate, setSelectedDate] = useState(() =>
+    paramDate ? parseLogDateString(paramDate) : new Date(),
+  );
   const selectedKey = localLogDate(selectedDate);
 
+  const { goals } = useUserGoals();
   const { data: dayData, isFetching: dayLoading } = useDailyLog(userId, selectedKey);
   const { data: historyRows = [] } = useDailyLogHistory(userId, 30);
 
@@ -296,26 +271,26 @@ export default function DashboardPage() {
       {
         label: 'Consumidas',
         value: summary?.consumidas ?? 0,
-        goal: GOALS.calorias,
+        goal: goals.kcal,
         color: colors.accent,
         unit: 'KCAL',
       },
       {
         label: 'Proteína',
         value: summary?.proteina ?? 0,
-        goal: GOALS.proteina,
+        goal: goals.proteina,
         color: colors.points,
         unit: 'G',
       },
       {
         label: 'Carboidratos',
         value: summary?.carboidratos ?? 0,
-        goal: GOALS.carboidratos,
+        goal: goals.carbs,
         color: colors.gradientMid,
         unit: 'G',
       },
     ],
-    [summary],
+    [summary, goals],
   );
 
   const weeklyData = useMemo(() => {
@@ -340,7 +315,7 @@ export default function DashboardPage() {
   const streak = useMemo(() => computeStreak(historyRows), [historyRows]);
 
   const eventDatesFromHistory = useMemo(
-    () => historyRows.filter((row) => row.summary != null).map((row) => parseLogDate(row.log_date)),
+    () => historyRows.filter((row) => row.summary != null).map((row) => parseLogDateString(row.log_date)),
     [historyRows],
   );
 

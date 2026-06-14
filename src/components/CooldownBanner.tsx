@@ -1,31 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Clock } from 'lucide-react';
 import { colors } from '../theme/colors';
+import { formatCountdown, useCountdown } from '../hooks/useCountdown';
 
 interface CooldownBannerProps {
   remainingSeconds: number;
 }
 
-function formatCountdown(totalSeconds: number): string {
-  const m = Math.floor(totalSeconds / 60);
-  const s = totalSeconds % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
-}
-
 export function CooldownBanner({ remainingSeconds }: CooldownBannerProps) {
-  const [seconds, setSeconds] = useState(remainingSeconds);
-
-  useEffect(() => {
-    setSeconds(remainingSeconds);
-  }, [remainingSeconds]);
-
-  useEffect(() => {
-    if (seconds <= 0) return;
-    const id = window.setInterval(() => {
-      setSeconds((prev) => Math.max(0, prev - 1));
-    }, 1000);
-    return () => window.clearInterval(id);
-  }, [seconds]);
+  const seconds = useCountdown(remainingSeconds);
 
   if (seconds <= 0) return null;
 

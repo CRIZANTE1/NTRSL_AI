@@ -111,7 +111,16 @@ export interface DailyLog {
 
 export interface AISummary {
   recommendation: string;
+  structured?: CoachRecommendationStructured;
   elapsedSeconds?: number;
+}
+
+export interface CoachRecommendationStructured {
+  visaoSemanal: string;
+  alimentos: string[];
+  agua: string[];
+  exercicios: string[];
+  proximoPasso: string;
 }
 
 export interface CooldownStatus {

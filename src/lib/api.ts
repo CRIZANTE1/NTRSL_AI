@@ -2,26 +2,35 @@ import { callEdgeFunction } from './edgeFunctions';
 import type {
   AISummary,
   CooldownStatus,
+  ExerciseEntry,
   ExerciseSearchResponse,
+  FoodEntry,
   FoodSearchResponse,
   NutritionSummary,
 } from '../types/nutrition';
+import type { UserGoals } from '../types/profile';
+import type { WeeklyCoachContext } from './coachContext';
+
+export interface AiRecommendationsParams {
+  resumo: NutritionSummary;
+  userGoals: string;
+  logDate: string;
+  weeklyContext: WeeklyCoachContext;
+  profileGoals: UserGoals;
+}
 
 export async function postNutritionSummary(
-  exercises: { name: string; durationMinutes: number }[],
-  foods: { name: string; quantity: number }[],
+  exercises: ExerciseEntry[],
+  foods: FoodEntry[],
 ): Promise<NutritionSummary> {
   return callEdgeFunction<NutritionSummary>('nutrition-summary', {
     body: { exercises, foods },
   });
 }
 
-export async function postAiRecommendations(
-  resumo: NutritionSummary,
-  userGoals: string,
-): Promise<AISummary> {
+export async function postAiRecommendations(params: AiRecommendationsParams): Promise<AISummary> {
   return callEdgeFunction<AISummary>('ai-recommendations', {
-    body: { resumo, userGoals },
+    body: params,
   });
 }
 

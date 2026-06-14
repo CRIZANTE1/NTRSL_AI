@@ -1,13 +1,26 @@
 import { GoogleGenerativeAI, type GenerativeModel } from 'npm:@google/generative-ai@0.21.0';
 
+/** Modelo padrão das Edge Functions (ver docs/GEMINI_SECRETS.md). */
+export const DEFAULT_GEMINI_MODEL = 'gemini-3.1-flash-lite';
+
+/** Secret legado no Supabase que causava 503 — ignorado em favor do padrão atual. */
+const LEGACY_GEMINI_MODELS = new Set(['gemini-2.5-flash', 'gemini-2.0-flash']);
+
+export function resolveGeminiModelName(): string {
+  const configured = Deno.env.get('GEMINI_MODEL')?.trim();
+  if (!configured || LEGACY_GEMINI_MODELS.has(configured)) {
+    return DEFAULT_GEMINI_MODEL;
+  }
+  return configured;
+}
+
 export function getGeminiModel(): GenerativeModel {
   const apiKey = Deno.env.get('GOOGLE_API_KEY');
   if (!apiKey) {
     throw new Response(JSON.stringify({ error: 'GOOGLE_API_KEY não configurada.' }), { status: 500 });
   }
 
-  // Padrão documentado em docs/GEMINI_SECRETS.md; override via secret GEMINI_MODEL.
-  const modelName = Deno.env.get('GEMINI_MODEL') ?? 'gemini-3.1-flash-lite';
+  const modelName = resolveGeminiModelName();
   const genAI = new GoogleGenerativeAI(apiKey);
   return genAI.getGenerativeModel({ model: modelName });
 }

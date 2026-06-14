@@ -134,3 +134,54 @@ export function buildSummary(
 function round(n: number): number {
   return Math.round(n * 10) / 10;
 }
+
+function pickMetric(localVal: number, aiVal: number): number {
+  if (localVal > 0 && (aiVal <= 0 || aiVal < localVal * 0.5)) return localVal;
+  if (localVal <= 0 && aiVal > 0) return aiVal;
+  if (localVal > 0 && aiVal > 0) return aiVal;
+  return localVal;
+}
+
+/** Evita que resposta da IA zere valores já calculados localmente. */
+export function mergeNutritionSummary(
+  local: NutritionSummary,
+  ai: NutritionSummary,
+): NutritionSummary {
+  return {
+    gastas: pickMetric(local.gastas, ai.gastas),
+    consumidas: pickMetric(local.consumidas, ai.consumidas),
+    proteina: pickMetric(local.proteina, ai.proteina),
+    carboidratos: pickMetric(local.carboidratos, ai.carboidratos),
+    gordura: pickMetric(local.gordura, ai.gordura),
+    duracao: ai.duracao > 0 ? ai.duracao : local.duracao,
+    exercicios: ai.exercicios.length > 0 ? ai.exercicios : local.exercicios,
+    alimentos: ai.alimentos.length > 0 ? ai.alimentos : local.alimentos,
+  };
+}
+
+export interface SummaryAdjustment {
+  label: string;
+  before: number;
+  after: number;
+  unit: string;
+}
+
+const SUMMARY_METRICS: { key: keyof Pick<NutritionSummary, 'consumidas' | 'gastas' | 'proteina' | 'carboidratos' | 'gordura'>; label: string; unit: string }[] = [
+  { key: 'consumidas', label: 'Calorias consumidas', unit: 'kcal' },
+  { key: 'gastas', label: 'Calorias gastas', unit: 'kcal' },
+  { key: 'proteina', label: 'Proteína', unit: 'g' },
+  { key: 'carboidratos', label: 'Carboidratos', unit: 'g' },
+  { key: 'gordura', label: 'Gordura', unit: 'g' },
+];
+
+export function getSummaryAdjustments(
+  before: NutritionSummary,
+  after: NutritionSummary,
+): SummaryAdjustment[] {
+  return SUMMARY_METRICS.map(({ key, label, unit }) => ({
+    label,
+    before: before[key],
+    after: after[key],
+    unit,
+  })).filter((m) => Math.abs(m.after - m.before) >= 0.1);
+}

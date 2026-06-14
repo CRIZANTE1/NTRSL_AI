@@ -81,12 +81,12 @@ Config: `capacitor.config.ts` — `appId: com.ntrsl.ai`, `webDir: dist`, fundo `
 NTRSL_ANDROID/
 ├── src/                    # App React
 │   ├── pages/              # Telas (lazy-loaded)
-│   ├── hooks/              # useDailyLog, useDailyLogHistory (TanStack Query)
-│   ├── components/         # UI (CalendarStrip, DaySummaryBar, CoachSection, FoodPicker, …)
+│   ├── hooks/              # useDailyLog, useDailyLogHistory, useUserGoals
+│   ├── components/         # CalendarStrip, DaySummaryBar, CoachSection, UndoToast, …
 │   ├── layouts/AppLayout.tsx
 │   ├── routes/AppRoutes.tsx
 │   ├── contexts/AuthContext.tsx
-│   ├── lib/                # api, nutrition, supabase, data, admin, localDb
+│   ├── lib/                # api, nutrition, supabase, data, recentItems, admin, localDb
 │   ├── capacitor/          # Efeitos nativos (push, sync, biometria)
 │   ├── theme/colors.ts     # Design tokens (OBRIGATÓRIO para cores)
 │   ├── data/               # calorias.json, exercicios.json (fallback offline)
@@ -145,7 +145,7 @@ Definidas em `src/routes/AppRoutes.tsx`. Bottom nav (`BottomNav.tsx`): **Resumo*
 | `/login` | Não | Login e-mail/senha |
 | `/cadastro` | Não | Registro |
 | `/` | Sim | Redireciona (`RootRedirect`) |
-| `/home` | Sim | **Seu dia** — pickers, auto-save, `DaySummaryBar` sticky, `CoachSection`, CTA "Calcular com IA" |
+| `/home` | Sim | **Seu dia** — pickers, auto-save, ícone cérebro (refino IA), Coach semanal estruturado |
 | `/dashboard` | Sim | **Resumo** — `CalendarStrip`, anéis de macros, gráficos 7 dias, streak |
 | `/historico` | Sim | Histórico (em evolução) |
 | `/sobre` | Sim | Institucional |
@@ -188,10 +188,11 @@ Migrations em `supabase/migrations/`:
 | `20260612140000_food_catalog.sql` | Cache alimentos (FDC + local) |
 | `20260612160000_exercise_catalog.sql` | Cache exercícios (WGER + local) |
 | `20260613120000_backfill_catalog_pt_names.sql` | Doc operacional backfill |
+| `20260614120000_profile_goals.sql` | Metas nutricionais em `profiles` |
 
 ### Tabelas principais
 
-- **profiles** — display_name, role, avatar
+- **profiles** — display_name, role, avatar, **goal_kcal**, **goal_proteina**, **goal_carbs**
 - **daily_logs** — `log_date`, exercises/foods/summary JSONB, unique (user_id, log_date)
 - **ai_usage** — cooldown recomendações IA
 - **food_catalog** — name_pt, name_en, fdc_id, macros, aliases[], raw_fdc
@@ -242,7 +243,7 @@ Fluxo (`exercise-search/index.ts`):
 | `ai-recommendations` | POST | Texto coach; cooldown 30 min |
 | `ai-cooldown` | GET | Segundos restantes |
 
-Modelo: `supabase/functions/_shared/gemini.ts` — padrão `gemini-3.1-flash-lite`.
+Modelo: `supabase/functions/_shared/gemini.ts` — `resolveGeminiModelName()` → padrão `gemini-3.1-flash-lite`; ignora `gemini-2.5-flash` legado no secret.
 
 ### Outras
 
@@ -279,36 +280,35 @@ supabase/functions/_shared/
 
 ## 11. App React — fluxos principais
 
-> Detalhes do refactor UX: [UX_SEU_DIA.md](./UX_SEU_DIA.md)
+> Detalhes: [UX_SEU_DIA.md](./UX_SEU_DIA.md) · [UX_MELHORIAS_USUARIO.md](./UX_MELHORIAS_USUARIO.md)
 
-### TanStack Query (daily logs)
+### TanStack Query
 
 | Hook | Arquivo | Uso |
 |------|---------|-----|
 | `useDailyLog(userId, logDate)` | `hooks/useDailyLog.ts` | Busca log de um dia |
 | `useDailyLogHistory(userId, limit?)` | `hooks/useDailyLogHistory.ts` | Histórico (default 30 dias) |
 | `useSaveDailyLog()` | `hooks/useDailyLog.ts` | Upsert + invalidação de cache |
+| `useUserGoals()` | `hooks/useUserGoals.ts` | Metas em `profiles` |
 
 Provider: `appShell.tsx` (`staleTime: 5 min`).
 
 ### Seu dia (`NutritionHomePage` — `/home`)
 
-1. **`CalendarStrip`** — seleciona dia; dots via `useDailyLogHistory`
-2. **`useDailyLog`** — carrega pickers; `<Skeleton>` enquanto carrega
-3. `FoodPicker` / `ExercisePicker` — busca remota ou fallback local
-4. **Auto-save (debounce 1,5 s)** — `buildSummary()` + `useSaveDailyLog()`; badge de status
-5. **`DaySummaryBar`** (sticky) — Gastas / Consumidas / Balanço; link "Ver →" `/dashboard`
-6. **`MacroChart`** — quando há summary
-7. **CTA fixo** — "Calcular com IA" / "Atualizar com IA" → `postNutritionSummary()` ou offline
-8. **`CoachSection`** (colapsável) → `postAiRecommendations()` + `CooldownBanner`
+1. **`CalendarStrip`** + **toggle** Ambos / Só alimentos / Só exercícios (foco no picker ao trocar)
+2. **`useDailyLog`** + pickers com recentes, undo, haptic; dropdown fecha ao clicar fora/rolar
+3. **`liveSummary`** — `DaySummaryBar` e `MacroChart` em tempo real via `buildSummary()`
+4. **Auto-save** — badge humanizado; haptic em "Salvo ✓"; **flush** ao sair da tela
+5. **Streak chip** + **Repetir ontem**
+6. **`DaySummaryBar`** — progresso vs metas; link `/dashboard?date=`
+7. **Ícone cérebro** — `postNutritionSummary` + `mergeNutritionSummary`; card `AiRefineResultCard`
+8. **`CoachSection`** — contexto semanal (`coachContext.ts`); resposta JSON: alimentos, água, exercícios, próximo passo
 
 ### Resumo (`DashboardPage` — `/dashboard`)
 
-- **`CalendarStrip`** — 7 dias (hoje ±3), dots em dias com registro
-- **`useDailyLogHistory(userId, 30)`** — gráficos Recharts, streak, `eventDates`
-- **`useDailyLog(userId, logDate)`** — anéis (`ProgressRings`), stat cards
-- Gráficos semanais: janela de 7 dias terminando no dia selecionado; metas fixas (2000 kcal etc.)
-- Streak: sempre relativo a **hoje**, não ao dia filtrado
+- Aceita `?date=` na URL (sync com Seu dia)
+- **`useUserGoals()`** — anéis com metas do perfil (não hardcoded)
+- **`useDailyLogHistory`** — streak, gráficos, `eventDates`
 
 ### Cálculo local (`src/lib/nutrition.ts`)
 

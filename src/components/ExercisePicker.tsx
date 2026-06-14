@@ -1,7 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Fuse from 'fuse.js';
-import { Loader2, Search, X } from 'lucide-react';
+import { Clock, Loader2, Search, X } from 'lucide-react';
+import { UndoToast } from './UndoToast';
 import { postExerciseSearch } from '../lib/api';
+import { hapticsImpactLight } from '../lib/haptics';
+import { getRecentExercises, isUiCompact, pushRecentExercise } from '../lib/recentItems';
 import { getExerciseNames } from '../lib/nutrition';
 import { colors } from '../theme/colors';
 import type { ExerciseEntry, ExerciseSearchResult } from '../types/nutrition';
@@ -9,24 +12,68 @@ import type { ExerciseEntry, ExerciseSearchResult } from '../types/nutrition';
 interface ExercisePickerProps {
   entries: ExerciseEntry[];
   onChange: (entries: ExerciseEntry[]) => void;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
 }
 
-function sourceLabel(source: ExerciseSearchResult['source']): string {
-  if (source === 'local') return 'Local';
-  if (source === 'cache') return 'Cache';
-  return 'WGER';
+function sourceLabel(result: Pick<ExerciseSearchResult, 'caloriasPorMinuto'>): string {
+  if (result.caloriasPorMinuto > 0) return 'c/ macros';
+  return 'estimado';
 }
 
 function entryKey(entry: Pick<ExerciseEntry, 'name' | 'wgerId' | 'localKey'>): string {
   return `${entry.wgerId ?? ''}:${entry.localKey ?? entry.name}`;
 }
 
-export function ExercisePicker({ entries, onChange }: ExercisePickerProps) {
+function parseDecimalInput(raw: string): number {
+  const normalized = raw.replace(',', '.');
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : NaN;
+}
+
+function ResultButton({
+  result,
+  disabled,
+  onSelect,
+}: {
+  result: ExerciseSearchResult;
+  disabled: boolean;
+  onSelect: (r: ExerciseSearchResult) => void;
+}) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={() => onSelect(result)}
+      className="w-full text-left px-4 py-2.5 text-sm disabled:opacity-40 hover:brightness-95"
+      style={{ color: colors.textPrimary }}
+    >
+      <span className="flex items-center justify-between gap-2">
+        <span className="truncate">{result.name}</span>
+        <span
+          className="shrink-0 text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-md"
+          style={{ background: colors.surfaceWarm, color: colors.textSecondary }}
+        >
+          {sourceLabel(result)}
+        </span>
+      </span>
+      {result.nameEn && result.nameEn !== result.name && (
+        <span className="block text-xs truncate mt-0.5" style={{ color: colors.textMuted }}>
+          {result.nameEn}
+        </span>
+      )}
+    </button>
+  );
+}
+
+export function ExercisePicker({ entries, onChange, inputRef }: ExercisePickerProps) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [remoteResults, setRemoteResults] = useState<ExerciseSearchResult[]>([]);
+  const [undoEntry, setUndoEntry] = useState<ExerciseEntry | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const compact = isUiCompact();
   const allNames = useMemo(() => getExerciseNames(), []);
 
   const fuse = useMemo(
@@ -38,6 +85,25 @@ export function ExercisePicker({ entries, onChange }: ExercisePickerProps) {
     if (!query.trim()) return allNames.slice(0, 12);
     return fuse.search(query.trim()).map((r) => r.item).slice(0, 12);
   }, [allNames, fuse, query]);
+
+  useEffect(() => {
+    function handleClose() {
+      setOpen(false);
+    }
+
+    function handleOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        handleClose();
+      }
+    }
+
+    document.addEventListener('mousedown', handleOutside);
+    window.addEventListener('scroll', handleClose, { capture: true, passive: true });
+    return () => {
+      document.removeEventListener('mousedown', handleOutside);
+      window.removeEventListener('scroll', handleClose, { capture: true });
+    };
+  }, []);
 
   useEffect(() => {
     const trimmed = query.trim();
@@ -75,6 +141,11 @@ export function ExercisePicker({ entries, onChange }: ExercisePickerProps) {
   }, [query]);
 
   const selectedKeys = useMemo(() => new Set(entries.map((e) => entryKey(e))), [entries]);
+
+  const recentExercises = useMemo(
+    () => getRecentExercises().filter((r) => !selectedKeys.has(entryKey(r))),
+    [selectedKeys],
+  );
 
   const displayResults = useMemo((): ExerciseSearchResult[] => {
     if (query.trim().length >= 2) {
@@ -117,6 +188,9 @@ export function ExercisePicker({ entries, onChange }: ExercisePickerProps) {
 
     const hasRemoteCalorias = result.source !== 'local' || result.caloriasPorMinuto > 0;
 
+    pushRecentExercise(result);
+    void hapticsImpactLight();
+
     onChange([
       ...entries,
       {
@@ -135,7 +209,16 @@ export function ExercisePicker({ entries, onChange }: ExercisePickerProps) {
 
   const removeExercise = (entry: ExerciseEntry) => {
     onChange(entries.filter((e) => entryKey(e) !== entryKey(entry)));
+    setUndoEntry(entry);
   };
+
+  const handleUndo = useCallback(() => {
+    if (!undoEntry) return;
+    onChange([...entries, undoEntry]);
+    setUndoEntry(null);
+  }, [undoEntry, entries, onChange]);
+
+  const dismissUndo = useCallback(() => setUndoEntry(null), []);
 
   const updateDuration = (entry: ExerciseEntry, durationMinutes: number) => {
     const key = entryKey(entry);
@@ -144,14 +227,18 @@ export function ExercisePicker({ entries, onChange }: ExercisePickerProps) {
     );
   };
 
+  const entryPadding = compact ? 'p-2' : 'p-3';
+  const inputPadding = compact ? 'py-2' : 'py-3';
+
   return (
     <div className="space-y-3">
-      <div className="relative">
+      <div className="relative" ref={containerRef}>
         <Search
           className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
           style={{ color: colors.textMuted }}
         />
         <input
+          ref={inputRef}
           type="search"
           value={query}
           onChange={(e) => {
@@ -160,7 +247,7 @@ export function ExercisePicker({ entries, onChange }: ExercisePickerProps) {
           }}
           onFocus={() => setOpen(true)}
           placeholder="Buscar exercício..."
-          className="w-full rounded-2xl border pl-10 pr-10 py-3 text-sm"
+          className={`w-full rounded-2xl border pl-10 pr-10 text-sm ${inputPadding}`}
           style={{
             background: colors.surface,
             borderColor: colors.border,
@@ -173,11 +260,30 @@ export function ExercisePicker({ entries, onChange }: ExercisePickerProps) {
             style={{ color: colors.textMuted }}
           />
         )}
-        {open && displayResults.length > 0 && (
+        {open && (recentExercises.length > 0 || displayResults.length > 0) && (
           <div
             className="absolute z-20 mt-1 w-full rounded-2xl border shadow-lg max-h-56 overflow-y-auto"
             style={{ background: colors.surface, borderColor: colors.border }}
           >
+            {!query.trim() && recentExercises.length > 0 && (
+              <>
+                <p
+                  className="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase flex items-center gap-1"
+                  style={{ color: colors.textMuted }}
+                >
+                  <Clock className="w-3 h-3" aria-hidden />
+                  Recentes
+                </p>
+                {recentExercises.map((result) => (
+                  <ResultButton
+                    key={`recent:${result.wgerId ?? result.localKey ?? result.name}`}
+                    result={result}
+                    disabled={false}
+                    onSelect={addExercise}
+                  />
+                ))}
+              </>
+            )}
             {displayResults.map((result) => {
               const disabled = selectedKeys.has(
                 entryKey({
@@ -187,32 +293,12 @@ export function ExercisePicker({ entries, onChange }: ExercisePickerProps) {
                 }),
               );
               return (
-                <button
+                <ResultButton
                   key={`${result.source}:${result.wgerId ?? result.localKey ?? result.name}`}
-                  type="button"
+                  result={result}
                   disabled={disabled}
-                  onClick={() => addExercise(result)}
-                  className="w-full text-left px-4 py-2.5 text-sm disabled:opacity-40 hover:brightness-95"
-                  style={{ color: colors.textPrimary }}
-                >
-                  <span className="flex items-center justify-between gap-2">
-                    <span className="truncate">{result.name}</span>
-                    <span
-                      className="shrink-0 text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-md"
-                      style={{
-                        background: colors.surfaceWarm,
-                        color: colors.textSecondary,
-                      }}
-                    >
-                      {sourceLabel(result.source)}
-                    </span>
-                  </span>
-                  {result.nameEn && result.nameEn !== result.name && (
-                    <span className="block text-xs truncate mt-0.5" style={{ color: colors.textMuted }}>
-                      {result.nameEn}
-                    </span>
-                  )}
-                </button>
+                  onSelect={addExercise}
+                />
               );
             })}
           </div>
@@ -231,11 +317,11 @@ export function ExercisePicker({ entries, onChange }: ExercisePickerProps) {
         </p>
       )}
 
-      <div className="space-y-2">
+      <div className={compact ? 'space-y-1' : 'space-y-2'}>
         {entries.map((entry) => (
           <div
             key={entryKey(entry)}
-            className="flex items-center gap-2 rounded-2xl border p-3"
+            className={`flex items-center gap-2 rounded-2xl border ${entryPadding}`}
             style={{ background: colors.surfaceWarm, borderColor: colors.border }}
           >
             <div className="flex-1 min-w-0">
@@ -247,13 +333,16 @@ export function ExercisePicker({ entries, onChange }: ExercisePickerProps) {
                   Duração (min)
                 </span>
                 <input
-                  type="number"
-                  min={1}
-                  max={600}
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
                   value={entry.durationMinutes}
-                  onChange={(e) =>
-                    updateDuration(entry, Math.max(1, Number(e.target.value) || 1))
-                  }
+                  onChange={(e) => {
+                    const parsed = parseDecimalInput(e.target.value);
+                    if (!Number.isNaN(parsed)) {
+                      updateDuration(entry, Math.max(1, Math.min(600, Math.round(parsed))));
+                    }
+                  }}
                   className="w-20 rounded-lg border px-2 py-1 text-sm"
                   style={{
                     background: colors.surface,
@@ -274,6 +363,14 @@ export function ExercisePicker({ entries, onChange }: ExercisePickerProps) {
           </div>
         ))}
       </div>
+
+      {undoEntry && (
+        <UndoToast
+          message={`${undoEntry.name} removido`}
+          onUndo={handleUndo}
+          onDismiss={dismissUndo}
+        />
+      )}
     </div>
   );
 }

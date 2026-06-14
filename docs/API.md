@@ -129,30 +129,40 @@ Busca exercícios com **dicionário estático pt↔en** (gerado de `exercicios.j
 
 ## `nutrition-summary` (POST)
 
-Calcula resumo nutricional via **Gemini**, usando as tabelas embarcadas de alimentos e exercícios.
+Calcula ou refina resumo nutricional. Usa **baseline local** (`buildSummaryFromEntries`) com macros do catálogo; chama Gemini só para itens sem dados locais. Resposta sempre merged (nunca zera valores locais).
 
 **Body:**
 
 ```json
 {
   "exercises": [
-    { "name": "caminhada rapida", "durationMinutes": 30 }
+    {
+      "name": "caminhada rapida",
+      "durationMinutes": 30,
+      "localKey": "caminhada rapida",
+      "caloriasPorMinuto": 5.2
+    }
   ],
   "foods": [
-    { "name": "banana", "quantity": 100 }
+    {
+      "name": "banana",
+      "quantity": 100,
+      "localKey": "banana",
+      "per100g": { "calorias": 89, "proteina": 1.1, "carboidratos": 23, "gordura": 0.3 }
+    }
   ]
 }
 ```
 
 **Response:** objeto `NutritionSummary` (ver `src/types/nutrition.ts`)
 
-**Fallback no app:** se a função falhar (rede/offline), a Home usa `buildSummary()` local.
+**Fallback no app:** `buildSummary()` local + `mergeNutritionSummary()` se a função falhar.
 
 ---
 
 ## `ai-recommendations` (POST)
 
-Gera recomendação de coach via Gemini. Requer JWT válido.
+Gera recomendação de coach via Gemini com **contexto semanal** (7 dias). Resposta **estruturada** em JSON. Requer JWT válido.
 
 **Body:**
 
@@ -168,7 +178,20 @@ Gera recomendação de coach via Gemini. Requer JWT válido.
     "carboidratos": 200,
     "gordura": 60
   },
-  "userGoals": "Quero perder peso mantendo proteína alta"
+  "userGoals": "Quero perder peso mantendo proteína alta",
+  "logDate": "2026-06-14",
+  "profileGoals": { "kcal": 2000, "proteina": 50, "carbs": 250 },
+  "weeklyContext": {
+    "anchorDate": "2026-06-14",
+    "days": [ "..." ],
+    "totals": {
+      "diasComRegistro": 5,
+      "mediaConsumidas": 1850,
+      "mediaGastas": 280,
+      "totalMinutosExercicio": 120,
+      "totalAguaLitros": 8.5
+    }
+  }
 }
 ```
 
@@ -176,7 +199,14 @@ Gera recomendação de coach via Gemini. Requer JWT válido.
 
 ```json
 {
-  "recommendation": "Texto formatado do coach...",
+  "recommendation": "Texto formatado (fallback legível)...",
+  "structured": {
+    "visaoSemanal": "Na semana você registrou 5 de 7 dias...",
+    "alimentos": ["Inclua proteína no café da manhã", "..."],
+    "agua": ["Meta: 2 L/dia", "Você bebeu pouco na ter/quinta"],
+    "exercicios": ["30 min caminhada 3x/semana", "..."],
+    "proximoPasso": "Registre o almoço e beba 500 ml agora."
+  },
   "elapsedSeconds": 3.2
 }
 ```
@@ -184,7 +214,7 @@ Gera recomendação de coach via Gemini. Requer JWT válido.
 **Regras server-side:**
 
 - Cooldown **30 minutos** por `user_id` (tabela `ai_usage`)
-- Modelo padrão: `gemini-3.1-flash-lite` (override com secret `GEMINI_MODEL`)
+- Modelo: `resolveGeminiModelName()` → padrão `gemini-3.1-flash-lite` (ignora `gemini-2.5-flash` legado)
 
 ---
 

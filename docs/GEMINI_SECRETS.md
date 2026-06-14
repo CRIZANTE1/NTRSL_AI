@@ -22,8 +22,9 @@ O cliente em `src/lib/api.ts` só envia o **JWT do Supabase** para as Edge Funct
 | Item | Valor |
 |------|-------|
 | **Modelo padrão** | `gemini-3.1-flash-lite` |
-| **Definido em** | `supabase/functions/_shared/gemini.ts` (`getGeminiModel`) |
+| **Definido em** | `supabase/functions/_shared/gemini.ts` (`resolveGeminiModelName`) |
 | **Override** | Secret `GEMINI_MODEL` no Supabase (opcional) |
+| **Legado ignorado** | `gemini-2.5-flash`, `gemini-2.0-flash` — forçam fallback para `gemini-3.1-flash-lite` |
 | **Redeploy** | Não obrigatório ao mudar só o secret; obrigatório se alterar o fallback no código |
 
 Funções que usam o modelo (via `getGeminiModel` / `generateJson`):
@@ -41,7 +42,7 @@ Para fixar o modelo em produção sem depender do fallback do código:
 supabase secrets set GEMINI_MODEL=gemini-3.1-flash-lite
 ```
 
-> **Histórico:** até jun/2026 o padrão era `gemini-2.5-flash`. Se o secret antigo ainda existir no projeto, ele **sobrescreve** o fallback do código — atualize ou remova `GEMINI_MODEL` no Dashboard.
+> **Histórico:** até jun/2026 o padrão era `gemini-2.5-flash`. O código atual **ignora** esse valor no secret e usa `gemini-3.1-flash-lite`. Recomendado: atualizar ou remover `GEMINI_MODEL` no Dashboard.
 
 ## Por que não usar `VITE_GEMINI_API_KEY`?
 

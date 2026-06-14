@@ -1,14 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Bell, ChevronRight, Moon, Paintbrush, RefreshCw, Shield, Sun } from 'lucide-react';
+import { ArrowLeft, Bell, ChevronRight, Moon, Paintbrush, RefreshCw, Shield, Sun, Target } from 'lucide-react';
 import { AppBackground } from '../components/AppBackground';
 import { clearThemePreference, getTheme, setTheme, type AppTheme } from '../lib/theme';
+import { useUserGoals } from '../hooks/useUserGoals';
 import { colors } from '../theme/colors';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
   const [theme, setThemeState] = useState<AppTheme>('light');
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const { goals, updateGoals, isUpdating } = useUserGoals();
+  const [kcal, setKcal] = useState(String(goals.kcal));
+  const [proteina, setProteina] = useState(String(goals.proteina));
+  const [carbs, setCarbs] = useState(String(goals.carbs));
+  const [goalsSaved, setGoalsSaved] = useState(false);
 
   const primaryGradient = useMemo(
     () => `linear-gradient(135deg, ${colors.gradientStart}, ${colors.gradientMid}, ${colors.gradientEnd})`,
@@ -20,6 +26,26 @@ export default function SettingsPage() {
     setThemeState(current);
     setTheme(current);
   }, []);
+
+  useEffect(() => {
+    setKcal(String(goals.kcal));
+    setProteina(String(goals.proteina));
+    setCarbs(String(goals.carbs));
+  }, [goals.kcal, goals.proteina, goals.carbs]);
+
+  const handleSaveGoals = async () => {
+    try {
+      await updateGoals({
+        kcal: Math.max(500, Number(kcal) || 2000),
+        proteina: Math.max(10, Number(proteina) || 50),
+        carbs: Math.max(10, Number(carbs) || 250),
+      });
+      setGoalsSaved(true);
+      setTimeout(() => setGoalsSaved(false), 2500);
+    } catch {
+      // mantém valores atuais
+    }
+  };
 
   const handleToggleTheme = () => {
     const next: AppTheme = theme === 'light' ? 'dark' : 'light';
@@ -115,6 +141,98 @@ export default function SettingsPage() {
               <p className="text-xs mt-2 text-center" style={{ color: colors.textSecondary }}>
                 Isso remove sua preferência salva neste dispositivo.
               </p>
+            </div>
+          </div>
+
+          <h3 className="text-xs font-bold uppercase ml-1 mt-6" style={{ color: colors.textSecondary }}>
+            Metas diárias
+          </h3>
+
+          <div
+            className="rounded-2xl shadow-sm border overflow-hidden"
+            style={{ background: colors.surface, borderColor: colors.border }}
+          >
+            <div className="p-4 flex items-start gap-3">
+              <div
+                className="w-10 h-10 rounded-2xl flex items-center justify-center border shrink-0"
+                style={{ background: colors.surfaceWarm, borderColor: colors.border }}
+              >
+                <Target className="w-5 h-5" style={{ color: colors.points }} />
+              </div>
+              <div className="min-w-0">
+                <p className="font-medium" style={{ color: colors.textPrimary }}>
+                  Metas nutricionais
+                </p>
+                <p className="text-sm mt-1" style={{ color: colors.textSecondary }}>
+                  Usadas nos anéis de progresso e no resumo do dia.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 border-t space-y-3" style={{ borderColor: colors.border }}>
+              <label className="block">
+                <span className="text-xs font-medium" style={{ color: colors.textSecondary }}>
+                  Calorias (kcal/dia)
+                </span>
+                <input
+                  type="number"
+                  min={500}
+                  max={10000}
+                  value={kcal}
+                  onChange={(e) => setKcal(e.target.value)}
+                  className="mt-1 w-full rounded-xl border px-3 py-2.5 text-sm"
+                  style={{
+                    background: colors.surfaceWarm,
+                    borderColor: colors.border,
+                    color: colors.textPrimary,
+                  }}
+                />
+              </label>
+              <label className="block">
+                <span className="text-xs font-medium" style={{ color: colors.textSecondary }}>
+                  Proteína (g/dia)
+                </span>
+                <input
+                  type="number"
+                  min={10}
+                  max={500}
+                  value={proteina}
+                  onChange={(e) => setProteina(e.target.value)}
+                  className="mt-1 w-full rounded-xl border px-3 py-2.5 text-sm"
+                  style={{
+                    background: colors.surfaceWarm,
+                    borderColor: colors.border,
+                    color: colors.textPrimary,
+                  }}
+                />
+              </label>
+              <label className="block">
+                <span className="text-xs font-medium" style={{ color: colors.textSecondary }}>
+                  Carboidratos (g/dia)
+                </span>
+                <input
+                  type="number"
+                  min={10}
+                  max={1000}
+                  value={carbs}
+                  onChange={(e) => setCarbs(e.target.value)}
+                  className="mt-1 w-full rounded-xl border px-3 py-2.5 text-sm"
+                  style={{
+                    background: colors.surfaceWarm,
+                    borderColor: colors.border,
+                    color: colors.textPrimary,
+                  }}
+                />
+              </label>
+              <button
+                type="button"
+                disabled={isUpdating}
+                onClick={() => void handleSaveGoals()}
+                className="w-full rounded-xl px-4 py-3 text-sm font-semibold disabled:opacity-60"
+                style={{ background: colors.accent, color: colors.textPrimary }}
+              >
+                {isUpdating ? 'Salvando…' : goalsSaved ? 'Metas salvas ✓' : 'Salvar metas'}
+              </button>
             </div>
           </div>
 

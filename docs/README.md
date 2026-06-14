@@ -23,7 +23,8 @@ Changelog resumido: [`CHANGELOG.md`](../CHANGELOG.md) na raiz.
 | [SETUP.md](./SETUP.md) | Pré-requisitos, variáveis de ambiente, dev web |
 | [ANDROID.md](./ANDROID.md) | **Capacitor → pasta `android/` + APK no Android Studio** |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Stack, pastas, rotas, fluxos e offline |
-| [UX_SEU_DIA.md](./UX_SEU_DIA.md) | **Refactor "Seu dia"** — auto-save, TanStack Query, componentes |
+| [UX_SEU_DIA.md](./UX_SEU_DIA.md) | Refactor "Seu dia" — auto-save, TanStack Query, componentes |
+| [UX_MELHORIAS_USUARIO.md](./UX_MELHORIAS_USUARIO.md) | **Metas**, recentes, undo, **Coach semanal**, refino IA, glass card |
 | [API.md](./API.md) | Edge Functions Supabase + Gemini |
 | [GEMINI_SECRETS.md](./GEMINI_SECRETS.md) | **Onde configurar `GOOGLE_API_KEY`** (e por que não no `.env.local`) |
 | [SUPABASE.md](./SUPABASE.md) | Auth, schema, RLS e push |
@@ -35,10 +36,14 @@ O NTRSL AI permite:
 
 - Registrar exercícios e alimentos do dia (busca remota USDA + WGER com fallback offline)
 - **Auto-save** com debounce ao editar pickers; badge de status (Salvando / Salvo / Pendente sync)
-- Calcular resumo via **Gemini** (CTA fixo) ou localmente (`buildSummary`)
+- Calcular/refinar resumo via **ícone cérebro** + Gemini (`nutrition-summary`); confirmação em card glass
+- **Coach IA** — analisa **7 dias**, resposta estruturada (alimentos, água, exercícios)
 - Salvar e consultar histórico em **`daily_logs`** (TanStack Query: `useDailyLog`, `useDailyLogHistory`)
-- **Seu dia** (`/home`) — `CalendarStrip`, resumo sticky (`DaySummaryBar`), coach IA colapsável
-- **Resumo** (`/dashboard`) — anéis, gráficos semanais, streak por data
+- **Metas personalizadas** em `profiles` (kcal, proteína, carbs) — Configurações + anéis do Resumo
+- **Seu dia** — toggle Ambos/Só alimentos/Só exercícios, recentes, undo, streak, "Repetir ontem"
+- **Resumo em tempo real** — `DaySummaryBar` e gráfico atualizam ao editar pickers (sem esperar auto-save)
+- **Pickers** — dropdown fecha ao clicar fora/rolar; foco automático ao trocar seção; badges "c/ macros" / "estimado"
+- **Resumo** (`/dashboard`) — anéis com metas do perfil; aceita `?date=` vindo do Seu dia
 - Solicitar recomendações de coach via **Gemini**
 - Autenticar com Supabase (e-mail/senha; Google OAuth em v1.3.0)
 

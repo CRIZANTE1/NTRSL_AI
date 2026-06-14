@@ -116,3 +116,26 @@ export async function saveDailyLog(params: {
   notifyOfflineDataChanged();
   return { synced: false };
 }
+
+export function computeStreak(rows: DailyLogRow[]): number {
+  const byDate = new Map(
+    rows
+      .filter((row) => row.summary != null)
+      .map((row) => [row.log_date, row]),
+  );
+
+  let streak = 0;
+  const cursor = new Date();
+  while (true) {
+    const key = localLogDate(cursor);
+    if (!byDate.has(key)) break;
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
+export function parseLogDateString(logDate: string): Date {
+  const [y, m, d] = logDate.split('-').map(Number);
+  return new Date(y, (m ?? 1) - 1, d ?? 1);
+}

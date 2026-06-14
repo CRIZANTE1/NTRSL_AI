@@ -68,6 +68,9 @@ export type Database = {
           created_at: string
           display_name: string | null
           email: string | null
+          goal_carbs: number
+          goal_kcal: number
+          goal_proteina: number
           id: string
           role: Database["public"]["Enums"]["app_role"]
           updated_at: string
@@ -77,6 +80,9 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          goal_carbs?: number
+          goal_kcal?: number
+          goal_proteina?: number
           id: string
           role?: Database["public"]["Enums"]["app_role"]
           updated_at?: string
@@ -86,6 +92,9 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          goal_carbs?: number
+          goal_kcal?: number
+          goal_proteina?: number
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           updated_at?: string

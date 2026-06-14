@@ -1,6 +1,6 @@
 # Arquitetura
 
-> Descreve o estado **v1.2.0+** (inclui refactor UX "Seu dia"). Versões anteriores: [versions/](./versions/README.md) · Detalhes do refactor: [UX_SEU_DIA.md](./UX_SEU_DIA.md)
+> Descreve o estado **v1.2.0+** (refactor UX + melhorias de usuário). Versões anteriores: [versions/](./versions/README.md) · [UX_SEU_DIA.md](./UX_SEU_DIA.md) · [UX_MELHORIAS_USUARIO.md](./UX_MELHORIAS_USUARIO.md)
 
 ## Visão geral
 
@@ -37,7 +37,7 @@ flowchart TB
 | Build | Vite 6, TypeScript 5.8 |
 | Mobile | Capacitor 8 |
 | Auth | Supabase Auth (e-mail/senha) |
-| Estado servidor | TanStack Query 5 (`useDailyLog`, `useDailyLogHistory`, `useSaveDailyLog`) |
+| Estado servidor | TanStack Query 5 (`useDailyLog`, `useDailyLogHistory`, `useSaveDailyLog`, `useUserGoals`) |
 | Gráficos | Recharts |
 | Busca alimentos/exercícios | Fuse.js |
 
@@ -51,11 +51,12 @@ src/
 ├── routes/AppRoutes.tsx  # Definição de rotas
 ├── layouts/AppLayout.tsx # Header + bottom nav + outlet
 ├── pages/                # Telas por rota
-├── hooks/                # useDailyLog, useDailyLogHistory (TanStack Query)
-├── components/           # UI reutilizável (CalendarStrip, DaySummaryBar, CoachSection, …)
+├── hooks/                # useDailyLog, useDailyLogHistory, useUserGoals
+├── components/           # CalendarStrip, DaySummaryBar, CoachSection, UndoToast, …
 ├── contexts/AuthContext.tsx
 ├── lib/
 │   ├── nutrition.ts      # Cálculo offline
+│   ├── recentItems.ts    # Recentes, section mode, coach goals, UI compact
 │   ├── api.ts            # Cliente Edge Functions (Gemini)
 │   ├── supabase.ts
 │   ├── localDb/          # Cache + fila offline
@@ -79,32 +80,31 @@ src/
 | `/historico` | Sim | Histórico por mês |
 | `/sobre` | Sim | Página institucional |
 | `/profile` | Sim | Perfil e logout |
-| `/settings` | Sim | Tema e atalhos |
+| `/settings` | Sim | Tema, **metas diárias**, atalhos |
 | `/settings/privacy` | Sim | Privacidade e biometria |
 | `/settings/personalizacao` | Sim | Densidade de UI |
 
 ## Fluxo "Seu dia" (`/home`)
 
-Documentação completa: [UX_SEU_DIA.md](./UX_SEU_DIA.md)
+Documentação completa: [UX_SEU_DIA.md](./UX_SEU_DIA.md) · Melhorias: [UX_MELHORIAS_USUARIO.md](./UX_MELHORIAS_USUARIO.md)
 
-1. **`CalendarStrip`** — seleciona o dia (hoje ±3); dots em dias com registro (`useDailyLogHistory`)
-2. **`useDailyLog(userId, logDate)`** — carrega exercícios, alimentos e summary do dia; `<Skeleton>` enquanto carrega
-3. Usuário edita **`ExercisePicker`** / **`FoodPicker`**
-   - **Exercícios:** busca remota via `exercise-search`; fallback offline em `exercicios.json`
-   - **Alimentos:** busca remota via `food-search`; fallback offline em `calorias.json`
-4. **Auto-save (debounce 1,5 s)** — `buildSummary()` local + `useSaveDailyLog()`; badge "Salvando…" / "Salvo ✓" / "Pendente sync"
-5. **`DaySummaryBar`** (sticky) — Gastas / Consumidas / Balanço visíveis ao rolar; link "Ver →" para `/dashboard`
-6. **`MacroChart`** — macronutrientes quando há summary
-7. **CTA fixo** — "Calcular com IA" / "Atualizar com IA" → `postNutritionSummary()` (Gemini); fallback offline
-8. **`CoachSection`** (colapsável) — recomendação via `ai-recommendations`; cooldown via `ai-cooldown`
+1. **`CalendarStrip`** — seleciona o dia (hoje ±3); dots em dias com registro
+2. **Toggle de seção** — Ambos | Só alimentos | Só exercícios (`ntrsl_section_mode`)
+3. **`useDailyLog`** — carrega pickers; `<Skeleton>` enquanto carrega
+4. **`ExercisePicker` / `FoodPicker`** — recentes, undo, haptic; busca remota ou fallback local
+5. **Auto-save (debounce 1,5 s)** — badge "Salvando…" / "Salvo ✓" / "No celular — sincroniza online"
+6. **Streak chip** + botão **Repetir ontem** (quando dia vazio)
+7. **`DaySummaryBar`** — progresso vs metas (`useUserGoals`); link "Ver →" `/dashboard?date=`
+8. **Ícone cérebro** — refino com IA (`postNutritionSummary` + merge); card `AiRefineResultCard`
+9. **`CoachSection`** — contexto semanal + resposta estruturada (alimentos, água, exercícios)
 
 ## Fluxo "Resumo" (`/dashboard`)
 
-1. **`CalendarStrip`** — faixa scrollável com 7 dias (hoje ±3); dots (`colors.badge`) em dias com `summary`
-2. **`useDailyLogHistory(userId, 30)`** — histórico, gráficos semanais, streak, `eventDates`
-3. **`useDailyLog(userId, logDate)`** — dados do dia selecionado; anéis (`ProgressRings`), stat cards
-4. **Gráficos semanais** — janela de 7 dias terminando no dia selecionado; barra destacada = dia filtrado
-5. **Sequência (streak)** — calculada a partir de **hoje**, independente do filtro
+1. **`CalendarStrip`** — 7 dias (hoje ±3); aceita data inicial via `?date=YYYY-MM-DD`
+2. **`useDailyLogHistory(userId, 30)`** — gráficos, streak, `eventDates`
+3. **`useDailyLog(userId, logDate)`** — anéis e stat cards
+4. **`useUserGoals()`** — metas do perfil nos anéis (substitui constantes hardcoded)
+5. **Streak** — relativo a **hoje**, não ao dia filtrado
 
 ## TanStack Query (daily logs)
 
@@ -113,16 +113,20 @@ Documentação completa: [UX_SEU_DIA.md](./UX_SEU_DIA.md)
 | `useDailyLog` | `['dailyLog', userId, logDate]` | Busca log de um dia |
 | `useDailyLogHistory` | `['dailyLogHistory', userId]` | Histórico (default 30 dias) |
 | `useSaveDailyLog` | mutation | Upsert + invalidação das queries acima |
+| `useUserGoals` | `['userGoals', userId]` | Metas em `profiles` (kcal, proteína, carbs) |
 
-Provider: `src/appShell.tsx` · Hooks: `src/hooks/useDailyLog.ts`, `src/hooks/useDailyLogHistory.ts`
+Provider: `src/appShell.tsx` · Hooks: `src/hooks/useDailyLog.ts`, `useDailyLogHistory.ts`, `useUserGoals.ts`
 
 ## Componentes compartilhados
 
 | Componente | Arquivo | Uso |
 |------------|---------|-----|
 | `CalendarStrip` | `components/CalendarStrip.tsx` | Home + Dashboard — props: `selectedDate`, `onDateSelect`, `eventDates?` |
-| `DaySummaryBar` | `components/DaySummaryBar.tsx` | Home — resumo sticky kcal |
-| `CoachSection` | `components/CoachSection.tsx` | Home — IA colapsável |
+| `DaySummaryBar` | `components/DaySummaryBar.tsx` | Resumo sticky + progresso vs metas |
+| `CoachSection` | `components/CoachSection.tsx` | Coach semanal estruturado + chips de meta |
+| `AiRefineResultCard` | `components/AiRefineResultCard.tsx` | Confirmação glass pós-refino IA |
+| `coachContext` | `lib/coachContext.ts` | Monta contexto dos últimos 7 dias |
+| `UndoToast` | `components/UndoToast.tsx` | Desfazer remoção nos pickers |
 
 Bottom nav: `/dashboard` = **Resumo** (`LayoutDashboard`), `/home` = **Seu dia** (`Home`).
 

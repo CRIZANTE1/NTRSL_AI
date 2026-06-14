@@ -1,29 +1,14 @@
-import caloriasData from '../_shared/data/calorias.json' with { type: 'json' };
-import exerciciosData from '../_shared/data/exercicios.json' with { type: 'json' };
 import { requireUser } from '../_shared/auth.ts';
 import { handleCors, jsonResponse } from '../_shared/cors.ts';
 import { generateJson } from '../_shared/gemini.ts';
-
-interface ExerciseInput {
-  name: string;
-  durationMinutes: number;
-}
-
-interface FoodInput {
-  name: string;
-  quantity: number;
-}
-
-interface NutritionSummary {
-  gastas: number;
-  consumidas: number;
-  exercicios: string[];
-  duracao: number;
-  alimentos: string[];
-  proteina: number;
-  carboidratos: number;
-  gordura: number;
-}
+import {
+  buildSummaryFromEntries,
+  mergeNutritionSummary,
+  needsAiRefinement,
+  type ExerciseInput,
+  type FoodInput,
+  type NutritionSummary,
+} from '../_shared/nutrition.ts';
 
 Deno.serve(async (req) => {
   const cors = handleCors(req);
@@ -44,27 +29,22 @@ Deno.serve(async (req) => {
     const exercises = Array.isArray(body.exercises) ? body.exercises : [];
     const foods = Array.isArray(body.foods) ? body.foods : [];
 
+    const localSummary = buildSummaryFromEntries(exercises, foods);
+
+    if (!needsAiRefinement(exercises, foods)) {
+      return jsonResponse(localSummary);
+    }
+
     const prompt = `Você é um calculador nutricional preciso para o app NTRSL AI (pt-BR).
 
-Use EXCLUSIVAMENTE as tabelas de referência abaixo para alimentos e exercícios conhecidos.
-Se um item não existir na tabela, estime com base em dados nutricionais padrão e indique valores razoáveis.
+Já existe um resumo calculado localmente com dados confiáveis do catálogo. Use-o como BASELINE.
+NUNCA retorne zeros para campos em que a baseline é maior que zero.
+Ajuste apenas itens sem dados locais ou melhore estimativas claramente incorretas.
 
-REGRAS DE CÁLCULO:
-- Alimentos: macros são por 100g; fator = quantidade_g / 100
-- Água: quantidade informada está em LITROS; converta para ml (× 1000) antes do fator /100
-- Exercícios: calorias = calorias_queimadas_por_minuto × duração em minutos
-- Arredonde gastas, consumidas, proteina, carboidratos e gordura para 1 casa decimal
-- exercicios: array de strings no formato "nome (X min)"
-- alimentos: array de strings no formato "nome (X g)" ou "água (X L)" para água
-- duracao: soma das durações dos exercícios em minutos
+BASELINE (obrigatória como piso):
+${JSON.stringify(localSummary)}
 
-TABELA ALIMENTOS (por 100g, exceto água):
-${JSON.stringify(caloriasData)}
-
-TABELA EXERCÍCIOS (calorias/min):
-${JSON.stringify(exerciciosData)}
-
-ENTRADA:
+ENTRADA DETALHADA (inclui macros por 100g e calorias/min quando disponíveis):
 ${JSON.stringify({ exercises, foods })}
 
 Retorne APENAS JSON com este schema exato:
@@ -79,9 +59,10 @@ Retorne APENAS JSON com este schema exato:
   "gordura": number
 }`;
 
-    const summary = await generateJson<NutritionSummary>(prompt, 'NutritionSummary');
+    const aiSummary = await generateJson<NutritionSummary>(prompt, 'NutritionSummary');
+    const merged = mergeNutritionSummary(localSummary, aiSummary);
 
-    return jsonResponse(summary);
+    return jsonResponse(merged);
   } catch (e) {
     if (e instanceof Response) return e;
     const message = e instanceof Error ? e.message : String(e);

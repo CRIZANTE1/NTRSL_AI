@@ -42,12 +42,15 @@ flowchart TD
     useDailyLog -->|data| Pickers
     useDailyLog -->|data| DaySummaryBar
     Pickers -->|onChange + debounce 1.5s| buildSummary
+    Pickers -->|onChange imediato| liveSummary[liveSummary]
+    liveSummary --> DaySummaryBar
     buildSummary -->|auto| useSaveDailyLog
     useSaveDailyLog -->|invalida| useDailyLog
     useSaveDailyLog -->|invalida| useDailyLogHistory
     useDailyLogHistory -->|eventDates| CalStrip
-    CTA[CTA fixo Calcular com IA] -->|postNutritionSummary| Gemini
-    CoachSection -->|postAiRecommendations| AiResponse
+    BrainIcon[Ícone cérebro] -->|postNutritionSummary merge| Gemini
+    History[useDailyLogHistory] -->|weeklyContext| CoachSection
+    CoachSection -->|postAiRecommendations structured| AiResponse
 ```
 
 ---
@@ -83,13 +86,13 @@ Arquivos: `src/hooks/useDailyLog.ts`, `src/hooks/useDailyLogHistory.ts`
 
 ### Layout (de cima para baixo)
 
-1. **Header** — título "Seu dia" + badge de status de save (`aria-live="polite"`)
+1. **Header** — título "Seu dia" + streak + status de save + **ícone cérebro** (Refinar com IA)
 2. **`CalendarStrip`** — 7 dias (hoje ±3); dots em dias com registro
-3. **`DaySummaryBar`** (sticky) — Gastas / Consumidas / Balanço + link "Ver →" `/dashboard`
-4. **Pickers** — `ExercisePicker` + `FoodPicker` (ou `<Skeleton>` durante load)
-5. **`MacroChart`** — macronutrientes (quando há `summary`)
-6. **`CoachSection`** — seção colapsável de recomendação IA
-7. **CTA fixo** — "Calcular com IA" / "Atualizar com IA" (`CTA_BOTTOM_CLASS`)
+3. **`DaySummaryBar`** (sticky) — Gastas / Consumidas / Balanço + link "Ver →" `/dashboard`; alimentado por **`liveSummary`** (tempo real)
+4. **Pickers** — `ExercisePicker` + `FoodPicker` (ou `<Skeleton>` durante load); dropdown fecha ao clicar fora ou rolar
+5. **`MacroChart`** — macronutrientes (quando há `liveSummary`)
+6. **`CoachSection`** — resposta semanal estruturada; countdown no header quando em cooldown
+7. **`AiRefineResultCard`** (modal) — confirmação glass após refino com IA
 
 ### Auto-save
 
@@ -97,6 +100,13 @@ Arquivos: `src/hooks/useDailyLog.ts`, `src/hooks/useDailyLogHistory.ts`
 - **Debounce:** 1,5 s
 - **Cálculo:** `buildSummary()` local (sem chamar Gemini)
 - **Persistência:** `useSaveDailyLog().mutate(...)`
+- **Flush ao sair:** se o usuário navega antes do debounce, o save pendente executa no unmount (`pendingSaveRef`)
+
+### Resumo em tempo real (`liveSummary`)
+
+- Calculado com `useMemo` a partir de `exercises` + `foods` via `buildSummary()`
+- Alimenta `DaySummaryBar` e `MacroChart` **sem esperar** o debounce de auto-save
+- O `summary` persistido no banco continua sendo atualizado pelo auto-save ou pelo ícone **Refinar com IA**
 
 ### Indicador de status
 
@@ -104,17 +114,19 @@ Arquivos: `src/hooks/useDailyLog.ts`, `src/hooks/useDailyLogHistory.ts`
 |--------|-------|------------------|
 | `saving` | Salvando… | `textMuted` |
 | `saved` | Salvo ✓ | `points` |
-| `pending-sync` | Pendente sync | `accent` |
+| `pending-sync` | No celular — sincroniza online | `accent` |
 | `idle` | (oculto) | — |
 
 O badge some automaticamente 3 s após `saved` ou `pending-sync`.
 
-### CTA "Calcular com IA"
+### Refinar com IA (ícone cérebro)
 
-- Posição fixa acima da bottom nav (`CTA_BOTTOM_CLASS` em `src/lib/layout.ts`)
-- Conteúdo com `SECTION_WITH_CTA_PADDING_CLASS` para não ficar atrás do botão
-- Chama `postNutritionSummary()` (Edge Function + Gemini); fallback offline em `buildSummary()`
-- Label dinâmica: **"Calcular com IA"** (sem summary) → **"Atualizar com IA"** (com summary)
+- Ícone `Brain` no header, à direita de **Seu dia** (sem botão fixo na bottom nav)
+- Chama `postNutritionSummary()` com entradas completas; merge local via `mergeNutritionSummary()` (anti-zeragem)
+- Sucesso → modal [`AiRefineResultCard`](src/components/AiRefineResultCard.tsx) (glass) com diff e **Confirmar**
+- Fallback offline: `buildSummary()` local
+
+> Detalhes: [UX_MELHORIAS_USUARIO.md](./UX_MELHORIAS_USUARIO.md#quarta-onda--coach-semanal-e-ia-refinada)
 
 ---
 
@@ -138,16 +150,26 @@ Arquivo: `src/components/CoachSection.tsx`
 
 | Prop | Tipo | Descrição |
 |------|------|-----------|
-| `summary` | `NutritionSummary \| null` | Resumo do dia (obrigatório para pedir recomendação) |
+| `hasSummary` | `boolean` | Permite pedir recomendação |
 | `onRequest` | `(goals: string) => Promise<void>` | Callback ao pedir recomendação |
 | `isLoading` | `boolean` | Estado de loading da IA |
 | `cooldownSeconds` | `number` | Segundos restantes de cooldown |
-| `response` | `string \| null` | Texto da recomendação |
+| `structured` | `CoachRecommendationStructured \| null` | Resposta em blocos (semanal) |
+| `response` | `string \| null` | Fallback texto plano |
 | `error` | `string \| null` | Mensagem de erro |
 
 - Começa **fechado** (colapsável)
-- Integra `CooldownBanner` quando em cooldown
-- Textarea de metas + botão "Pedir recomendação"
+- Integra `CooldownBanner` quando em cooldown (seção aberta)
+- Countdown no **header** quando fechado e em cooldown
+- Envia contexto semanal via `buildWeeklyCoachContext()` em [`coachContext.ts`](src/lib/coachContext.ts)
+
+### `AiRefineResultCard`
+
+Arquivo: `src/components/AiRefineResultCard.tsx`
+
+- Overlay glass após refino com IA
+- Props: `before`, `after` (`NutritionSummary`), `onConfirm`
+- Usa `getSummaryAdjustments()` para listar métricas alteradas
 
 ---
 
@@ -178,18 +200,23 @@ Definidos em `src/lib/layout.ts`:
 ## Testar manualmente
 
 1. **Auto-save:** adicionar alimento → aguardar 1,5 s → badge "Salvo ✓"; recarregar página → item persiste
-2. **Offline:** desligar rede → alterar picker → badge "Pendente sync"; voltar online → sync via outbox
-3. **CalendarStrip:** selecionar dia anterior com dot → pickers carregam dados daquele dia
-4. **Resumo sticky:** rolar a página → barra Gastas/Consumidas/Balanço permanece visível
-5. **Coach IA:** expandir seção → pedir recomendação (requer summary); cooldown após uso
-6. **CTA fixo:** botão "Calcular com IA" visível acima da nav; não cobre conteúdo ao rolar
-7. **Navegação cruzada:** link "Ver →" na barra sticky leva a `/dashboard` com mesmo contexto de data (usuário seleciona manualmente no strip)
-8. **Resumo:** trocar dia no strip → anéis e gráficos atualizam
+2. **Resumo instantâneo:** adicionar alimento → `DaySummaryBar` mostra kcal antes do debounce
+3. **Flush save:** adicionar item → ir para Resumo antes de 1,5 s → voltar → item persistiu
+4. **Offline:** desligar rede → alterar picker → badge "Pendente sync"; voltar online → sync via outbox
+5. **CalendarStrip:** selecionar dia anterior com dot → pickers carregam dados daquele dia
+6. **Dropdown:** abrir busca → clicar fora ou rolar → dropdown fecha
+7. **Toggle + foco:** "Só alimentos" → campo de busca recebe foco automaticamente
+8. **Resumo sticky:** rolar a página → barra Gastas/Consumidas/Balanço permanece visível
+9. **Coach IA:** resposta estruturada (Alimentos, Água, Exercícios, Próximo passo) com contexto semanal
+10. **Refinar IA:** ícone cérebro → card glass → Confirmar; calorias não zeram
+11. **Navegação cruzada:** link "Ver →" na barra sticky leva a `/dashboard?date=YYYY-MM-DD`
+12. **Resumo:** trocar dia no strip → anéis e gráficos atualizam
 
 ---
 
 ## Referências
 
 - [ARCHITECTURE.md](./ARCHITECTURE.md) — visão geral da stack e rotas
+- [UX_MELHORIAS_USUARIO.md](./UX_MELHORIAS_USUARIO.md) — metas, recentes, undo, **Coach semanal**, refino IA
 - [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) — tokens de cor
 - [API.md](./API.md) — Edge Functions `nutrition-summary`, `ai-recommendations`

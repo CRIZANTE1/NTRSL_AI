@@ -27,6 +27,7 @@ Migrations em `supabase/migrations/`:
 - `20260612120000_profile_roles.sql` — roles `user` / `admin`, RLS e painel `/admin`
 - `20260612140000_food_catalog.sql` — cache de alimentos (local + USDA FDC)
 - `20260612160000_exercise_catalog.sql` — cache de exercícios (local + WGER)
+- `20260614120000_profile_goals.sql` — metas nutricionais em `profiles`
 
 ### Roles (`profiles.role`)
 
@@ -55,7 +56,7 @@ Depois faça login e acesse **Perfil → Administração** ou `/admin`.
 
 | Tabela | Uso |
 |--------|-----|
-| `profiles` | Perfil do usuário (criado automaticamente no cadastro) |
+| `profiles` | Perfil do usuário (criado automaticamente no cadastro) + metas (`goal_kcal`, `goal_proteina`, `goal_carbs`) |
 | `daily_logs` | Registro diário (exercícios, alimentos, resumo) |
 | `ai_usage` | Cooldown de recomendações IA |
 | `push_tokens` | Tokens FCM |
