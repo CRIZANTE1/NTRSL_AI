@@ -92,7 +92,7 @@ const GlassEffect: React.FC<{ children: React.ReactNode; className?: string }> =
 );
 
 const tabs = [
-  { to: '/dashboard', end: true, icon: LayoutDashboard, label: 'Início' },
+  { to: '/dashboard', end: true, icon: LayoutDashboard, label: 'Resumo' },
   { to: '/home', end: false, icon: Home, label: 'Seu dia' },
   { to: '/historico', end: false, icon: Calendar, label: 'Histórico' },
   { to: '/sobre', end: false, icon: Info, label: 'Sobre' },

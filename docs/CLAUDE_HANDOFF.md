@@ -60,7 +60,7 @@ Alternativa: `npx supabase login --token sbp_...` (evitar fluxo interativo com c
 |--------|------------|
 | UI | React 19, React Router 7, Tailwind CSS 4 |
 | Build | Vite 6, TypeScript 5.8, ESLint 9 |
-| Estado servidor | TanStack Query 5 |
+| Estado servidor | TanStack Query 5 (`useDailyLog`, `useDailyLogHistory`, `useSaveDailyLog`) |
 | Gráficos | Recharts 3 |
 | Busca local (fallback) | Fuse.js 7 |
 | Mobile | Capacitor 8 (Android) |
@@ -81,7 +81,8 @@ Config: `capacitor.config.ts` — `appId: com.ntrsl.ai`, `webDir: dist`, fundo `
 NTRSL_ANDROID/
 ├── src/                    # App React
 │   ├── pages/              # Telas (lazy-loaded)
-│   ├── components/         # UI (FoodPicker, ExercisePicker, MacroChart, …)
+│   ├── hooks/              # useDailyLog, useDailyLogHistory (TanStack Query)
+│   ├── components/         # UI (CalendarStrip, DaySummaryBar, CoachSection, FoodPicker, …)
 │   ├── layouts/AppLayout.tsx
 │   ├── routes/AppRoutes.tsx
 │   ├── contexts/AuthContext.tsx
@@ -137,15 +138,15 @@ SUPABASE_ACCESS_TOKEN=sbp_...
 
 ## 6. Rotas e navegação
 
-Definidas em `src/routes/AppRoutes.tsx`. Bottom nav (`BottomNav.tsx`): Home, Dashboard, Histórico, Sobre.
+Definidas em `src/routes/AppRoutes.tsx`. Bottom nav (`BottomNav.tsx`): **Resumo** (`/dashboard`), **Seu dia** (`/home`), Histórico, Sobre.
 
 | Rota | Auth | Descrição |
 |------|------|-----------|
 | `/login` | Não | Login e-mail/senha |
 | `/cadastro` | Não | Registro |
 | `/` | Sim | Redireciona (`RootRedirect`) |
-| `/home` | Sim | Registro do dia, pickers, resumo, IA |
-| `/dashboard` | Sim | Resumo com `CalendarStrip` (filtro por dia), anéis de macros, gráficos 7 dias |
+| `/home` | Sim | **Seu dia** — pickers, auto-save, `DaySummaryBar` sticky, `CoachSection`, CTA "Calcular com IA" |
+| `/dashboard` | Sim | **Resumo** — `CalendarStrip`, anéis de macros, gráficos 7 dias, streak |
 | `/historico` | Sim | Histórico (em evolução) |
 | `/sobre` | Sim | Institucional |
 | `/profile` | Sim | Perfil, avatar, logout, link admin |
@@ -278,13 +279,36 @@ supabase/functions/_shared/
 
 ## 11. App React — fluxos principais
 
-### Home (`NutritionHomePage`)
+> Detalhes do refactor UX: [UX_SEU_DIA.md](./UX_SEU_DIA.md)
 
-1. `FoodPicker` → `postFoodSearch()` ou fallback local
-2. `ExercisePicker` → `postExerciseSearch()` ou fallback local
-3. Calcular → `postNutritionSummary()` ou `buildSummary()` offline
-4. `MacroChart` — proteína, carbs, gordura
-5. Recomendação → `postAiRecommendations()` + `CooldownBanner` / `getAiCooldown()`
+### TanStack Query (daily logs)
+
+| Hook | Arquivo | Uso |
+|------|---------|-----|
+| `useDailyLog(userId, logDate)` | `hooks/useDailyLog.ts` | Busca log de um dia |
+| `useDailyLogHistory(userId, limit?)` | `hooks/useDailyLogHistory.ts` | Histórico (default 30 dias) |
+| `useSaveDailyLog()` | `hooks/useDailyLog.ts` | Upsert + invalidação de cache |
+
+Provider: `appShell.tsx` (`staleTime: 5 min`).
+
+### Seu dia (`NutritionHomePage` — `/home`)
+
+1. **`CalendarStrip`** — seleciona dia; dots via `useDailyLogHistory`
+2. **`useDailyLog`** — carrega pickers; `<Skeleton>` enquanto carrega
+3. `FoodPicker` / `ExercisePicker` — busca remota ou fallback local
+4. **Auto-save (debounce 1,5 s)** — `buildSummary()` + `useSaveDailyLog()`; badge de status
+5. **`DaySummaryBar`** (sticky) — Gastas / Consumidas / Balanço; link "Ver →" `/dashboard`
+6. **`MacroChart`** — quando há summary
+7. **CTA fixo** — "Calcular com IA" / "Atualizar com IA" → `postNutritionSummary()` ou offline
+8. **`CoachSection`** (colapsável) → `postAiRecommendations()` + `CooldownBanner`
+
+### Resumo (`DashboardPage` — `/dashboard`)
+
+- **`CalendarStrip`** — 7 dias (hoje ±3), dots em dias com registro
+- **`useDailyLogHistory(userId, 30)`** — gráficos Recharts, streak, `eventDates`
+- **`useDailyLog(userId, logDate)`** — anéis (`ProgressRings`), stat cards
+- Gráficos semanais: janela de 7 dias terminando no dia selecionado; metas fixas (2000 kcal etc.)
+- Streak: sempre relativo a **hoje**, não ao dia filtrado
 
 ### Cálculo local (`src/lib/nutrition.ts`)
 
@@ -297,13 +321,12 @@ supabase/functions/_shared/
 - `src/lib/data/outboxSync.ts` — fila para `daily_logs`
 - `NetworkBanner`, `OfflineSyncEffects`
 
-### Dashboard
+### Navegação (bottom nav)
 
-- **`CalendarStrip`** (`src/components/CalendarStrip.tsx`) — 7 dias (hoje ±3), dots em dias com registro
-- Estado: `selectedDate` → `fetchDailyLog(userId, localLogDate(selectedDate))` para anéis e stat cards
-- Histórico: `fetchDailyLogHistory(userId, 30)` na montagem → gráficos Recharts, streak, `eventDates`
-- Gráficos semanais: janela de 7 dias terminando no dia selecionado; metas fixas (2000 kcal etc.)
-- Streak: sempre relativo a **hoje**, não ao dia filtrado
+| Rota | Label | Ícone |
+|------|-------|-------|
+| `/dashboard` | **Resumo** | `LayoutDashboard` |
+| `/home` | **Seu dia** | `Home` |
 
 ---
 

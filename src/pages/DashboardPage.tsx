@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Bar,
   BarChart,
@@ -9,14 +9,11 @@ import {
 } from 'recharts';
 import { Flame, TrendingDown, TrendingUp, Dumbbell } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import {
-  fetchDailyLog,
-  fetchDailyLogHistory,
-  localLogDate,
-  parseDailyLogRow,
-} from '../lib/data/dailyLogs';
+import { localLogDate, parseDailyLogRow } from '../lib/data/dailyLogs';
 import { colors } from '../theme/colors';
 import CalendarStrip from '../components/CalendarStrip';
+import { useDailyLog } from '../hooks/useDailyLog';
+import { useDailyLogHistory } from '../hooks/useDailyLogHistory';
 import type { ExerciseEntry, NutritionSummary } from '../types/nutrition';
 import type { Database } from '../types/supabase';
 
@@ -92,7 +89,14 @@ function ProgressRings({ metrics }: { metrics: RingMetric[] }) {
 
   return (
     <div className="flex items-center gap-4 min-w-0">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="shrink-0" aria-hidden>
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        className="shrink-0"
+        role="img"
+        aria-label={`Anéis de progresso: ${metrics.map((m) => `${m.label} ${Math.round(m.value)} ${m.unit}`).join(', ')}`}
+      >
         {metrics.map((metric, index) => {
           const radius = radii[index];
           const circumference = 2 * Math.PI * radius;
@@ -108,6 +112,7 @@ function ProgressRings({ metrics }: { metrics: RingMetric[] }) {
                 fill="none"
                 stroke={colors.border}
                 strokeWidth={strokeWidth}
+                aria-hidden
               />
               <circle
                 cx={center}
@@ -120,6 +125,7 @@ function ProgressRings({ metrics }: { metrics: RingMetric[] }) {
                 strokeDasharray={circumference}
                 strokeDashoffset={offset}
                 style={{ transition: 'stroke-dashoffset 0.6s ease' }}
+                aria-label={`${metric.label}: ${Math.round((metric.value / metric.goal) * 100)}%`}
               />
             </g>
           );
@@ -142,7 +148,15 @@ function ProgressRings({ metrics }: { metrics: RingMetric[] }) {
                   </span>
                 </span>
               </div>
-              <div className="h-3 rounded-full overflow-hidden" style={{ background: colors.border }}>
+              <div
+                className="h-3 rounded-full overflow-hidden"
+                style={{ background: colors.border }}
+                role="progressbar"
+                aria-valuenow={Math.round(metric.value)}
+                aria-valuemin={0}
+                aria-valuemax={metric.goal}
+                aria-label={metric.label}
+              >
                 <div
                   className="h-full rounded-full"
                   style={{
@@ -247,12 +261,13 @@ function StatCard({
     <div
       className="rounded-xl border p-2.5 flex flex-col items-center justify-center gap-1 min-h-0 h-full overflow-hidden text-center"
       style={{ background: colors.surface, borderColor: colors.border }}
+      aria-label={`${title}: ${value}`}
     >
       <div
         className="w-8 h-8 rounded-xl flex items-center justify-center"
         style={{ background: colors.surfaceWarm }}
       >
-        <Icon className="w-4 h-4" style={{ color: accentColor }} />
+        <Icon className="w-4 h-4" style={{ color: accentColor }} aria-hidden />
       </div>
       <p className="text-sm font-bold leading-none tabular-nums" style={{ color: accentColor }}>
         {value}
@@ -266,74 +281,15 @@ function StatCard({
 
 export default function DashboardPage() {
   const { session } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [dayLoading, setDayLoading] = useState(false);
-  const [summary, setSummary] = useState<NutritionSummary | null>(null);
-  const [exercises, setExercises] = useState<ExerciseEntry[]>([]);
-  const [history, setHistory] = useState<DailyLogRow[]>([]);
+  const userId = session?.user?.id;
   const [selectedDate, setSelectedDate] = useState(() => new Date());
-
   const selectedKey = localLogDate(selectedDate);
 
-  // Carrega o histórico dos últimos 30 dias uma única vez por sessão de usuário
-  useEffect(() => {
-    const userId = session?.user?.id;
-    if (!userId) {
-      setLoading(false);
-      return;
-    }
+  const { data: dayData, isFetching: dayLoading } = useDailyLog(userId, selectedKey);
+  const { data: historyRows = [] } = useDailyLogHistory(userId, 30);
 
-    let alive = true;
-    void (async () => {
-      try {
-        const historyRows = await fetchDailyLogHistory(userId, 30);
-        if (!alive) return;
-        setHistory(historyRows);
-      } catch {
-        // mantém estado vazio
-      } finally {
-        if (alive) setLoading(false);
-      }
-    })();
-
-    return () => {
-      alive = false;
-    };
-  }, [session?.user?.id]);
-
-  // Carrega os dados do dia selecionado sempre que ele mudar
-  useEffect(() => {
-    const userId = session?.user?.id;
-    if (!userId) return;
-
-    let alive = true;
-    setDayLoading(true);
-    void (async () => {
-      try {
-        const row = await fetchDailyLog(userId, selectedKey);
-        if (!alive) return;
-        if (row) {
-          const parsed = parseDailyLogRow(row);
-          setSummary(parsed.summary);
-          setExercises(parsed.exercises);
-        } else {
-          setSummary(null);
-          setExercises([]);
-        }
-      } catch {
-        if (alive) {
-          setSummary(null);
-          setExercises([]);
-        }
-      } finally {
-        if (alive) setDayLoading(false);
-      }
-    })();
-
-    return () => {
-      alive = false;
-    };
-  }, [session?.user?.id, selectedKey]);
+  const summary: NutritionSummary | null = dayData?.summary ?? null;
+  const exercises: ExerciseEntry[] = dayData?.exercises ?? [];
 
   const ringMetrics = useMemo<RingMetric[]>(
     () => [
@@ -363,7 +319,7 @@ export default function DashboardPage() {
   );
 
   const weeklyData = useMemo(() => {
-    const byDate = new Map(history.map((row) => [row.log_date, parseDailyLogRow(row)]));
+    const byDate = new Map(historyRows.map((row) => [row.log_date, parseDailyLogRow(row)]));
     const last7 = buildLast7Days(selectedDate);
 
     const consumidas: WeeklyBar[] = last7.map((date) => ({
@@ -379,13 +335,13 @@ export default function DashboardPage() {
     }));
 
     return { consumidas, gastas };
-  }, [history, selectedDate, selectedKey]);
+  }, [historyRows, selectedDate, selectedKey]);
 
-  const streak = useMemo(() => computeStreak(history), [history]);
+  const streak = useMemo(() => computeStreak(historyRows), [historyRows]);
 
   const eventDatesFromHistory = useMemo(
-    () => history.filter((row) => row.summary != null).map((row) => parseLogDate(row.log_date)),
-    [history],
+    () => historyRows.filter((row) => row.summary != null).map((row) => parseLogDate(row.log_date)),
+    [historyRows],
   );
 
   const exerciseMinutes = totalExerciseMinutes(exercises);

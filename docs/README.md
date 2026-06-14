@@ -23,6 +23,7 @@ Changelog resumido: [`CHANGELOG.md`](../CHANGELOG.md) na raiz.
 | [SETUP.md](./SETUP.md) | Pré-requisitos, variáveis de ambiente, dev web |
 | [ANDROID.md](./ANDROID.md) | **Capacitor → pasta `android/` + APK no Android Studio** |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Stack, pastas, rotas, fluxos e offline |
+| [UX_SEU_DIA.md](./UX_SEU_DIA.md) | **Refactor "Seu dia"** — auto-save, TanStack Query, componentes |
 | [API.md](./API.md) | Edge Functions Supabase + Gemini |
 | [GEMINI_SECRETS.md](./GEMINI_SECRETS.md) | **Onde configurar `GOOGLE_API_KEY`** (e por que não no `.env.local`) |
 | [SUPABASE.md](./SUPABASE.md) | Auth, schema, RLS e push |
@@ -33,9 +34,11 @@ Changelog resumido: [`CHANGELOG.md`](../CHANGELOG.md) na raiz.
 O NTRSL AI permite:
 
 - Registrar exercícios e alimentos do dia (busca remota USDA + WGER com fallback offline)
-- Calcular resumo via **Gemini** (Edge Function), com fallback offline
-- Salvar e consultar histórico em **`daily_logs`**
-- Dashboard (`/dashboard`) com filtro por dia via **`CalendarStrip`** — anéis, gráficos e stat cards por data
+- **Auto-save** com debounce ao editar pickers; badge de status (Salvando / Salvo / Pendente sync)
+- Calcular resumo via **Gemini** (CTA fixo) ou localmente (`buildSummary`)
+- Salvar e consultar histórico em **`daily_logs`** (TanStack Query: `useDailyLog`, `useDailyLogHistory`)
+- **Seu dia** (`/home`) — `CalendarStrip`, resumo sticky (`DaySummaryBar`), coach IA colapsável
+- **Resumo** (`/dashboard`) — anéis, gráficos semanais, streak por data
 - Solicitar recomendações de coach via **Gemini**
 - Autenticar com Supabase (e-mail/senha; Google OAuth em v1.3.0)
 
