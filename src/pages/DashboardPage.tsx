@@ -320,8 +320,12 @@ export default function DashboardPage() {
   );
 
   const exerciseMinutes = totalExerciseMinutes(exercises);
-  const balance = summary ? summary.gastas - summary.consumidas : 0;
-  const balancePositive = balance >= 0;
+  const hasGoal = goals != null && goals.kcal > 0;
+  const netConsumed = summary ? summary.consumidas - summary.gastas : 0;
+  const balance = hasGoal ? goals.kcal - netConsumed : -netConsumed;
+  const balanceLabel = hasGoal ? 'Restante' : 'Líquido';
+  // Verde = ainda tem saldo (ou, sem meta, queimou mais que comeu)
+  const balanceOk = balance >= 0;
 
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-hidden pt-1 gap-2">
@@ -371,10 +375,10 @@ export default function DashboardPage() {
           accentColor={colors.points}
         />
         <StatCard
-          title="Balanço"
-          value={`${balancePositive ? '+' : ''}${Math.round(balance)} kcal`}
-          icon={balancePositive ? TrendingDown : TrendingUp}
-          accentColor={balancePositive ? colors.points : colors.accent}
+          title={balanceLabel}
+          value={`${hasGoal && balance > 0 ? '+' : ''}${Math.round(balance)} kcal`}
+          icon={balanceOk ? TrendingDown : TrendingUp}
+          accentColor={balanceOk ? colors.points : colors.badge}
         />
         <StatCard
           title="Sequência"

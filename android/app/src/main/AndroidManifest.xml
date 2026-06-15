@@ -35,7 +35,32 @@
         </provider>
     </application>
 
-    <!-- Permissions -->
+    <!-- ── Permissões ────────────────────────────────────────────────────── -->
 
+    <!-- Rede (obrigatória para Supabase, USDA, WGER e Gemini) -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Push Notifications (FCM / @capacitor/push-notifications) -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- POST_NOTIFICATIONS: obrigatório para Android 13+ (API 33+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Biometria (@aparajita/capacitor-biometric-auth) -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <!-- USE_FINGERPRINT: mantido para compatibilidade com Android < 9 (API < 28) -->
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
+    <!-- Armazenamento local (Capacitor SQLite / Preferences) -->
+    <!-- READ_EXTERNAL_STORAGE e WRITE_EXTERNAL_STORAGE NÃO são necessários
+         pois o SQLite usa armazenamento interno do app (não cartão SD) -->
+
+    <!-- Câmera / galeria: NÃO necessário (avatar via URL, não upload local) -->
+
+    <!-- ── Features declaradas (informativas para o Play Store) ──────────── -->
+    <!-- Marca a biometria como opcional (app funciona sem ela) -->
+    <uses-feature android:name="android.hardware.fingerprint" android:required="false" />
+    <uses-feature android:name="android.hardware.biometrics" android:required="false" />
 </manifest>

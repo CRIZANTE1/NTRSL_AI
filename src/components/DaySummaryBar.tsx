@@ -48,8 +48,13 @@ export function DaySummaryBar({
   goals,
   pulseKey,
 }: DaySummaryBarProps) {
-  const balance = summary.gastas - summary.consumidas;
-  const balancePositive = balance >= 0;
+  // Com meta: restante = meta - (consumidas - gastas); sem meta: líquido = consumidas - gastas
+  const netConsumed = summary.consumidas - summary.gastas;
+  const hasGoal = goals != null && goals.kcal > 0;
+  const balanceValue = hasGoal ? goals.kcal - netConsumed : netConsumed;
+  const balanceLabel = hasGoal ? 'Restante' : 'Líquido';
+  // Verde quando ainda tem saldo disponível (ou, sem meta, déficit = queimou mais)
+  const balanceOk = hasGoal ? balanceValue >= 0 : balanceValue <= 0;
 
   return (
     <div
@@ -92,13 +97,13 @@ export function DaySummaryBar({
 
         <div>
           <p className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: colors.textMuted }}>
-            Balanço
+            {balanceLabel}
           </p>
           <p
             className="text-sm font-bold tabular-nums leading-tight"
-            style={{ color: balancePositive ? colors.points : colors.accent }}
+            style={{ color: balanceOk ? colors.points : colors.badge }}
           >
-            {balancePositive ? '+' : ''}{Math.round(balance)}
+            {hasGoal && balanceValue > 0 ? '+' : ''}{Math.round(balanceValue)}
             <span className="text-[9px] font-normal ml-0.5" style={{ color: colors.textMuted }}>kcal</span>
           </p>
           {goals && summary.proteina > 0 && (
