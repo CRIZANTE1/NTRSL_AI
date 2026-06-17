@@ -6,7 +6,7 @@
 |------------|-----------------|
 | Node.js | 20+ |
 | npm | 10+ |
-| JDK | 17 (para Android) |
+| JDK | **21** via Android Studio (JBR) — ver [ANDROID.md § Ambiente Gradle](./ANDROID.md#ambiente-gradle-jdk--rede-corporativa) |
 | Android Studio | Ladybug ou superior |
 
 ## Instalação
@@ -69,7 +69,7 @@ npm run cap:open
 
 No Studio: **▶ Run** ou **Build → Build APK(s)**.
 
-→ Guia detalhado: **[ANDROID.md](./ANDROID.md)** (`local.properties`, debug vs release, troubleshooting).
+→ Guia detalhado: **[ANDROID.md](./ANDROID.md)** (`local.properties`, debug vs release, **Gradle/JDK/proxy**, troubleshooting).
 
 ## Edge Functions (Gemini)
 

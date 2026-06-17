@@ -21,7 +21,7 @@ Changelog resumido: [`CHANGELOG.md`](../CHANGELOG.md) na raiz.
 | Documento | Conteúdo |
 |-----------|----------|
 | [SETUP.md](./SETUP.md) | Pré-requisitos, variáveis de ambiente, dev web |
-| [ANDROID.md](./ANDROID.md) | **Capacitor → pasta `android/` + APK no Android Studio** |
+| [ANDROID.md](./ANDROID.md) | **Capacitor → pasta `android/` + APK no Android Studio** (incl. Gradle, JDK, proxy/SSL) |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Stack, pastas, rotas, fluxos e offline |
 | [UX_SEU_DIA.md](./UX_SEU_DIA.md) | Refactor "Seu dia" — auto-save, TanStack Query, componentes |
 | [UX_MELHORIAS_USUARIO.md](./UX_MELHORIAS_USUARIO.md) | **Metas**, recentes, undo, **Coach semanal**, refino IA, glass card |

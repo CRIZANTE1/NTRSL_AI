@@ -78,6 +78,28 @@ export default function NutritionHomePage() {
   } | null>(null);
 
   useEffect(() => {
+    if (!userId) {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+      pendingSaveRef.current = null;
+      prevBalanceRef.current = null;
+      setExercises([]);
+      setFoods([]);
+      setSummary(null);
+      setSaveStatus('idle');
+      setAiLoading(false);
+      setAiCalcLoading(false);
+      setAiResponse(null);
+      setAiStructured(null);
+      setAiError(null);
+      setAiRefineResult(null);
+      setCooldownSeconds(0);
+    }
+  }, [userId]);
+
+  useEffect(() => {
     if (dayLoading) return;
     setExercises(dayData?.exercises ?? []);
     setFoods(dayData?.foods ?? []);

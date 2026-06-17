@@ -191,4 +191,17 @@ export const nativeStore = {
       values: [key, value],
     });
   },
+
+  async clearAll(): Promise<void> {
+    await openNativeDatabase();
+    await CapacitorSQLite.execute({
+      database: DB_NAME,
+      statements: `
+        DELETE FROM cache_snapshot;
+        DELETE FROM outbox;
+        DELETE FROM sync_meta;
+      `,
+      transaction: true,
+    });
+  },
 };

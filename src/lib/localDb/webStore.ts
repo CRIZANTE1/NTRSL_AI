@@ -90,4 +90,16 @@ export const webStore = {
   async setSyncMeta(key: string, value: string): Promise<void> {
     window.localStorage.setItem(META_PREFIX + key, value);
   },
+
+  async clearAll(): Promise<void> {
+    const keys: string[] = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const k = window.localStorage.key(i);
+      if (!k) continue;
+      if (k.startsWith(SNAP_PREFIX) || k.startsWith(META_PREFIX) || k === OUTBOX_KEY) {
+        keys.push(k);
+      }
+    }
+    for (const k of keys) window.localStorage.removeItem(k);
+  },
 };

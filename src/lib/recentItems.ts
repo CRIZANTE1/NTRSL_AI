@@ -98,3 +98,14 @@ export function setCoachGoals(text: string): void {
     // ignore
   }
 }
+
+export function clearRecentItems(): void {
+  try {
+    localStorage.removeItem(FOODS_KEY);
+    localStorage.removeItem(EXERCISES_KEY);
+    localStorage.removeItem(SECTION_MODE_KEY);
+    localStorage.removeItem(COACH_GOALS_KEY);
+  } catch {
+    // ignore
+  }
+}

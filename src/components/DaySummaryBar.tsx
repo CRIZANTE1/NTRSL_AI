@@ -26,7 +26,7 @@ function MiniProgress({
   const pct = goal > 0 ? Math.min(Math.round((value / goal) * 100), 100) : 0;
   return (
     <div
-      className="h-1 rounded-full overflow-hidden mt-0.5"
+      className="h-1 rounded-full overflow-hidden"
       style={{ background: colors.border }}
       role="progressbar"
       aria-valuenow={Math.round(value)}
@@ -58,7 +58,7 @@ export function DaySummaryBar({
 
   return (
     <div
-      className="sticky top-0 z-10 rounded-xl border px-3 py-2.5 flex items-center gap-2 transition-shadow duration-300"
+      className="sticky top-0 z-10 rounded-xl border px-4 py-3 flex items-center gap-3 transition-shadow duration-300"
       style={{
         background: colors.surface,
         borderColor: colors.border,
@@ -66,8 +66,8 @@ export function DaySummaryBar({
       }}
       key={pulseKey}
     >
-      <div className="flex-1 grid grid-cols-3 gap-1 text-center">
-        <div>
+      <div className="flex-1 grid grid-cols-3 gap-3 text-center min-w-0">
+        <div className="px-1 min-w-0">
           <p className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: colors.textMuted }}>
             Gastas
           </p>
@@ -77,7 +77,7 @@ export function DaySummaryBar({
           </p>
         </div>
 
-        <div>
+        <div className="px-1 min-w-0">
           <p className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: colors.textMuted }}>
             Consumidas
           </p>
@@ -86,16 +86,16 @@ export function DaySummaryBar({
             <span className="text-[9px] font-normal ml-0.5" style={{ color: colors.textMuted }}>kcal</span>
           </p>
           {goals && (
-            <>
-              <p className="text-[8px] tabular-nums" style={{ color: colors.textMuted }}>
+            <div className="mt-2.5 space-y-2 px-2.5 pb-0.5">
+              <p className="text-[8px] tabular-nums leading-none" style={{ color: colors.textMuted }}>
                 / {goals.kcal} kcal
               </p>
               <MiniProgress value={summary.consumidas} goal={goals.kcal} color={colors.accent} />
-            </>
+            </div>
           )}
         </div>
 
-        <div>
+        <div className="px-1 min-w-0">
           <p className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: colors.textMuted }}>
             {balanceLabel}
           </p>
@@ -107,12 +107,12 @@ export function DaySummaryBar({
             <span className="text-[9px] font-normal ml-0.5" style={{ color: colors.textMuted }}>kcal</span>
           </p>
           {goals && summary.proteina > 0 && (
-            <>
-              <p className="text-[8px] tabular-nums" style={{ color: colors.textMuted }}>
+            <div className="mt-2.5 space-y-2 px-2.5 pb-0.5">
+              <p className="text-[8px] tabular-nums leading-none" style={{ color: colors.textMuted }}>
                 P: {Math.round(summary.proteina)}/{goals.proteina}g
               </p>
               <MiniProgress value={summary.proteina} goal={goals.proteina} color={colors.points} />
-            </>
+            </div>
           )}
         </div>
       </div>

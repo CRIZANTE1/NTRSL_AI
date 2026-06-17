@@ -107,7 +107,7 @@ function ProgressRings({ metrics }: { metrics: RingMetric[] }) {
           const pct = Math.min(Math.round((metric.value / metric.goal) * 100), 100);
           return (
             <div key={metric.label} className="min-w-0">
-              <div className="flex items-baseline justify-between gap-1 mb-0.5">
+              <div className="flex items-baseline justify-between gap-1 mb-1.5">
                 <span className="text-[10px] font-medium" style={{ color: colors.textSecondary }}>
                   {metric.label}
                 </span>
@@ -118,9 +118,10 @@ function ProgressRings({ metrics }: { metrics: RingMetric[] }) {
                   </span>
                 </span>
               </div>
-              <div
-                className="h-3 rounded-full overflow-hidden"
-                style={{ background: colors.border }}
+              <div className="px-0.5">
+                <div
+                  className="h-3 rounded-full overflow-hidden"
+                  style={{ background: colors.border }}
                 role="progressbar"
                 aria-valuenow={Math.round(metric.value)}
                 aria-valuemin={0}
@@ -135,6 +136,7 @@ function ProgressRings({ metrics }: { metrics: RingMetric[] }) {
                     transition: 'width 0.6s ease',
                   }}
                 />
+              </div>
               </div>
             </div>
           );
@@ -168,7 +170,7 @@ function WeeklyMiniChart({
       className="relative rounded-xl border min-h-0 h-full overflow-hidden"
       style={{ background: colors.surface, borderColor: colors.border }}
     >
-      <div className="absolute top-2 left-3 right-3 z-10 flex items-baseline justify-between pointer-events-none">
+      <div className="absolute top-2.5 left-4 right-4 z-10 flex items-baseline justify-between pointer-events-none">
         <p className="text-[10px] font-semibold" style={{ color: colors.textMuted }}>
           {title}
         </p>
@@ -178,9 +180,9 @@ function WeeklyMiniChart({
         </p>
       </div>
 
-      <div className="absolute inset-0 pt-6 pb-0">
+      <div className="absolute inset-x-2 top-9 bottom-3">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 0, right: 4, left: -32, bottom: 0 }}>
+          <BarChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 4 }}>
             <XAxis
               dataKey="label"
               tick={{ fill: colors.textMuted, fontSize: 8 }}

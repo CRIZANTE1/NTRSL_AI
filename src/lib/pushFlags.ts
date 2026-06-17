@@ -1,7 +1,7 @@
 /**
- * Push nativo pode ser desativado com VITE_ENABLE_PUSH=false (builds sem FCM ou diagnóstico).
- * Por omissão o fluxo tenta registar; falhas nunca devem impedir o resto da app.
+ * Push nativo só é ativado com VITE_ENABLE_PUSH=true (requer google-services.json + FCM).
+ * Sem Firebase, PushNotifications.register() derruba o processo Android (crash nativo).
  */
 export function isNativePushEnabled(): boolean {
-  return import.meta.env.VITE_ENABLE_PUSH !== 'false';
+  return import.meta.env.VITE_ENABLE_PUSH === 'true';
 }

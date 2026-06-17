@@ -79,4 +79,10 @@ export async function setSyncMeta(key: string, value: string): Promise<void> {
   return store().setSyncMeta(key, value);
 }
 
+export async function clearLocalDb(): Promise<void> {
+  await ensureLocalDb();
+  const s = store() as unknown as { clearAll?: () => Promise<void> };
+  await s.clearAll?.();
+}
+
 export type { CacheRow, OutboxRow, OutboxInsert } from './types';
