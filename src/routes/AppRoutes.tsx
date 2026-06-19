@@ -13,6 +13,7 @@ const SettingsPage = lazy(() => import('../pages/SettingsPage'));
 const PrivacySettingsPage = lazy(() => import('../pages/PrivacySettingsPage'));
 const PersonalizationPage = lazy(() => import('../pages/PersonalizationPage'));
 const NutritionHomePage = lazy(() => import('../pages/NutritionHomePage'));
+const DiaryPage = lazy(() => import('../pages/DiaryPage'));
 const DashboardPage = lazy(() => import('../pages/DashboardPage'));
 const HistoricoPage = lazy(() => import('../pages/HistoricoPage'));
 const AboutPage = lazy(() => import('../pages/AboutPage'));
@@ -62,6 +63,14 @@ export function AppRoutes() {
             element={
               <LazyApp>
                 <DashboardPage />
+              </LazyApp>
+            }
+          />
+          <Route
+            path="/diario"
+            element={
+              <LazyApp>
+                <DiaryPage />
               </LazyApp>
             }
           />

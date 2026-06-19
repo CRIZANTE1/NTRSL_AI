@@ -5,14 +5,16 @@ import { UndoToast } from './UndoToast';
 import { postFoodSearch } from '../lib/api';
 import { hapticsImpactLight } from '../lib/haptics';
 import { getRecentFoods, isUiCompact, pushRecentFood } from '../lib/recentItems';
-import { getFoodNames } from '../lib/nutrition';
+import { calcularNutricaoFromEntry, getFoodNames } from '../lib/nutrition';
 import { colors } from '../theme/colors';
-import type { FoodEntry, FoodSearchResult } from '../types/nutrition';
+import { FoodCalorieDisplay } from './FoodCalorieDisplay';
+import type { FoodEntry, FoodItemStatus, FoodSearchResult } from '../types/nutrition';
 
 interface FoodPickerProps {
   entries: FoodEntry[];
   onChange: (entries: FoodEntry[]) => void;
   inputRef?: React.RefObject<HTMLInputElement | null>;
+  statuses?: Record<string, FoodItemStatus>;
 }
 
 function defaultQuantity(name: string): number {
@@ -75,7 +77,7 @@ function ResultButton({
   );
 }
 
-export function FoodPicker({ entries, onChange, inputRef }: FoodPickerProps) {
+export function FoodPicker({ entries, onChange, inputRef, statuses }: FoodPickerProps) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -360,6 +362,10 @@ export function FoodPicker({ entries, onChange, inputRef }: FoodPickerProps) {
                 />
               </label>
             </div>
+            <FoodCalorieDisplay
+              kcal={Math.round(calcularNutricaoFromEntry(entry).calorias)}
+              status={statuses?.[entry.localKey ?? entry.name]}
+            />
             <button
               type="button"
               onClick={() => removeFood(entry)}

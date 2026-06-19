@@ -5,14 +5,16 @@ import { UndoToast } from './UndoToast';
 import { postExerciseSearch } from '../lib/api';
 import { hapticsImpactLight } from '../lib/haptics';
 import { getRecentExercises, isUiCompact, pushRecentExercise } from '../lib/recentItems';
-import { getExerciseNames } from '../lib/nutrition';
+import { calcularCaloriasExercicioFromEntry, getExerciseNames } from '../lib/nutrition';
 import { colors } from '../theme/colors';
-import type { ExerciseEntry, ExerciseSearchResult } from '../types/nutrition';
+import { ExerciseCalorieDisplay } from './ExerciseCalorieDisplay';
+import type { ExerciseEntry, ExerciseSearchResult, FoodItemStatus } from '../types/nutrition';
 
 interface ExercisePickerProps {
   entries: ExerciseEntry[];
   onChange: (entries: ExerciseEntry[]) => void;
   inputRef?: React.RefObject<HTMLInputElement | null>;
+  statuses?: Record<string, FoodItemStatus>;
 }
 
 function sourceLabel(result: Pick<ExerciseSearchResult, 'caloriasPorMinuto'>): string {
@@ -65,7 +67,7 @@ function ResultButton({
   );
 }
 
-export function ExercisePicker({ entries, onChange, inputRef }: ExercisePickerProps) {
+export function ExercisePicker({ entries, onChange, inputRef, statuses }: ExercisePickerProps) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -352,6 +354,10 @@ export function ExercisePicker({ entries, onChange, inputRef }: ExercisePickerPr
                 />
               </label>
             </div>
+            <ExerciseCalorieDisplay
+              kcal={Math.round(calcularCaloriasExercicioFromEntry(entry))}
+              status={statuses?.[entry.localKey ?? entry.name]}
+            />
             <button
               type="button"
               onClick={() => removeExercise(entry)}

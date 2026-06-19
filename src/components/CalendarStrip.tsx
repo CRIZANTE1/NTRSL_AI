@@ -8,6 +8,8 @@ export interface CalendarStripProps {
   visibleDays?: number;
   /** Datas com dot (registro existente). Sem essa prop, nenhum dot é exibido. */
   eventDates?: Date[];
+  /** Versão menor para telas compactas (ex: Diário) */
+  compact?: boolean;
 }
 
 function startOfDay(d: Date) {
@@ -37,34 +39,41 @@ const Day: React.FC<{
   date: Date;
   isSelected: boolean;
   hasDot?: boolean;
+  compact?: boolean;
   onClick: () => void;
-}> = ({ date, isSelected, hasDot, onClick }) => {
+}> = ({ date, isSelected, hasDot, compact = false, onClick }) => {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex flex-col items-center justify-center gap-1 w-[56px] flex-shrink-0 rounded-3xl transition-all"
+      className={`flex flex-col items-center justify-center gap-0.5 flex-shrink-0 transition-all ${
+        compact ? 'w-[40px] rounded-2xl' : 'w-[56px] rounded-3xl gap-1'
+      }`}
       style={{
         background: isSelected ? colors.textPrimary : colors.surface,
         border: `1px solid ${colors.border}`,
-        padding: isSelected ? '20px 12px' : '16px 12px',
+        padding: compact
+          ? isSelected ? '8px 6px' : '6px 6px'
+          : isSelected ? '20px 12px' : '16px 12px',
         cursor: 'pointer',
       }}
     >
       {hasDot && !isSelected && (
         <div
-          className="w-1.5 h-1.5 rounded-full mb-[-2px]"
+          className={`rounded-full mb-[-2px] ${compact ? 'w-1 h-1' : 'w-1.5 h-1.5'}`}
           style={{ background: colors.badge }}
         />
       )}
       <span
-        className="text-[10px] font-semibold uppercase truncate w-full text-center"
+        className={`font-semibold uppercase truncate w-full text-center ${
+          compact ? 'text-[8px]' : 'text-[10px]'
+        }`}
         style={{ color: isSelected ? colors.accentSoft : colors.textMuted }}
       >
         {formatWeekdayShort(date)}
       </span>
       <span
-        className="text-base font-bold"
+        className={`font-bold ${compact ? 'text-sm' : 'text-base'}`}
         style={{ color: isSelected ? colors.surface : colors.textPrimary }}
       >
         {date.getDate()}
@@ -78,6 +87,7 @@ export default function CalendarStrip({
   selectedDate: propSelectedDate,
   visibleDays = 7,
   eventDates,
+  compact = false,
 }: CalendarStripProps) {
   const today = useMemo(() => startOfDay(new Date()), []);
   const [selectedDate, setSelectedDate] = useState<Date>(startOfDay(propSelectedDate ?? today));
@@ -105,7 +115,7 @@ export default function CalendarStrip({
 
   return (
     <div
-      className="flex items-center gap-3 overflow-x-auto pb-2 px-1 -mx-1"
+      className={`flex items-center overflow-x-auto px-1 -mx-1 ${compact ? 'gap-1.5 pb-1' : 'gap-3 pb-2'}`}
       style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}
     >
       <style>{`div::-webkit-scrollbar { display: none; }`}</style>
@@ -120,6 +130,7 @@ export default function CalendarStrip({
             date={date}
             isSelected={isSelected}
             hasDot={hasDot}
+            compact={compact}
             onClick={() => handleDateClick(date)}
           />
         );

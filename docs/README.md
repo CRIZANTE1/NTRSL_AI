@@ -24,6 +24,7 @@ Changelog resumido: [`CHANGELOG.md`](../CHANGELOG.md) na raiz.
 | [ANDROID.md](./ANDROID.md) | **Capacitor → pasta `android/` + APK no Android Studio** (incl. Gradle, JDK, proxy/SSL) |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) | Stack, pastas, rotas, fluxos e offline |
 | [UX_SEU_DIA.md](./UX_SEU_DIA.md) | Refactor "Seu dia" — auto-save, TanStack Query, componentes |
+| [UX_DIARIO.md](./UX_DIARIO.md) | Página **Diário** (`/diario`) — texto livre, layout, estilos, fluxo IA |
 | [UX_MELHORIAS_USUARIO.md](./UX_MELHORIAS_USUARIO.md) | **Metas**, recentes, undo, **Coach semanal**, refino IA, glass card |
 | [API.md](./API.md) | Edge Functions Supabase + Gemini |
 | [GEMINI_SECRETS.md](./GEMINI_SECRETS.md) | **Onde configurar `GOOGLE_API_KEY`** (e por que não no `.env.local`) |

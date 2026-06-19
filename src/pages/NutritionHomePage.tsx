@@ -31,7 +31,7 @@ import {
   type SectionMode,
 } from '../lib/recentItems';
 import { colors } from '../theme/colors';
-import type { CoachRecommendationStructured, ExerciseEntry, FoodEntry, NutritionSummary } from '../types/nutrition';
+import type { CoachRecommendationStructured, ExerciseEntry, FoodEntry, FoodItemStatus, NutritionSummary } from '../types/nutrition';
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'pending-sync';
 
@@ -72,6 +72,8 @@ export default function NutritionHomePage() {
   const [aiStructured, setAiStructured] = useState<CoachRecommendationStructured | null>(null);
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const [aiCalcLoading, setAiCalcLoading] = useState(false);
+  const [foodStatuses, setFoodStatuses] = useState<Record<string, FoodItemStatus>>({});
+  const [exerciseStatuses, setExerciseStatuses] = useState<Record<string, FoodItemStatus>>({});
   const [aiRefineResult, setAiRefineResult] = useState<{
     before: NutritionSummary;
     after: NutritionSummary;
@@ -109,6 +111,8 @@ export default function NutritionHomePage() {
     setAiStructured(null);
     setAiError(null);
     setAiRefineResult(null);
+    setFoodStatuses({});
+    setExerciseStatuses({});
   }, [dayData, dayLoading]);
 
   const liveSummary = useMemo(() => {
@@ -250,6 +254,25 @@ export default function NutritionHomePage() {
     setAiCalcLoading(true);
     setAiError(null);
 
+    setFoodStatuses((prev) => ({
+      ...prev,
+      ...foods
+        .filter((f) => !f.per100g?.calorias)
+        .reduce<Record<string, FoodItemStatus>>(
+          (acc, f) => ({ ...acc, [f.localKey ?? f.name]: 'calculating' }),
+          {},
+        ),
+    }));
+    setExerciseStatuses((prev) => ({
+      ...prev,
+      ...exercises
+        .filter((e) => !e.caloriasPorMinuto)
+        .reduce<Record<string, FoodItemStatus>>(
+          (acc, e) => ({ ...acc, [e.localKey ?? e.name]: 'calculating' }),
+          {},
+        ),
+    }));
+
     const localResult = buildSummary(exercises, foods);
     let result = localResult;
 
@@ -262,6 +285,13 @@ export default function NutritionHomePage() {
       setSummary(localResult);
       const message = err instanceof Error ? err.message : 'Falha ao calcular com IA.';
       setAiError(`Cálculo local (offline): ${message}`);
+    } finally {
+      setFoodStatuses((prev) =>
+        Object.fromEntries(Object.keys(prev).map((k) => [k, 'resolved' as FoodItemStatus])),
+      );
+      setExerciseStatuses((prev) =>
+        Object.fromEntries(Object.keys(prev).map((k) => [k, 'resolved' as FoodItemStatus])),
+      );
     }
 
     setSaveStatus('saving');
@@ -479,6 +509,7 @@ export default function NutritionHomePage() {
                 entries={exercises}
                 onChange={handleExercisesChange}
                 inputRef={exerciseInputRef}
+                statuses={exerciseStatuses}
               />
             </section>
           )}
@@ -491,7 +522,7 @@ export default function NutritionHomePage() {
               >
                 Alimentos
               </h2>
-              <FoodPicker entries={foods} onChange={handleFoodsChange} inputRef={foodInputRef} />
+              <FoodPicker entries={foods} onChange={handleFoodsChange} inputRef={foodInputRef} statuses={foodStatuses} />
             </section>
           )}
         </>

@@ -1,3 +1,18 @@
+export type FoodItemStatus = 'idle' | 'calculating' | 'resolved'
+
+export interface DiaryEntry {
+  id: string
+  rawText: string
+  type?: 'food' | 'exercise'
+  kcal?: number
+  carbs?: number
+  protein?: number
+  fat?: number
+  status: FoodItemStatus
+  isNew?: boolean
+  createdAt: string
+}
+
 export interface FoodInfo {
   calorias: number;
   proteína: number;
