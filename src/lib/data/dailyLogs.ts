@@ -1,5 +1,6 @@
 import { supabase } from '../supabase';
 import { enqueueOutbox } from '../localDb';
+import { generateUUID } from '../uuid';
 import { notifyOfflineDataChanged } from './offlineEvents';
 import type { ExerciseEntry, FoodEntry, NutritionSummary } from '../../types/nutrition';
 import type { Database, Json } from '../../types/supabase';
@@ -107,7 +108,7 @@ export async function saveDailyLog(params: {
   if (!error) return { synced: true };
 
   await enqueueOutbox({
-    id: crypto.randomUUID(),
+    id: generateUUID(),
     created_at: new Date().toISOString(),
     operation: 'upsert',
     table_name: 'daily_logs',

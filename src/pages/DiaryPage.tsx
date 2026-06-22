@@ -17,6 +17,7 @@ import {
   parseDiaryFromStoredEntries,
 } from '../lib/diary';
 import { hapticsSuccess } from '../lib/haptics';
+import { generateUUID } from '../lib/uuid';
 import { useDailyLog, useSaveDailyLog } from '../hooks/useDailyLog';
 import { useDailyLogHistory } from '../hooks/useDailyLogHistory';
 import { useDiaryProcessor } from '../hooks/useDiaryProcessor';
@@ -124,7 +125,7 @@ export default function DiaryPage() {
 
   const handleAddEntry = (rawText: string) => {
     const newEntry: DiaryEntry = {
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       rawText,
       status: 'calculating',
       createdAt: new Date().toISOString(),

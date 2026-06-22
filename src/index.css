@@ -138,8 +138,12 @@
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+html {
+  background-color: #F5F0EA;
+}
+
 body {
-  background-color: #f8f9fa;
+  background-color: #F5F0EA;
   color: #1a1a1a;
   font-family: var(--font-primary);
   font-size: var(--text-body);

@@ -61,7 +61,7 @@ const config: CapacitorConfig = {
   // ...
   ...(isDev && {
     server: {
-      url: 'http://<IP-DO-SEU-MAC>:5173',
+      url: 'http://<IP-DO-SEU-MAC>:3000',
       cleartext: true,
     },
   }),

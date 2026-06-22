@@ -28,6 +28,7 @@ export function NativeShellEffects() {
       await SplashScreen.hide({ fadeOutDuration: 200 }).catch(() => {});
       if (cancelled) return undefined;
 
+      await StatusBar.setOverlaysWebView({ overlay: true }).catch(() => {});
       await StatusBar.setStyle({ style: Style.Light }).catch(() => {});
       await StatusBar.setBackgroundColor({ color: colors.background }).catch(() => {});
       if (cancelled) return undefined;
