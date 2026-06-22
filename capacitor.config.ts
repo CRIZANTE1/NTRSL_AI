@@ -3,10 +3,18 @@ import type { CapacitorConfig } from '@capacitor/cli';
 /** Cor de fundo alinhada a `colors.background` em `src/theme/colors.ts` */
 const APP_BACKGROUND = '#F5F0EA';
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 const config: CapacitorConfig = {
   appId: 'com.ntrsl.ai',
   appName: 'NTRSL AI',
   webDir: 'dist',
+  ...(isDev && {
+    server: {
+      url: 'http://192.168.15.24:5173',
+      cleartext: true,
+    },
+  }),
   android: {
     backgroundColor: APP_BACKGROUND,
   },

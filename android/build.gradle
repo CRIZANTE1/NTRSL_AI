@@ -1,11 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-// Reforço SSL para redes com proxy (complementa android/gradle.properties).
-if (System.getProperty('javax.net.ssl.trustStoreType') == null) {
-    System.setProperty('javax.net.ssl.trustStore', 'C:\\Windows\\win.ini')
-    System.setProperty('javax.net.ssl.trustStoreType', 'Windows-ROOT')
-}
-
 buildscript {
     
     repositories {
