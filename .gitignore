@@ -1,0 +1,29 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# IDE
+.idea/
+android/.idea/
+
+# Supabase CLI / deploy local
+supabase/.temp/
+
+# Artefatos temporários de deploy (MCP/CLI) — não versionar
+deploy-*.json
+tmp-*.json
+deploy-args-*.json
+mcp-deploy-*.json
+.mcp-*.json
+.deploy-*.json
+.tmp-*.json
+scripts/.*/
+scripts/**/.*/
+scripts/food-search-deploy-steps/
+scripts/exercise-search-deploy-steps/
+scripts/.food-deploy-chunks/

@@ -1,0 +1,390 @@
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import Fuse from 'fuse.js';
+import { Clock, Loader2, Search, X } from 'lucide-react';
+import { UndoToast } from './UndoToast';
+import { postFoodSearch } from '../lib/api';
+import { hapticsImpactLight } from '../lib/haptics';
+import { getRecentFoods, isUiCompact, pushRecentFood } from '../lib/recentItems';
+import { calcularNutricaoFromEntry, getFoodNames } from '../lib/nutrition';
+import { colors } from '../theme/colors';
+import { FoodCalorieDisplay } from './FoodCalorieDisplay';
+import type { FoodEntry, FoodItemStatus, FoodSearchResult } from '../types/nutrition';
+
+interface FoodPickerProps {
+  entries: FoodEntry[];
+  onChange: (entries: FoodEntry[]) => void;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
+  statuses?: Record<string, FoodItemStatus>;
+}
+
+function defaultQuantity(name: string): number {
+  return name.toLowerCase() === 'água' ? 0.5 : 100;
+}
+
+function quantityUnit(name: string): string {
+  return name.toLowerCase() === 'água' ? 'L' : 'g';
+}
+
+function sourceLabel(result: Pick<FoodSearchResult, 'per100g'>): string {
+  const hasMacros =
+    result.per100g.calorias + result.per100g.proteina + result.per100g.carboidratos + result.per100g.gordura > 0;
+  if (hasMacros) return 'c/ macros';
+  return 'estimado';
+}
+
+function entryKey(entry: Pick<FoodEntry, 'name' | 'fdcId' | 'localKey'>): string {
+  return `${entry.fdcId ?? ''}:${entry.localKey ?? entry.name}`;
+}
+
+function parseDecimalInput(raw: string): number {
+  const normalized = raw.replace(',', '.');
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : NaN;
+}
+
+function ResultButton({
+  result,
+  disabled,
+  onSelect,
+}: {
+  result: FoodSearchResult;
+  disabled: boolean;
+  onSelect: (r: FoodSearchResult) => void;
+}) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={() => onSelect(result)}
+      className="w-full text-left px-4 py-2.5 text-sm disabled:opacity-40 hover:brightness-95"
+      style={{ color: colors.textPrimary }}
+    >
+      <span className="flex items-center justify-between gap-2">
+        <span className="truncate">{result.name}</span>
+        <span
+          className="shrink-0 text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded-md"
+          style={{ background: colors.surfaceWarm, color: colors.textSecondary }}
+        >
+          {sourceLabel(result)}
+        </span>
+      </span>
+      {result.nameEn && result.nameEn !== result.name && (
+        <span className="block text-xs truncate mt-0.5" style={{ color: colors.textMuted }}>
+          {result.nameEn}
+        </span>
+      )}
+    </button>
+  );
+}
+
+export function FoodPicker({ entries, onChange, inputRef, statuses }: FoodPickerProps) {
+  const [query, setQuery] = useState('');
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [remoteResults, setRemoteResults] = useState<FoodSearchResult[]>([]);
+  const [undoEntry, setUndoEntry] = useState<FoodEntry | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const compact = isUiCompact();
+  const allNames = useMemo(() => getFoodNames(), []);
+
+  const fuse = useMemo(
+    () => new Fuse(allNames, { threshold: 0.35, ignoreLocation: true }),
+    [allNames],
+  );
+
+  const localFallback = useMemo(() => {
+    if (!query.trim()) return allNames.slice(0, 12);
+    return fuse.search(query.trim()).map((r) => r.item).slice(0, 12);
+  }, [allNames, fuse, query]);
+
+  useEffect(() => {
+    function handleClose() {
+      setOpen(false);
+    }
+
+    function handleOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        handleClose();
+      }
+    }
+
+    document.addEventListener('mousedown', handleOutside);
+    window.addEventListener('scroll', handleClose, { capture: true, passive: true });
+    return () => {
+      document.removeEventListener('mousedown', handleOutside);
+      window.removeEventListener('scroll', handleClose, { capture: true });
+    };
+  }, []);
+
+  useEffect(() => {
+    const trimmed = query.trim();
+    if (trimmed.length < 2) {
+      setRemoteResults([]);
+      setSearchError(null);
+      setLoading(false);
+      return;
+    }
+
+    let alive = true;
+    setLoading(true);
+    setSearchError(null);
+
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        try {
+          const response = await postFoodSearch(trimmed, 12);
+          if (!alive) return;
+          setRemoteResults(response.results);
+        } catch (err) {
+          if (!alive) return;
+          setRemoteResults([]);
+          setSearchError(err instanceof Error ? err.message : 'Falha na busca.');
+        } finally {
+          if (alive) setLoading(false);
+        }
+      })();
+    }, 400);
+
+    return () => {
+      alive = false;
+      window.clearTimeout(timer);
+    };
+  }, [query]);
+
+  const selectedKeys = useMemo(() => new Set(entries.map((e) => entryKey(e))), [entries]);
+
+  const recentFoods = useMemo(
+    () => getRecentFoods().filter((r) => !selectedKeys.has(entryKey(r))),
+    [selectedKeys],
+  );
+
+  const displayResults = useMemo((): FoodSearchResult[] => {
+    if (query.trim().length >= 2) {
+      if (remoteResults.length > 0) return remoteResults;
+      if (!loading) {
+        return localFallback.map((name) => ({
+          id: null,
+          name,
+          nameEn: null,
+          source: 'local' as const,
+          fdcId: null,
+          localKey: name,
+          matchScore: 1,
+          per100g: { calorias: 0, proteina: 0, carboidratos: 0, gordura: 0 },
+        }));
+      }
+      return [];
+    }
+    return localFallback.map((name) => ({
+      id: null,
+      name,
+      nameEn: null,
+      source: 'local' as const,
+      fdcId: null,
+      localKey: name,
+      matchScore: 1,
+      per100g: { calorias: 0, proteina: 0, carboidratos: 0, gordura: 0 },
+    }));
+  }, [localFallback, loading, query, remoteResults]);
+
+  const addFood = (result: FoodSearchResult) => {
+    const key = entryKey({
+      name: result.name,
+      fdcId: result.fdcId,
+      localKey: result.localKey,
+    });
+    if (selectedKeys.has(key)) return;
+
+    const hasRemoteMacros =
+      result.source !== 'local' ||
+      (result.per100g.calorias + result.per100g.proteina + result.per100g.carboidratos + result.per100g.gordura) > 0;
+
+    pushRecentFood(result);
+    void hapticsImpactLight();
+
+    onChange([
+      ...entries,
+      {
+        name: result.name,
+        quantity: defaultQuantity(result.name),
+        foodCatalogId: result.id,
+        fdcId: result.fdcId,
+        localKey: result.localKey,
+        source: result.source,
+        ...(hasRemoteMacros ? { per100g: result.per100g } : {}),
+      },
+    ]);
+    setQuery('');
+    setOpen(false);
+  };
+
+  const removeFood = (entry: FoodEntry) => {
+    onChange(entries.filter((e) => entryKey(e) !== entryKey(entry)));
+    setUndoEntry(entry);
+  };
+
+  const handleUndo = useCallback(() => {
+    if (!undoEntry) return;
+    onChange([...entries, undoEntry]);
+    setUndoEntry(null);
+  }, [undoEntry, entries, onChange]);
+
+  const dismissUndo = useCallback(() => setUndoEntry(null), []);
+
+  const updateQuantity = (entry: FoodEntry, quantity: number) => {
+    const key = entryKey(entry);
+    onChange(entries.map((e) => (entryKey(e) === key ? { ...e, quantity } : e)));
+  };
+
+  const entryPadding = compact ? 'p-2' : 'p-3';
+  const inputPadding = compact ? 'py-2' : 'py-3';
+
+  return (
+    <div className="space-y-3">
+      <div className="relative" ref={containerRef}>
+        <Search
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+          style={{ color: colors.textMuted }}
+        />
+        <input
+          ref={inputRef}
+          type="search"
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setOpen(true);
+          }}
+          onFocus={() => setOpen(true)}
+          placeholder="Buscar alimento..."
+          className={`w-full rounded-2xl border pl-10 pr-10 text-sm ${inputPadding}`}
+          style={{
+            background: colors.surface,
+            borderColor: colors.border,
+            color: colors.textPrimary,
+          }}
+        />
+        {loading && (
+          <Loader2
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin"
+            style={{ color: colors.textMuted }}
+          />
+        )}
+        {open && (recentFoods.length > 0 || displayResults.length > 0) && (
+          <div
+            className="absolute z-20 mt-1 w-full rounded-2xl border shadow-lg max-h-56 overflow-y-auto"
+            style={{ background: colors.surface, borderColor: colors.border }}
+          >
+            {!query.trim() && recentFoods.length > 0 && (
+              <>
+                <p
+                  className="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase flex items-center gap-1"
+                  style={{ color: colors.textMuted }}
+                >
+                  <Clock className="w-3 h-3" aria-hidden />
+                  Recentes
+                </p>
+                {recentFoods.map((result) => (
+                  <ResultButton
+                    key={`recent:${result.fdcId ?? result.localKey ?? result.name}`}
+                    result={result}
+                    disabled={false}
+                    onSelect={addFood}
+                  />
+                ))}
+              </>
+            )}
+            {displayResults.map((result) => {
+              const disabled = selectedKeys.has(
+                entryKey({
+                  name: result.name,
+                  fdcId: result.fdcId,
+                  localKey: result.localKey,
+                }),
+              );
+              return (
+                <ResultButton
+                  key={`${result.source}:${result.fdcId ?? result.localKey ?? result.name}`}
+                  result={result}
+                  disabled={disabled}
+                  onSelect={addFood}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {searchError && query.trim().length >= 2 && (
+        <p className="text-xs" style={{ color: colors.textSecondary }}>
+          Busca online indisponível ({searchError}). Mostrando sugestões locais.
+        </p>
+      )}
+
+      {entries.length === 0 && (
+        <p className="text-sm" style={{ color: colors.textSecondary }}>
+          Nenhum alimento selecionado.
+        </p>
+      )}
+
+      <div className={compact ? 'space-y-1' : 'space-y-2'}>
+        {entries.map((entry) => (
+          <div
+            key={entryKey(entry)}
+            className={`flex items-center gap-2 rounded-2xl border ${entryPadding}`}
+            style={{ background: colors.surfaceWarm, borderColor: colors.border }}
+          >
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate" style={{ color: colors.textPrimary }}>
+                {entry.name}
+              </p>
+              <label className="flex items-center gap-2 mt-1">
+                <span className="text-xs" style={{ color: colors.textSecondary }}>
+                  Quantidade ({quantityUnit(entry.name)})
+                </span>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  pattern="[0-9]*[.,]?[0-9]*"
+                  value={entry.quantity}
+                  onChange={(e) => {
+                    const parsed = parseDecimalInput(e.target.value);
+                    if (!Number.isNaN(parsed)) {
+                      updateQuantity(entry, Math.max(0.1, parsed));
+                    }
+                  }}
+                  className="w-24 rounded-lg border px-2 py-1 text-sm"
+                  style={{
+                    background: colors.surface,
+                    borderColor: colors.border,
+                    color: colors.textPrimary,
+                  }}
+                />
+              </label>
+            </div>
+            <FoodCalorieDisplay
+              kcal={Math.round(calcularNutricaoFromEntry(entry).calorias)}
+              status={statuses?.[entry.localKey ?? entry.name]}
+            />
+            <button
+              type="button"
+              onClick={() => removeFood(entry)}
+              className="p-2 rounded-xl"
+              aria-label={`Remover ${entry.name}`}
+            >
+              <X className="w-4 h-4" style={{ color: colors.textMuted }} />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {undoEntry && (
+        <UndoToast
+          message={`${undoEntry.name} removido`}
+          onUndo={handleUndo}
+          onDismiss={dismissUndo}
+        />
+      )}
+    </div>
+  );
+}

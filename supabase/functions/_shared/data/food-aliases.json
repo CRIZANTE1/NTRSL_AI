@@ -1,0 +1,1937 @@
+{
+  "version": 1,
+  "generatedAt": "2026-06-12T18:06:34.614Z",
+  "entries": [
+    {
+      "localKey": "abacate",
+      "namePt": "abacate",
+      "searchTermsEn": [
+        "abacate"
+      ],
+      "aliases": [
+        "abacate"
+      ]
+    },
+    {
+      "localKey": "abacaxi",
+      "namePt": "abacaxi",
+      "searchTermsEn": [
+        "abacaxi"
+      ],
+      "aliases": [
+        "abacaxi"
+      ]
+    },
+    {
+      "localKey": "abóbora",
+      "namePt": "abóbora",
+      "searchTermsEn": [
+        "pumpkin"
+      ],
+      "aliases": [
+        "abóbora",
+        "pumpkin"
+      ]
+    },
+    {
+      "localKey": "abobrinha",
+      "namePt": "abobrinha",
+      "searchTermsEn": [
+        "abobrinha"
+      ],
+      "aliases": [
+        "abobrinha"
+      ]
+    },
+    {
+      "localKey": "açaí (polpa pura)",
+      "namePt": "açaí (polpa pura)",
+      "searchTermsEn": [
+        "acai pulp",
+        "acai"
+      ],
+      "aliases": [
+        "açaí (polpa pura)",
+        "açaí",
+        "acai pulp",
+        "acai",
+        "polpa pura",
+        "pulp"
+      ]
+    },
+    {
+      "localKey": "agrião",
+      "namePt": "agrião",
+      "searchTermsEn": [
+        "watercress"
+      ],
+      "aliases": [
+        "agrião",
+        "watercress"
+      ]
+    },
+    {
+      "localKey": "água",
+      "namePt": "água",
+      "searchTermsEn": [
+        "water"
+      ],
+      "aliases": [
+        "água",
+        "water"
+      ]
+    },
+    {
+      "localKey": "alface",
+      "namePt": "alface",
+      "searchTermsEn": [
+        "alface"
+      ],
+      "aliases": [
+        "alface"
+      ]
+    },
+    {
+      "localKey": "alho",
+      "namePt": "alho",
+      "searchTermsEn": [
+        "alho"
+      ],
+      "aliases": [
+        "alho"
+      ]
+    },
+    {
+      "localKey": "alho-poró",
+      "namePt": "alho-poró",
+      "searchTermsEn": [
+        "alho-poró"
+      ],
+      "aliases": [
+        "alho-poró"
+      ]
+    },
+    {
+      "localKey": "amêndoas",
+      "namePt": "amêndoas",
+      "searchTermsEn": [
+        "almonds"
+      ],
+      "aliases": [
+        "amêndoas",
+        "almonds"
+      ]
+    },
+    {
+      "localKey": "arroz branco",
+      "namePt": "arroz branco",
+      "searchTermsEn": [
+        "white rice",
+        "cooked rice"
+      ],
+      "aliases": [
+        "arroz branco",
+        "white rice",
+        "cooked rice",
+        "white",
+        "rice",
+        "cooked"
+      ]
+    },
+    {
+      "localKey": "arroz integral",
+      "namePt": "arroz integral",
+      "searchTermsEn": [
+        "brown rice",
+        "whole grain rice"
+      ],
+      "aliases": [
+        "arroz integral",
+        "brown rice",
+        "whole grain rice",
+        "brown",
+        "rice",
+        "whole",
+        "grain"
+      ]
+    },
+    {
+      "localKey": "aspargos",
+      "namePt": "aspargos",
+      "searchTermsEn": [
+        "aspargos"
+      ],
+      "aliases": [
+        "aspargos"
+      ]
+    },
+    {
+      "localKey": "atum em lata (em água)",
+      "namePt": "atum em lata (em água)",
+      "searchTermsEn": [
+        "canned tuna in water",
+        "tuna canned"
+      ],
+      "aliases": [
+        "atum em lata (em água)",
+        "atum em lata",
+        "canned tuna in water",
+        "tuna canned",
+        "canned",
+        "tuna",
+        "in",
+        "water"
+      ]
+    },
+    {
+      "localKey": "aveia em flocos",
+      "namePt": "aveia em flocos",
+      "searchTermsEn": [
+        "oat flakes",
+        "rolled oats"
+      ],
+      "aliases": [
+        "aveia em flocos",
+        "oat flakes",
+        "rolled oats",
+        "oat",
+        "flakes",
+        "rolled",
+        "oats"
+      ]
+    },
+    {
+      "localKey": "azeite de oliva",
+      "namePt": "azeite de oliva",
+      "searchTermsEn": [
+        "olive oil"
+      ],
+      "aliases": [
+        "azeite de oliva",
+        "olive oil",
+        "olive",
+        "oil"
+      ]
+    },
+    {
+      "localKey": "bacalhau",
+      "namePt": "bacalhau",
+      "searchTermsEn": [
+        "bacalhau"
+      ],
+      "aliases": [
+        "bacalhau"
+      ]
+    },
+    {
+      "localKey": "bacon",
+      "namePt": "bacon",
+      "searchTermsEn": [
+        "bacon"
+      ],
+      "aliases": [
+        "bacon"
+      ]
+    },
+    {
+      "localKey": "banana",
+      "namePt": "banana",
+      "searchTermsEn": [
+        "banana"
+      ],
+      "aliases": [
+        "banana"
+      ]
+    },
+    {
+      "localKey": "batata doce",
+      "namePt": "batata doce",
+      "searchTermsEn": [
+        "sweet potato"
+      ],
+      "aliases": [
+        "batata doce",
+        "sweet potato",
+        "sweet",
+        "potato"
+      ]
+    },
+    {
+      "localKey": "batata frita",
+      "namePt": "batata frita",
+      "searchTermsEn": [
+        "french fries",
+        "fried potatoes"
+      ],
+      "aliases": [
+        "batata frita",
+        "french fries",
+        "fried potatoes",
+        "french",
+        "fries",
+        "fried",
+        "potatoes"
+      ]
+    },
+    {
+      "localKey": "batidos de leite",
+      "namePt": "batidos de leite",
+      "searchTermsEn": [
+        "milkshake"
+      ],
+      "aliases": [
+        "batidos de leite",
+        "milkshake"
+      ]
+    },
+    {
+      "localKey": "berinjela",
+      "namePt": "berinjela",
+      "searchTermsEn": [
+        "berinjela"
+      ],
+      "aliases": [
+        "berinjela"
+      ]
+    },
+    {
+      "localKey": "beterraba",
+      "namePt": "beterraba",
+      "searchTermsEn": [
+        "beterraba"
+      ],
+      "aliases": [
+        "beterraba"
+      ]
+    },
+    {
+      "localKey": "bife grelhado",
+      "namePt": "bife grelhado",
+      "searchTermsEn": [
+        "grilled steak",
+        "beef steak grilled"
+      ],
+      "aliases": [
+        "bife grelhado",
+        "grilled steak",
+        "beef steak grilled",
+        "grilled",
+        "steak",
+        "beef"
+      ]
+    },
+    {
+      "localKey": "biscoitos",
+      "namePt": "biscoitos",
+      "searchTermsEn": [
+        "biscoitos"
+      ],
+      "aliases": [
+        "biscoitos"
+      ]
+    },
+    {
+      "localKey": "bolo",
+      "namePt": "bolo",
+      "searchTermsEn": [
+        "bolo"
+      ],
+      "aliases": [
+        "bolo"
+      ]
+    },
+    {
+      "localKey": "brócolis",
+      "namePt": "brócolis",
+      "searchTermsEn": [
+        "broccoli"
+      ],
+      "aliases": [
+        "brócolis",
+        "broccoli"
+      ]
+    },
+    {
+      "localKey": "café",
+      "namePt": "café",
+      "searchTermsEn": [
+        "coffee"
+      ],
+      "aliases": [
+        "café",
+        "coffee"
+      ]
+    },
+    {
+      "localKey": "camarão",
+      "namePt": "camarão",
+      "searchTermsEn": [
+        "shrimp"
+      ],
+      "aliases": [
+        "camarão",
+        "shrimp"
+      ]
+    },
+    {
+      "localKey": "carne de cordeiro",
+      "namePt": "carne de cordeiro",
+      "searchTermsEn": [
+        "lamb meat",
+        "lamb"
+      ],
+      "aliases": [
+        "carne de cordeiro",
+        "lamb meat",
+        "lamb",
+        "meat"
+      ]
+    },
+    {
+      "localKey": "carne de porco",
+      "namePt": "carne de porco",
+      "searchTermsEn": [
+        "pork meat",
+        "pork"
+      ],
+      "aliases": [
+        "carne de porco",
+        "pork meat",
+        "pork",
+        "meat"
+      ]
+    },
+    {
+      "localKey": "carne moída (magra)",
+      "namePt": "carne moída (magra)",
+      "searchTermsEn": [
+        "lean ground beef",
+        "ground beef"
+      ],
+      "aliases": [
+        "carne moída (magra)",
+        "carne moída",
+        "lean ground beef",
+        "ground beef",
+        "magra",
+        "lean",
+        "ground",
+        "beef"
+      ]
+    },
+    {
+      "localKey": "castanha de caju",
+      "namePt": "castanha de caju",
+      "searchTermsEn": [
+        "castanha de caju"
+      ],
+      "aliases": [
+        "castanha de caju",
+        "castanha",
+        "de",
+        "caju"
+      ]
+    },
+    {
+      "localKey": "castanha-do-pará",
+      "namePt": "castanha-do-pará",
+      "searchTermsEn": [
+        "brazil nut"
+      ],
+      "aliases": [
+        "castanha-do-pará",
+        "brazil nut",
+        "brazil",
+        "nut"
+      ]
+    },
+    {
+      "localKey": "cebola",
+      "namePt": "cebola",
+      "searchTermsEn": [
+        "cebola"
+      ],
+      "aliases": [
+        "cebola"
+      ]
+    },
+    {
+      "localKey": "cenoura",
+      "namePt": "cenoura",
+      "searchTermsEn": [
+        "cenoura"
+      ],
+      "aliases": [
+        "cenoura"
+      ]
+    },
+    {
+      "localKey": "cereal matinal açucarado",
+      "namePt": "cereal matinal açucarado",
+      "searchTermsEn": [
+        "sweetened breakfast cereal",
+        "cereal"
+      ],
+      "aliases": [
+        "cereal matinal açucarado",
+        "sweetened breakfast cereal",
+        "cereal",
+        "sweetened",
+        "breakfast"
+      ]
+    },
+    {
+      "localKey": "cereja",
+      "namePt": "cereja",
+      "searchTermsEn": [
+        "cereja"
+      ],
+      "aliases": [
+        "cereja"
+      ]
+    },
+    {
+      "localKey": "cerveja",
+      "namePt": "cerveja",
+      "searchTermsEn": [
+        "cerveja"
+      ],
+      "aliases": [
+        "cerveja"
+      ]
+    },
+    {
+      "localKey": "cevadinha",
+      "namePt": "cevadinha",
+      "searchTermsEn": [
+        "cevadinha"
+      ],
+      "aliases": [
+        "cevadinha"
+      ]
+    },
+    {
+      "localKey": "chá (sem açúcar)",
+      "namePt": "chá (sem açúcar)",
+      "searchTermsEn": [
+        "tea unsweetened",
+        "tea"
+      ],
+      "aliases": [
+        "chá (sem açúcar)",
+        "chá",
+        "tea unsweetened",
+        "tea",
+        "unsweetened"
+      ]
+    },
+    {
+      "localKey": "chocolate amargo",
+      "namePt": "chocolate amargo",
+      "searchTermsEn": [
+        "dark chocolate"
+      ],
+      "aliases": [
+        "chocolate amargo",
+        "dark chocolate",
+        "dark",
+        "chocolate"
+      ]
+    },
+    {
+      "localKey": "cogumelos",
+      "namePt": "cogumelos",
+      "searchTermsEn": [
+        "cogumelos"
+      ],
+      "aliases": [
+        "cogumelos"
+      ]
+    },
+    {
+      "localKey": "couve",
+      "namePt": "couve",
+      "searchTermsEn": [
+        "couve"
+      ],
+      "aliases": [
+        "couve"
+      ]
+    },
+    {
+      "localKey": "couve de Bruxelas",
+      "namePt": "couve de Bruxelas",
+      "searchTermsEn": [
+        "brussels sprouts"
+      ],
+      "aliases": [
+        "couve de Bruxelas",
+        "brussels sprouts",
+        "brussels",
+        "sprouts"
+      ]
+    },
+    {
+      "localKey": "couve-flor",
+      "namePt": "couve-flor",
+      "searchTermsEn": [
+        "cauliflower"
+      ],
+      "aliases": [
+        "couve-flor",
+        "cauliflower"
+      ]
+    },
+    {
+      "localKey": "coxinha",
+      "namePt": "coxinha",
+      "searchTermsEn": [
+        "coxinha"
+      ],
+      "aliases": [
+        "coxinha"
+      ]
+    },
+    {
+      "localKey": "creme de leite",
+      "namePt": "creme de leite",
+      "searchTermsEn": [
+        "creme de leite"
+      ],
+      "aliases": [
+        "creme de leite",
+        "creme",
+        "de",
+        "leite"
+      ]
+    },
+    {
+      "localKey": "crepe",
+      "namePt": "crepe",
+      "searchTermsEn": [
+        "crepe"
+      ],
+      "aliases": [
+        "crepe"
+      ]
+    },
+    {
+      "localKey": "cuscuz",
+      "namePt": "cuscuz",
+      "searchTermsEn": [
+        "cuscuz"
+      ],
+      "aliases": [
+        "cuscuz"
+      ]
+    },
+    {
+      "localKey": "damasco",
+      "namePt": "damasco",
+      "searchTermsEn": [
+        "damasco"
+      ],
+      "aliases": [
+        "damasco"
+      ]
+    },
+    {
+      "localKey": "doces",
+      "namePt": "doces",
+      "searchTermsEn": [
+        "doces"
+      ],
+      "aliases": [
+        "doces"
+      ]
+    },
+    {
+      "localKey": "donuts",
+      "namePt": "donuts",
+      "searchTermsEn": [
+        "donuts"
+      ],
+      "aliases": [
+        "donuts"
+      ]
+    },
+    {
+      "localKey": "empadas",
+      "namePt": "empadas",
+      "searchTermsEn": [
+        "empadas"
+      ],
+      "aliases": [
+        "empadas"
+      ]
+    },
+    {
+      "localKey": "energy drink",
+      "namePt": "energy drink",
+      "searchTermsEn": [
+        "energy drink"
+      ],
+      "aliases": [
+        "energy drink",
+        "energy",
+        "drink"
+      ]
+    },
+    {
+      "localKey": "ervilha",
+      "namePt": "ervilha",
+      "searchTermsEn": [
+        "ervilha"
+      ],
+      "aliases": [
+        "ervilha"
+      ]
+    },
+    {
+      "localKey": "espinafre",
+      "namePt": "espinafre",
+      "searchTermsEn": [
+        "espinafre"
+      ],
+      "aliases": [
+        "espinafre"
+      ]
+    },
+    {
+      "localKey": "farofa de mandioca",
+      "namePt": "farofa de mandioca",
+      "searchTermsEn": [
+        "cassava farofa",
+        "farofa"
+      ],
+      "aliases": [
+        "farofa de mandioca",
+        "cassava farofa",
+        "farofa",
+        "cassava"
+      ]
+    },
+    {
+      "localKey": "feijão carioca",
+      "namePt": "feijão carioca",
+      "searchTermsEn": [
+        "pinto beans",
+        "carioca beans"
+      ],
+      "aliases": [
+        "feijão carioca",
+        "pinto beans",
+        "carioca beans",
+        "pinto",
+        "beans",
+        "carioca"
+      ]
+    },
+    {
+      "localKey": "feijão preto",
+      "namePt": "feijão preto",
+      "searchTermsEn": [
+        "black beans"
+      ],
+      "aliases": [
+        "feijão preto",
+        "black beans",
+        "black",
+        "beans"
+      ]
+    },
+    {
+      "localKey": "figo",
+      "namePt": "figo",
+      "searchTermsEn": [
+        "figo"
+      ],
+      "aliases": [
+        "figo"
+      ]
+    },
+    {
+      "localKey": "framboesa",
+      "namePt": "framboesa",
+      "searchTermsEn": [
+        "framboesa"
+      ],
+      "aliases": [
+        "framboesa"
+      ]
+    },
+    {
+      "localKey": "frango (peito)",
+      "namePt": "frango (peito)",
+      "searchTermsEn": [
+        "chicken breast",
+        "grilled chicken breast"
+      ],
+      "aliases": [
+        "frango (peito)",
+        "frango",
+        "chicken breast",
+        "grilled chicken breast",
+        "peito",
+        "chicken",
+        "breast",
+        "grilled"
+      ]
+    },
+    {
+      "localKey": "frutas secas",
+      "namePt": "frutas secas",
+      "searchTermsEn": [
+        "dried fruit",
+        "dried fruits"
+      ],
+      "aliases": [
+        "frutas secas",
+        "dried fruit",
+        "dried fruits",
+        "dried",
+        "fruit",
+        "fruits"
+      ]
+    },
+    {
+      "localKey": "frutos do mar",
+      "namePt": "frutos do mar",
+      "searchTermsEn": [
+        "seafood",
+        "shellfish"
+      ],
+      "aliases": [
+        "frutos do mar",
+        "seafood",
+        "shellfish"
+      ]
+    },
+    {
+      "localKey": "geleia de frutas",
+      "namePt": "geleia de frutas",
+      "searchTermsEn": [
+        "fruit jam",
+        "jelly"
+      ],
+      "aliases": [
+        "geleia de frutas",
+        "fruit jam",
+        "jelly",
+        "fruit",
+        "jam"
+      ]
+    },
+    {
+      "localKey": "goiaba",
+      "namePt": "goiaba",
+      "searchTermsEn": [
+        "goiaba"
+      ],
+      "aliases": [
+        "goiaba"
+      ]
+    },
+    {
+      "localKey": "granola",
+      "namePt": "granola",
+      "searchTermsEn": [
+        "granola"
+      ],
+      "aliases": [
+        "granola"
+      ]
+    },
+    {
+      "localKey": "grão-de-bico",
+      "namePt": "grão-de-bico",
+      "searchTermsEn": [
+        "chickpea",
+        "chickpeas"
+      ],
+      "aliases": [
+        "grão-de-bico",
+        "chickpea",
+        "chickpeas"
+      ]
+    },
+    {
+      "localKey": "hambúrgueres",
+      "namePt": "hambúrgueres",
+      "searchTermsEn": [
+        "hamburger"
+      ],
+      "aliases": [
+        "hambúrgueres",
+        "hamburger"
+      ]
+    },
+    {
+      "localKey": "iogurte grego",
+      "namePt": "iogurte grego",
+      "searchTermsEn": [
+        "greek yogurt"
+      ],
+      "aliases": [
+        "iogurte grego",
+        "greek yogurt",
+        "greek",
+        "yogurt"
+      ]
+    },
+    {
+      "localKey": "iogurte integral",
+      "namePt": "iogurte integral",
+      "searchTermsEn": [
+        "whole milk yogurt",
+        "yogurt"
+      ],
+      "aliases": [
+        "iogurte integral",
+        "whole milk yogurt",
+        "yogurt",
+        "whole",
+        "milk"
+      ]
+    },
+    {
+      "localKey": "kefir",
+      "namePt": "kefir",
+      "searchTermsEn": [
+        "kefir"
+      ],
+      "aliases": [
+        "kefir"
+      ]
+    },
+    {
+      "localKey": "ketchup",
+      "namePt": "ketchup",
+      "searchTermsEn": [
+        "ketchup"
+      ],
+      "aliases": [
+        "ketchup"
+      ]
+    },
+    {
+      "localKey": "kiwi",
+      "namePt": "kiwi",
+      "searchTermsEn": [
+        "kiwi"
+      ],
+      "aliases": [
+        "kiwi"
+      ]
+    },
+    {
+      "localKey": "laranja",
+      "namePt": "laranja",
+      "searchTermsEn": [
+        "laranja"
+      ],
+      "aliases": [
+        "laranja"
+      ]
+    },
+    {
+      "localKey": "lasanha",
+      "namePt": "lasanha",
+      "searchTermsEn": [
+        "lasanha"
+      ],
+      "aliases": [
+        "lasanha"
+      ]
+    },
+    {
+      "localKey": "leite condensado",
+      "namePt": "leite condensado",
+      "searchTermsEn": [
+        "condensed milk"
+      ],
+      "aliases": [
+        "leite condensado",
+        "condensed milk",
+        "condensed",
+        "milk"
+      ]
+    },
+    {
+      "localKey": "leite de amêndoas (sem açúcar)",
+      "namePt": "leite de amêndoas (sem açúcar)",
+      "searchTermsEn": [
+        "unsweetened almond milk",
+        "almond milk"
+      ],
+      "aliases": [
+        "leite de amêndoas (sem açúcar)",
+        "leite de amêndoas",
+        "unsweetened almond milk",
+        "almond milk",
+        "unsweetened",
+        "almond",
+        "milk"
+      ]
+    },
+    {
+      "localKey": "leite de coco",
+      "namePt": "leite de coco",
+      "searchTermsEn": [
+        "coconut milk"
+      ],
+      "aliases": [
+        "leite de coco",
+        "coconut milk",
+        "coconut",
+        "milk"
+      ]
+    },
+    {
+      "localKey": "leite desnatado",
+      "namePt": "leite desnatado",
+      "searchTermsEn": [
+        "skim milk"
+      ],
+      "aliases": [
+        "leite desnatado",
+        "skim milk",
+        "skim",
+        "milk"
+      ]
+    },
+    {
+      "localKey": "leite integral",
+      "namePt": "leite integral",
+      "searchTermsEn": [
+        "whole milk"
+      ],
+      "aliases": [
+        "leite integral",
+        "whole milk",
+        "whole",
+        "milk"
+      ]
+    },
+    {
+      "localKey": "lentilha",
+      "namePt": "lentilha",
+      "searchTermsEn": [
+        "lentilha"
+      ],
+      "aliases": [
+        "lentilha"
+      ]
+    },
+    {
+      "localKey": "limão",
+      "namePt": "limão",
+      "searchTermsEn": [
+        "lemon"
+      ],
+      "aliases": [
+        "limão",
+        "lemon"
+      ]
+    },
+    {
+      "localKey": "linguiça",
+      "namePt": "linguiça",
+      "searchTermsEn": [
+        "sausage"
+      ],
+      "aliases": [
+        "linguiça",
+        "sausage"
+      ]
+    },
+    {
+      "localKey": "linhaça",
+      "namePt": "linhaça",
+      "searchTermsEn": [
+        "flaxseed"
+      ],
+      "aliases": [
+        "linhaça",
+        "flaxseed"
+      ]
+    },
+    {
+      "localKey": "maçã",
+      "namePt": "maçã",
+      "searchTermsEn": [
+        "apple"
+      ],
+      "aliases": [
+        "maçã",
+        "apple"
+      ]
+    },
+    {
+      "localKey": "maionese",
+      "namePt": "maionese",
+      "searchTermsEn": [
+        "maionese"
+      ],
+      "aliases": [
+        "maionese"
+      ]
+    },
+    {
+      "localKey": "mamão",
+      "namePt": "mamão",
+      "searchTermsEn": [
+        "papaya"
+      ],
+      "aliases": [
+        "mamão",
+        "papaya"
+      ]
+    },
+    {
+      "localKey": "mandioca cozida",
+      "namePt": "mandioca cozida",
+      "searchTermsEn": [
+        "boiled cassava",
+        "cassava cooked"
+      ],
+      "aliases": [
+        "mandioca cozida",
+        "boiled cassava",
+        "cassava cooked",
+        "boiled",
+        "cassava",
+        "cooked"
+      ]
+    },
+    {
+      "localKey": "manga",
+      "namePt": "manga",
+      "searchTermsEn": [
+        "manga"
+      ],
+      "aliases": [
+        "manga"
+      ]
+    },
+    {
+      "localKey": "manteiga",
+      "namePt": "manteiga",
+      "searchTermsEn": [
+        "manteiga"
+      ],
+      "aliases": [
+        "manteiga"
+      ]
+    },
+    {
+      "localKey": "massas",
+      "namePt": "massas",
+      "searchTermsEn": [
+        "massas"
+      ],
+      "aliases": [
+        "massas"
+      ]
+    },
+    {
+      "localKey": "melancia",
+      "namePt": "melancia",
+      "searchTermsEn": [
+        "melancia"
+      ],
+      "aliases": [
+        "melancia"
+      ]
+    },
+    {
+      "localKey": "melão",
+      "namePt": "melão",
+      "searchTermsEn": [
+        "melon"
+      ],
+      "aliases": [
+        "melão",
+        "melon"
+      ]
+    },
+    {
+      "localKey": "milho cozido",
+      "namePt": "milho cozido",
+      "searchTermsEn": [
+        "cooked corn",
+        "corn boiled"
+      ],
+      "aliases": [
+        "milho cozido",
+        "cooked corn",
+        "corn boiled",
+        "cooked",
+        "corn",
+        "boiled"
+      ]
+    },
+    {
+      "localKey": "mirtilo",
+      "namePt": "mirtilo",
+      "searchTermsEn": [
+        "mirtilo"
+      ],
+      "aliases": [
+        "mirtilo"
+      ]
+    },
+    {
+      "localKey": "morango",
+      "namePt": "morango",
+      "searchTermsEn": [
+        "morango"
+      ],
+      "aliases": [
+        "morango"
+      ]
+    },
+    {
+      "localKey": "mostarda",
+      "namePt": "mostarda",
+      "searchTermsEn": [
+        "mostarda"
+      ],
+      "aliases": [
+        "mostarda"
+      ]
+    },
+    {
+      "localKey": "muffins",
+      "namePt": "muffins",
+      "searchTermsEn": [
+        "muffins"
+      ],
+      "aliases": [
+        "muffins"
+      ]
+    },
+    {
+      "localKey": "nozes",
+      "namePt": "nozes",
+      "searchTermsEn": [
+        "nozes"
+      ],
+      "aliases": [
+        "nozes"
+      ]
+    },
+    {
+      "localKey": "nuggets de frango",
+      "namePt": "nuggets de frango",
+      "searchTermsEn": [
+        "chicken nuggets"
+      ],
+      "aliases": [
+        "nuggets de frango",
+        "chicken nuggets",
+        "chicken",
+        "nuggets"
+      ]
+    },
+    {
+      "localKey": "óleo de coco",
+      "namePt": "óleo de coco",
+      "searchTermsEn": [
+        "coconut oil"
+      ],
+      "aliases": [
+        "óleo de coco",
+        "coconut oil",
+        "coconut",
+        "oil"
+      ]
+    },
+    {
+      "localKey": "ovos",
+      "namePt": "ovos",
+      "searchTermsEn": [
+        "ovos"
+      ],
+      "aliases": [
+        "ovos"
+      ]
+    },
+    {
+      "localKey": "pão de forma",
+      "namePt": "pão de forma",
+      "searchTermsEn": [
+        "sandwich bread",
+        "white bread"
+      ],
+      "aliases": [
+        "pão de forma",
+        "sandwich bread",
+        "white bread",
+        "sandwich",
+        "bread",
+        "white"
+      ]
+    },
+    {
+      "localKey": "pão de queijo",
+      "namePt": "pão de queijo",
+      "searchTermsEn": [
+        "brazilian cheese bread",
+        "pao de queijo"
+      ],
+      "aliases": [
+        "pão de queijo",
+        "brazilian cheese bread",
+        "pao de queijo",
+        "brazilian",
+        "cheese",
+        "bread",
+        "pao",
+        "de",
+        "queijo"
+      ]
+    },
+    {
+      "localKey": "pão francês",
+      "namePt": "pão francês",
+      "searchTermsEn": [
+        "french bread",
+        "baguette"
+      ],
+      "aliases": [
+        "pão francês",
+        "french bread",
+        "baguette",
+        "french",
+        "bread"
+      ]
+    },
+    {
+      "localKey": "pão integral",
+      "namePt": "pão integral",
+      "searchTermsEn": [
+        "whole wheat bread",
+        "whole grain bread"
+      ],
+      "aliases": [
+        "pão integral",
+        "whole wheat bread",
+        "whole grain bread",
+        "whole",
+        "wheat",
+        "bread",
+        "grain"
+      ]
+    },
+    {
+      "localKey": "pasta de amendoim",
+      "namePt": "pasta de amendoim",
+      "searchTermsEn": [
+        "peanut butter"
+      ],
+      "aliases": [
+        "pasta de amendoim",
+        "peanut butter",
+        "peanut",
+        "butter"
+      ]
+    },
+    {
+      "localKey": "pastéis",
+      "namePt": "pastéis",
+      "searchTermsEn": [
+        "pastry"
+      ],
+      "aliases": [
+        "pastéis",
+        "pastry"
+      ]
+    },
+    {
+      "localKey": "pato",
+      "namePt": "pato",
+      "searchTermsEn": [
+        "pato"
+      ],
+      "aliases": [
+        "pato"
+      ]
+    },
+    {
+      "localKey": "peito de peru",
+      "namePt": "peito de peru",
+      "searchTermsEn": [
+        "turkey breast"
+      ],
+      "aliases": [
+        "peito de peru",
+        "turkey breast",
+        "turkey",
+        "breast"
+      ]
+    },
+    {
+      "localKey": "pepino",
+      "namePt": "pepino",
+      "searchTermsEn": [
+        "pepino"
+      ],
+      "aliases": [
+        "pepino"
+      ]
+    },
+    {
+      "localKey": "pera",
+      "namePt": "pera",
+      "searchTermsEn": [
+        "pera"
+      ],
+      "aliases": [
+        "pera"
+      ]
+    },
+    {
+      "localKey": "pêssego",
+      "namePt": "pêssego",
+      "searchTermsEn": [
+        "peach"
+      ],
+      "aliases": [
+        "pêssego",
+        "peach"
+      ]
+    },
+    {
+      "localKey": "pimentão",
+      "namePt": "pimentão",
+      "searchTermsEn": [
+        "bell pepper"
+      ],
+      "aliases": [
+        "pimentão",
+        "bell pepper",
+        "bell",
+        "pepper"
+      ]
+    },
+    {
+      "localKey": "pipoca (sem manteiga)",
+      "namePt": "pipoca (sem manteiga)",
+      "searchTermsEn": [
+        "popcorn plain",
+        "popcorn without butter"
+      ],
+      "aliases": [
+        "pipoca (sem manteiga)",
+        "pipoca",
+        "popcorn plain",
+        "popcorn without butter",
+        "sem manteiga",
+        "popcorn",
+        "plain",
+        "without",
+        "butter"
+      ]
+    },
+    {
+      "localKey": "pistache",
+      "namePt": "pistache",
+      "searchTermsEn": [
+        "pistache"
+      ],
+      "aliases": [
+        "pistache"
+      ]
+    },
+    {
+      "localKey": "pizza",
+      "namePt": "pizza",
+      "searchTermsEn": [
+        "pizza"
+      ],
+      "aliases": [
+        "pizza"
+      ]
+    },
+    {
+      "localKey": "proteína em pó (whey)",
+      "namePt": "proteína em pó (whey)",
+      "searchTermsEn": [
+        "whey protein powder",
+        "protein powder"
+      ],
+      "aliases": [
+        "proteína em pó (whey)",
+        "proteína em pó",
+        "whey protein powder",
+        "protein powder",
+        "whey",
+        "protein",
+        "powder"
+      ]
+    },
+    {
+      "localKey": "pudim de leite",
+      "namePt": "pudim de leite",
+      "searchTermsEn": [
+        "milk pudding",
+        "flan"
+      ],
+      "aliases": [
+        "pudim de leite",
+        "milk pudding",
+        "flan",
+        "milk",
+        "pudding"
+      ]
+    },
+    {
+      "localKey": "queijo cheddar",
+      "namePt": "queijo cheddar",
+      "searchTermsEn": [
+        "cheddar cheese"
+      ],
+      "aliases": [
+        "queijo cheddar",
+        "cheddar cheese",
+        "cheddar",
+        "cheese"
+      ]
+    },
+    {
+      "localKey": "queijo cottage",
+      "namePt": "queijo cottage",
+      "searchTermsEn": [
+        "cottage cheese"
+      ],
+      "aliases": [
+        "queijo cottage",
+        "cottage cheese",
+        "cottage",
+        "cheese"
+      ]
+    },
+    {
+      "localKey": "queijo de cabra",
+      "namePt": "queijo de cabra",
+      "searchTermsEn": [
+        "goat cheese"
+      ],
+      "aliases": [
+        "queijo de cabra",
+        "goat cheese",
+        "goat",
+        "cheese"
+      ]
+    },
+    {
+      "localKey": "queijo mascarpone",
+      "namePt": "queijo mascarpone",
+      "searchTermsEn": [
+        "mascarpone cheese"
+      ],
+      "aliases": [
+        "queijo mascarpone",
+        "mascarpone cheese",
+        "mascarpone",
+        "cheese"
+      ]
+    },
+    {
+      "localKey": "queijo minas frescal",
+      "namePt": "queijo minas frescal",
+      "searchTermsEn": [
+        "minas fresh cheese",
+        "brazilian minas cheese"
+      ],
+      "aliases": [
+        "queijo minas frescal",
+        "minas fresh cheese",
+        "brazilian minas cheese",
+        "minas",
+        "fresh",
+        "cheese",
+        "brazilian"
+      ]
+    },
+    {
+      "localKey": "queijo parmesão",
+      "namePt": "queijo parmesão",
+      "searchTermsEn": [
+        "parmesan cheese"
+      ],
+      "aliases": [
+        "queijo parmesão",
+        "parmesan cheese",
+        "parmesan",
+        "cheese"
+      ]
+    },
+    {
+      "localKey": "quinoa",
+      "namePt": "quinoa",
+      "searchTermsEn": [
+        "quinoa"
+      ],
+      "aliases": [
+        "quinoa"
+      ]
+    },
+    {
+      "localKey": "rabanete",
+      "namePt": "rabanete",
+      "searchTermsEn": [
+        "rabanete"
+      ],
+      "aliases": [
+        "rabanete"
+      ]
+    },
+    {
+      "localKey": "refrigerante",
+      "namePt": "refrigerante",
+      "searchTermsEn": [
+        "refrigerante"
+      ],
+      "aliases": [
+        "refrigerante"
+      ]
+    },
+    {
+      "localKey": "repolho",
+      "namePt": "repolho",
+      "searchTermsEn": [
+        "repolho"
+      ],
+      "aliases": [
+        "repolho"
+      ]
+    },
+    {
+      "localKey": "requeijão",
+      "namePt": "requeijão",
+      "searchTermsEn": [
+        "cream cheese spread"
+      ],
+      "aliases": [
+        "requeijão",
+        "cream cheese spread",
+        "cream",
+        "cheese",
+        "spread"
+      ]
+    },
+    {
+      "localKey": "romã",
+      "namePt": "romã",
+      "searchTermsEn": [
+        "pomegranate"
+      ],
+      "aliases": [
+        "romã",
+        "pomegranate"
+      ]
+    },
+    {
+      "localKey": "rúcula",
+      "namePt": "rúcula",
+      "searchTermsEn": [
+        "arugula"
+      ],
+      "aliases": [
+        "rúcula",
+        "arugula"
+      ]
+    },
+    {
+      "localKey": "salmão",
+      "namePt": "salmão",
+      "searchTermsEn": [
+        "salmon"
+      ],
+      "aliases": [
+        "salmão",
+        "salmon"
+      ]
+    },
+    {
+      "localKey": "salmão defumado",
+      "namePt": "salmão defumado",
+      "searchTermsEn": [
+        "smoked salmon"
+      ],
+      "aliases": [
+        "salmão defumado",
+        "smoked salmon",
+        "smoked",
+        "salmon"
+      ]
+    },
+    {
+      "localKey": "salsicha",
+      "namePt": "salsicha",
+      "searchTermsEn": [
+        "salsicha"
+      ],
+      "aliases": [
+        "salsicha"
+      ]
+    },
+    {
+      "localKey": "sardinha em lata",
+      "namePt": "sardinha em lata",
+      "searchTermsEn": [
+        "sardinha em lata"
+      ],
+      "aliases": [
+        "sardinha em lata",
+        "sardinha",
+        "em",
+        "lata"
+      ]
+    },
+    {
+      "localKey": "semente de abóbora",
+      "namePt": "semente de abóbora",
+      "searchTermsEn": [
+        "pumpkin seeds"
+      ],
+      "aliases": [
+        "semente de abóbora",
+        "pumpkin seeds",
+        "pumpkin",
+        "seeds"
+      ]
+    },
+    {
+      "localKey": "semente de girassol",
+      "namePt": "semente de girassol",
+      "searchTermsEn": [
+        "sunflower seeds"
+      ],
+      "aliases": [
+        "semente de girassol",
+        "sunflower seeds",
+        "sunflower",
+        "seeds"
+      ]
+    },
+    {
+      "localKey": "sementes de chia",
+      "namePt": "sementes de chia",
+      "searchTermsEn": [
+        "chia seeds"
+      ],
+      "aliases": [
+        "sementes de chia",
+        "chia seeds",
+        "chia",
+        "seeds"
+      ]
+    },
+    {
+      "localKey": "soja (edamame)",
+      "namePt": "soja (edamame)",
+      "searchTermsEn": [
+        "edamame",
+        "soybeans"
+      ],
+      "aliases": [
+        "soja (edamame)",
+        "soja",
+        "edamame",
+        "soybeans"
+      ]
+    },
+    {
+      "localKey": "sopa de frango",
+      "namePt": "sopa de frango",
+      "searchTermsEn": [
+        "chicken soup"
+      ],
+      "aliases": [
+        "sopa de frango",
+        "chicken soup",
+        "chicken",
+        "soup"
+      ]
+    },
+    {
+      "localKey": "sopa de legumes",
+      "namePt": "sopa de legumes",
+      "searchTermsEn": [
+        "vegetable soup"
+      ],
+      "aliases": [
+        "sopa de legumes",
+        "vegetable soup",
+        "vegetable",
+        "soup"
+      ]
+    },
+    {
+      "localKey": "sorvete",
+      "namePt": "sorvete",
+      "searchTermsEn": [
+        "sorvete"
+      ],
+      "aliases": [
+        "sorvete"
+      ]
+    },
+    {
+      "localKey": "sorvete de chocolate",
+      "namePt": "sorvete de chocolate",
+      "searchTermsEn": [
+        "chocolate ice cream"
+      ],
+      "aliases": [
+        "sorvete de chocolate",
+        "chocolate ice cream",
+        "chocolate",
+        "ice",
+        "cream"
+      ]
+    },
+    {
+      "localKey": "suco de fruta natural",
+      "namePt": "suco de fruta natural",
+      "searchTermsEn": [
+        "fresh fruit juice",
+        "fruit juice"
+      ],
+      "aliases": [
+        "suco de fruta natural",
+        "fresh fruit juice",
+        "fruit juice",
+        "fresh",
+        "fruit",
+        "juice"
+      ]
+    },
+    {
+      "localKey": "sushi",
+      "namePt": "sushi",
+      "searchTermsEn": [
+        "sushi"
+      ],
+      "aliases": [
+        "sushi"
+      ]
+    },
+    {
+      "localKey": "tâmara",
+      "namePt": "tâmara",
+      "searchTermsEn": [
+        "date fruit"
+      ],
+      "aliases": [
+        "tâmara",
+        "date fruit",
+        "date",
+        "fruit"
+      ]
+    },
+    {
+      "localKey": "tapioca",
+      "namePt": "tapioca",
+      "searchTermsEn": [
+        "tapioca"
+      ],
+      "aliases": [
+        "tapioca"
+      ]
+    },
+    {
+      "localKey": "tilápia",
+      "namePt": "tilápia",
+      "searchTermsEn": [
+        "tilapia"
+      ],
+      "aliases": [
+        "tilápia",
+        "tilapia"
+      ]
+    },
+    {
+      "localKey": "tofu",
+      "namePt": "tofu",
+      "searchTermsEn": [
+        "tofu"
+      ],
+      "aliases": [
+        "tofu"
+      ]
+    },
+    {
+      "localKey": "tomate",
+      "namePt": "tomate",
+      "searchTermsEn": [
+        "tomate"
+      ],
+      "aliases": [
+        "tomate"
+      ]
+    },
+    {
+      "localKey": "torta de maçã",
+      "namePt": "torta de maçã",
+      "searchTermsEn": [
+        "apple pie"
+      ],
+      "aliases": [
+        "torta de maçã",
+        "apple pie",
+        "apple",
+        "pie"
+      ]
+    },
+    {
+      "localKey": "tortas doces",
+      "namePt": "tortas doces",
+      "searchTermsEn": [
+        "sweet pie",
+        "dessert pie"
+      ],
+      "aliases": [
+        "tortas doces",
+        "sweet pie",
+        "dessert pie",
+        "sweet",
+        "pie",
+        "dessert"
+      ]
+    },
+    {
+      "localKey": "truta",
+      "namePt": "truta",
+      "searchTermsEn": [
+        "truta"
+      ],
+      "aliases": [
+        "truta"
+      ]
+    },
+    {
+      "localKey": "uva",
+      "namePt": "uva",
+      "searchTermsEn": [
+        "uva"
+      ],
+      "aliases": [
+        "uva"
+      ]
+    },
+    {
+      "localKey": "vinho",
+      "namePt": "vinho",
+      "searchTermsEn": [
+        "vinho"
+      ],
+      "aliases": [
+        "vinho"
+      ]
+    }
+  ]
+}

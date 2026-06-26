@@ -1,0 +1,52 @@
+---
+description: Design System — paleta de cores (tokens e uso)
+alwaysApply: true
+---
+
+## Paleta de cores (tokens)
+
+Sempre que precisar definir cores no app, use **estes tokens** (não “inventar” hex novo), mantendo consistência entre UI, componentes e temas.
+
+```ts
+export const colors = {
+  // Backgrounds
+  background: '#F5F0EA', // Creme quente — fundo principal
+  surface: '#FFFFFF', // Branco puro — cards
+  surfaceWarm: '#FDF6EE', // Creme suave — cards secundários
+
+  // Gradients (mesh warm)
+  gradientStart: '#F2C9A0', // Pêssego suave
+  gradientMid: '#C8B8D8', // Lavanda muted
+  gradientEnd: '#A8C4D4', // Azul névoa
+
+  // Textos
+  textPrimary: '#1A1A1A', // Quase preto
+  textSecondary: '#8A8A8A', // Cinza médio
+  textMuted: '#BBBBBB', // Cinza claro
+
+  // Accent / UI
+  accent: '#E8A87C', // Laranja pêssego
+  accentSoft: '#F0D5B8', // Pêssego claro
+  border: '#EDEDE9', // Divisor sutil
+  iconActive: '#1A1A1A',
+  iconInactive: '#BBBBBB',
+  badge: '#FF4444', // Dot de notificação
+  points: '#6B9E78', // Verde pontos/progresso
+} as const;
+```
+
+## Regras de uso
+
+- **Fundo de tela**: use `colors.background`.
+- **Cards/containers**: use `colors.surface` (principal) ou `colors.surfaceWarm` (secundário).
+- **Texto**:
+  - Título/primário: `colors.textPrimary`
+  - Secundário: `colors.textSecondary`
+  - Desabilitado/placeholder: `colors.textMuted`
+- **Bordas/divisores**: use `colors.border` (evitar contrastes fortes).
+- **Ícones**: `colors.iconActive` / `colors.iconInactive`.
+- **Ações/CTA**: `colors.accent` (hover/pressed pode usar `colors.accentSoft` como alternativa suave).
+- **Badges/alerta pontual**: `colors.badge` (somente para notificação/urgência).
+- **Pontos/progresso/OK**: `colors.points`.
+- **Gradiente**: quando precisar do mesh warm, use `gradientStart → gradientMid → gradientEnd` (não substituir por outros hex).
+

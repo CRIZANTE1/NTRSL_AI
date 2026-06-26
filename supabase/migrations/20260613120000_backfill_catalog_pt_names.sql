@@ -1,0 +1,10 @@
+-- Backfill de name_pt em pt-BR no catálogo
+--
+-- Registros antigos podem ter name_pt = name_en (inglês) de quando a busca usava Gemini.
+-- O upsert nas Edge Functions food-search / exercise-search já corrige novos registros.
+--
+-- Para corrigir dados existentes, execute na raiz do projeto:
+--   npm run build:search-aliases
+--   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... node scripts/backfill-catalog-pt.mjs
+--
+-- Não há DDL nesta migration; apenas documentação operacional.

@@ -1,0 +1,1200 @@
+{
+  "version": 1,
+  "generatedAt": "2026-06-12T18:06:34.624Z",
+  "entries": [
+    {
+      "localKey": "abdominal",
+      "namePt": "abdominal",
+      "searchTermsEn": [
+        "abdominal"
+      ],
+      "aliases": [
+        "abdominal"
+      ]
+    },
+    {
+      "localKey": "aeróbica (alto impacto)",
+      "namePt": "aeróbica (alto impacto)",
+      "searchTermsEn": [
+        "high impact aerobics"
+      ],
+      "aliases": [
+        "aeróbica (alto impacto)",
+        "aeróbica",
+        "high impact aerobics",
+        "alto impacto",
+        "high",
+        "impact",
+        "aerobics"
+      ]
+    },
+    {
+      "localKey": "aeróbica (baixo impacto)",
+      "namePt": "aeróbica (baixo impacto)",
+      "searchTermsEn": [
+        "low impact aerobics"
+      ],
+      "aliases": [
+        "aeróbica (baixo impacto)",
+        "aeróbica",
+        "low impact aerobics",
+        "baixo impacto",
+        "low",
+        "impact",
+        "aerobics"
+      ]
+    },
+    {
+      "localKey": "afundo (lunge)",
+      "namePt": "afundo (lunge)",
+      "searchTermsEn": [
+        "lunge",
+        "forward lunge"
+      ],
+      "aliases": [
+        "afundo (lunge)",
+        "afundo",
+        "lunge",
+        "forward lunge",
+        "forward"
+      ]
+    },
+    {
+      "localKey": "agachamento",
+      "namePt": "agachamento",
+      "searchTermsEn": [
+        "agachamento"
+      ],
+      "aliases": [
+        "agachamento"
+      ]
+    },
+    {
+      "localKey": "alongamento (stretching)",
+      "namePt": "alongamento (stretching)",
+      "searchTermsEn": [
+        "stretching"
+      ],
+      "aliases": [
+        "alongamento (stretching)",
+        "alongamento",
+        "stretching"
+      ]
+    },
+    {
+      "localKey": "artes marciais (geral)",
+      "namePt": "artes marciais (geral)",
+      "searchTermsEn": [
+        "martial arts"
+      ],
+      "aliases": [
+        "artes marciais (geral)",
+        "artes marciais",
+        "martial arts",
+        "geral",
+        "martial",
+        "arts"
+      ]
+    },
+    {
+      "localKey": "badminton (recreativo)",
+      "namePt": "badminton (recreativo)",
+      "searchTermsEn": [
+        "badminton recreational"
+      ],
+      "aliases": [
+        "badminton (recreativo)",
+        "badminton",
+        "badminton recreational",
+        "recreativo",
+        "recreational"
+      ]
+    },
+    {
+      "localKey": "barra fixa (pull-up)",
+      "namePt": "barra fixa (pull-up)",
+      "searchTermsEn": [
+        "pull-up",
+        "pull up chin-up"
+      ],
+      "aliases": [
+        "barra fixa (pull-up)",
+        "barra fixa",
+        "pull-up",
+        "pull up chin-up",
+        "pull",
+        "up",
+        "chin-up"
+      ]
+    },
+    {
+      "localKey": "basquetebol",
+      "namePt": "basquetebol",
+      "searchTermsEn": [
+        "basquetebol"
+      ],
+      "aliases": [
+        "basquetebol"
+      ]
+    },
+    {
+      "localKey": "boliche",
+      "namePt": "boliche",
+      "searchTermsEn": [
+        "boliche"
+      ],
+      "aliases": [
+        "boliche"
+      ]
+    },
+    {
+      "localKey": "boxe (saco de pancada)",
+      "namePt": "boxe (saco de pancada)",
+      "searchTermsEn": [
+        "boxing punching bag"
+      ],
+      "aliases": [
+        "boxe (saco de pancada)",
+        "boxe",
+        "boxing punching bag",
+        "saco de pancada",
+        "boxing",
+        "punching",
+        "bag"
+      ]
+    },
+    {
+      "localKey": "boxe (sparring)",
+      "namePt": "boxe (sparring)",
+      "searchTermsEn": [
+        "boxing sparring"
+      ],
+      "aliases": [
+        "boxe (sparring)",
+        "boxe",
+        "boxing sparring",
+        "sparring",
+        "boxing"
+      ]
+    },
+    {
+      "localKey": "brincar com crianças (ativo)",
+      "namePt": "brincar com crianças (ativo)",
+      "searchTermsEn": [
+        "playing with children active"
+      ],
+      "aliases": [
+        "brincar com crianças (ativo)",
+        "brincar com crianças",
+        "playing with children active",
+        "ativo",
+        "playing",
+        "with",
+        "children",
+        "active"
+      ]
+    },
+    {
+      "localKey": "burpees",
+      "namePt": "burpees",
+      "searchTermsEn": [
+        "burpees"
+      ],
+      "aliases": [
+        "burpees"
+      ]
+    },
+    {
+      "localKey": "caminhada com cachorro",
+      "namePt": "caminhada com cachorro",
+      "searchTermsEn": [
+        "dog walking"
+      ],
+      "aliases": [
+        "caminhada com cachorro",
+        "dog walking",
+        "dog",
+        "walking"
+      ]
+    },
+    {
+      "localKey": "caminhada com peso",
+      "namePt": "caminhada com peso",
+      "searchTermsEn": [
+        "weighted walking"
+      ],
+      "aliases": [
+        "caminhada com peso",
+        "weighted walking",
+        "weighted",
+        "walking"
+      ]
+    },
+    {
+      "localKey": "caminhada devagar",
+      "namePt": "caminhada devagar",
+      "searchTermsEn": [
+        "slow walking"
+      ],
+      "aliases": [
+        "caminhada devagar",
+        "slow walking",
+        "slow",
+        "walking"
+      ]
+    },
+    {
+      "localKey": "caminhada em subida",
+      "namePt": "caminhada em subida",
+      "searchTermsEn": [
+        "uphill walking"
+      ],
+      "aliases": [
+        "caminhada em subida",
+        "uphill walking",
+        "uphill",
+        "walking"
+      ]
+    },
+    {
+      "localKey": "caminhada na areia",
+      "namePt": "caminhada na areia",
+      "searchTermsEn": [
+        "sand walking beach walking"
+      ],
+      "aliases": [
+        "caminhada na areia",
+        "sand walking beach walking",
+        "sand",
+        "walking",
+        "beach"
+      ]
+    },
+    {
+      "localKey": "caminhada rapida",
+      "namePt": "caminhada rapida",
+      "searchTermsEn": [
+        "brisk walking",
+        "fast walking"
+      ],
+      "aliases": [
+        "caminhada rapida",
+        "brisk walking",
+        "fast walking",
+        "brisk",
+        "walking",
+        "fast"
+      ]
+    },
+    {
+      "localKey": "canoagem",
+      "namePt": "canoagem",
+      "searchTermsEn": [
+        "canoagem"
+      ],
+      "aliases": [
+        "canoagem"
+      ]
+    },
+    {
+      "localKey": "ciclismo (leve)",
+      "namePt": "ciclismo (leve)",
+      "searchTermsEn": [
+        "light cycling"
+      ],
+      "aliases": [
+        "ciclismo (leve)",
+        "ciclismo",
+        "light cycling",
+        "leve",
+        "light",
+        "cycling"
+      ]
+    },
+    {
+      "localKey": "ciclismo (moderado)",
+      "namePt": "ciclismo (moderado)",
+      "searchTermsEn": [
+        "moderate cycling"
+      ],
+      "aliases": [
+        "ciclismo (moderado)",
+        "ciclismo",
+        "moderate cycling",
+        "moderado",
+        "moderate",
+        "cycling"
+      ]
+    },
+    {
+      "localKey": "ciclismo (vigoroso)",
+      "namePt": "ciclismo (vigoroso)",
+      "searchTermsEn": [
+        "vigorous cycling"
+      ],
+      "aliases": [
+        "ciclismo (vigoroso)",
+        "ciclismo",
+        "vigorous cycling",
+        "vigoroso",
+        "vigorous",
+        "cycling"
+      ]
+    },
+    {
+      "localKey": "ciclismo de montanha",
+      "namePt": "ciclismo de montanha",
+      "searchTermsEn": [
+        "mountain biking"
+      ],
+      "aliases": [
+        "ciclismo de montanha",
+        "mountain biking",
+        "mountain",
+        "biking"
+      ]
+    },
+    {
+      "localKey": "corrida devagar",
+      "namePt": "corrida devagar",
+      "searchTermsEn": [
+        "jogging slow running"
+      ],
+      "aliases": [
+        "corrida devagar",
+        "jogging slow running",
+        "jogging",
+        "slow",
+        "running"
+      ]
+    },
+    {
+      "localKey": "corrida em subida",
+      "namePt": "corrida em subida",
+      "searchTermsEn": [
+        "hill running uphill running"
+      ],
+      "aliases": [
+        "corrida em subida",
+        "hill running uphill running",
+        "hill",
+        "running",
+        "uphill"
+      ]
+    },
+    {
+      "localKey": "corrida rapida",
+      "namePt": "corrida rapida",
+      "searchTermsEn": [
+        "running fast running"
+      ],
+      "aliases": [
+        "corrida rapida",
+        "running fast running",
+        "running",
+        "fast"
+      ]
+    },
+    {
+      "localKey": "críquete",
+      "namePt": "críquete",
+      "searchTermsEn": [
+        "cricket"
+      ],
+      "aliases": [
+        "críquete",
+        "cricket"
+      ]
+    },
+    {
+      "localKey": "crossfit",
+      "namePt": "crossfit",
+      "searchTermsEn": [
+        "crossfit"
+      ],
+      "aliases": [
+        "crossfit"
+      ]
+    },
+    {
+      "localKey": "dança (geral)",
+      "namePt": "dança (geral)",
+      "searchTermsEn": [
+        "dance general"
+      ],
+      "aliases": [
+        "dança (geral)",
+        "dança",
+        "dance general",
+        "geral",
+        "dance",
+        "general"
+      ]
+    },
+    {
+      "localKey": "dança contemporânea",
+      "namePt": "dança contemporânea",
+      "searchTermsEn": [
+        "contemporary dance"
+      ],
+      "aliases": [
+        "dança contemporânea",
+        "contemporary dance",
+        "contemporary",
+        "dance"
+      ]
+    },
+    {
+      "localKey": "dança de salão",
+      "namePt": "dança de salão",
+      "searchTermsEn": [
+        "ballroom dance"
+      ],
+      "aliases": [
+        "dança de salão",
+        "ballroom dance",
+        "ballroom",
+        "dance"
+      ]
+    },
+    {
+      "localKey": "dançar na balada",
+      "namePt": "dançar na balada",
+      "searchTermsEn": [
+        "club dancing"
+      ],
+      "aliases": [
+        "dançar na balada",
+        "club dancing",
+        "club",
+        "dancing"
+      ]
+    },
+    {
+      "localKey": "elíptico",
+      "namePt": "elíptico",
+      "searchTermsEn": [
+        "elliptical"
+      ],
+      "aliases": [
+        "elíptico",
+        "elliptical"
+      ]
+    },
+    {
+      "localKey": "escalada",
+      "namePt": "escalada",
+      "searchTermsEn": [
+        "escalada"
+      ],
+      "aliases": [
+        "escalada"
+      ]
+    },
+    {
+      "localKey": "esgrima",
+      "namePt": "esgrima",
+      "searchTermsEn": [
+        "esgrima"
+      ],
+      "aliases": [
+        "esgrima"
+      ]
+    },
+    {
+      "localKey": "esquí",
+      "namePt": "esquí",
+      "searchTermsEn": [
+        "skiing"
+      ],
+      "aliases": [
+        "esquí",
+        "skiing"
+      ]
+    },
+    {
+      "localKey": "esteira (caminhada)",
+      "namePt": "esteira (caminhada)",
+      "searchTermsEn": [
+        "treadmill walking"
+      ],
+      "aliases": [
+        "esteira (caminhada)",
+        "esteira",
+        "treadmill walking",
+        "caminhada",
+        "treadmill",
+        "walking"
+      ]
+    },
+    {
+      "localKey": "esteira (corrida)",
+      "namePt": "esteira (corrida)",
+      "searchTermsEn": [
+        "treadmill running"
+      ],
+      "aliases": [
+        "esteira (corrida)",
+        "esteira",
+        "treadmill running",
+        "corrida",
+        "treadmill",
+        "running"
+      ]
+    },
+    {
+      "localKey": "flexão",
+      "namePt": "flexão",
+      "searchTermsEn": [
+        "push-up"
+      ],
+      "aliases": [
+        "flexão",
+        "push-up"
+      ]
+    },
+    {
+      "localKey": "frisbee (recreativo)",
+      "namePt": "frisbee (recreativo)",
+      "searchTermsEn": [
+        "frisbee recreational"
+      ],
+      "aliases": [
+        "frisbee (recreativo)",
+        "frisbee",
+        "frisbee recreational",
+        "recreativo",
+        "recreational"
+      ]
+    },
+    {
+      "localKey": "futebol",
+      "namePt": "futebol",
+      "searchTermsEn": [
+        "futebol"
+      ],
+      "aliases": [
+        "futebol"
+      ]
+    },
+    {
+      "localKey": "futebol americano",
+      "namePt": "futebol americano",
+      "searchTermsEn": [
+        "american football"
+      ],
+      "aliases": [
+        "futebol americano",
+        "american football",
+        "american",
+        "football"
+      ]
+    },
+    {
+      "localKey": "ginástica olímpica",
+      "namePt": "ginástica olímpica",
+      "searchTermsEn": [
+        "olympic gymnastics"
+      ],
+      "aliases": [
+        "ginástica olímpica",
+        "olympic gymnastics",
+        "olympic",
+        "gymnastics"
+      ]
+    },
+    {
+      "localKey": "golfe",
+      "namePt": "golfe",
+      "searchTermsEn": [
+        "golfe"
+      ],
+      "aliases": [
+        "golfe"
+      ]
+    },
+    {
+      "localKey": "handebol",
+      "namePt": "handebol",
+      "searchTermsEn": [
+        "handebol"
+      ],
+      "aliases": [
+        "handebol"
+      ]
+    },
+    {
+      "localKey": "hidroginástica",
+      "namePt": "hidroginástica",
+      "searchTermsEn": [
+        "water aerobics"
+      ],
+      "aliases": [
+        "hidroginástica",
+        "water aerobics",
+        "water",
+        "aerobics"
+      ]
+    },
+    {
+      "localKey": "HIIT (Treino Intervalado de Alta Intensidade)",
+      "namePt": "HIIT (Treino Intervalado de Alta Intensidade)",
+      "searchTermsEn": [
+        "HIIT",
+        "high intensity interval training"
+      ],
+      "aliases": [
+        "HIIT (Treino Intervalado de Alta Intensidade)",
+        "HIIT",
+        "high intensity interval training",
+        "Treino Intervalado de Alta Intensidade",
+        "high",
+        "intensity",
+        "interval",
+        "training"
+      ]
+    },
+    {
+      "localKey": "hockey",
+      "namePt": "hockey",
+      "searchTermsEn": [
+        "hockey"
+      ],
+      "aliases": [
+        "hockey"
+      ]
+    },
+    {
+      "localKey": "jardinagem",
+      "namePt": "jardinagem",
+      "searchTermsEn": [
+        "jardinagem"
+      ],
+      "aliases": [
+        "jardinagem"
+      ]
+    },
+    {
+      "localKey": "judô",
+      "namePt": "judô",
+      "searchTermsEn": [
+        "judo"
+      ],
+      "aliases": [
+        "judô",
+        "judo"
+      ]
+    },
+    {
+      "localKey": "karatê",
+      "namePt": "karatê",
+      "searchTermsEn": [
+        "karate"
+      ],
+      "aliases": [
+        "karatê",
+        "karate"
+      ]
+    },
+    {
+      "localKey": "kayak",
+      "namePt": "kayak",
+      "searchTermsEn": [
+        "kayak"
+      ],
+      "aliases": [
+        "kayak"
+      ]
+    },
+    {
+      "localKey": "kettlebell (swing)",
+      "namePt": "kettlebell (swing)",
+      "searchTermsEn": [
+        "kettlebell swing"
+      ],
+      "aliases": [
+        "kettlebell (swing)",
+        "kettlebell",
+        "kettlebell swing",
+        "swing"
+      ]
+    },
+    {
+      "localKey": "kickboxing",
+      "namePt": "kickboxing",
+      "searchTermsEn": [
+        "kickboxing"
+      ],
+      "aliases": [
+        "kickboxing"
+      ]
+    },
+    {
+      "localKey": "lavar o carro",
+      "namePt": "lavar o carro",
+      "searchTermsEn": [
+        "lavar o carro"
+      ],
+      "aliases": [
+        "lavar o carro",
+        "lavar",
+        "o",
+        "carro"
+      ]
+    },
+    {
+      "localKey": "levantamento de peso (musculação)",
+      "namePt": "levantamento de peso (musculação)",
+      "searchTermsEn": [
+        "weight training",
+        "weightlifting"
+      ],
+      "aliases": [
+        "levantamento de peso (musculação)",
+        "levantamento de peso",
+        "weight training",
+        "weightlifting",
+        "weight",
+        "training"
+      ]
+    },
+    {
+      "localKey": "levantamento terra (deadlift)",
+      "namePt": "levantamento terra (deadlift)",
+      "searchTermsEn": [
+        "deadlift"
+      ],
+      "aliases": [
+        "levantamento terra (deadlift)",
+        "levantamento terra",
+        "deadlift"
+      ]
+    },
+    {
+      "localKey": "limpeza doméstica (leve)",
+      "namePt": "limpeza doméstica (leve)",
+      "searchTermsEn": [
+        "light house cleaning"
+      ],
+      "aliases": [
+        "limpeza doméstica (leve)",
+        "limpeza doméstica",
+        "light house cleaning",
+        "leve",
+        "light",
+        "house",
+        "cleaning"
+      ]
+    },
+    {
+      "localKey": "limpeza doméstica (pesada)",
+      "namePt": "limpeza doméstica (pesada)",
+      "searchTermsEn": [
+        "heavy house cleaning"
+      ],
+      "aliases": [
+        "limpeza doméstica (pesada)",
+        "limpeza doméstica",
+        "heavy house cleaning",
+        "pesada",
+        "heavy",
+        "house",
+        "cleaning"
+      ]
+    },
+    {
+      "localKey": "luta livre (wrestling)",
+      "namePt": "luta livre (wrestling)",
+      "searchTermsEn": [
+        "wrestling"
+      ],
+      "aliases": [
+        "luta livre (wrestling)",
+        "luta livre",
+        "wrestling"
+      ]
+    },
+    {
+      "localKey": "mover móveis",
+      "namePt": "mover móveis",
+      "searchTermsEn": [
+        "moving furniture",
+        "moving",
+        "furniture"
+      ],
+      "aliases": [
+        "mover móveis",
+        "moving furniture",
+        "moving",
+        "furniture"
+      ]
+    },
+    {
+      "localKey": "natação",
+      "namePt": "natação",
+      "searchTermsEn": [
+        "swimming"
+      ],
+      "aliases": [
+        "natação",
+        "swimming"
+      ]
+    },
+    {
+      "localKey": "paddleboarding (SUP)",
+      "namePt": "paddleboarding (SUP)",
+      "searchTermsEn": [
+        "stand up paddleboarding SUP"
+      ],
+      "aliases": [
+        "paddleboarding (SUP)",
+        "paddleboarding",
+        "stand up paddleboarding SUP",
+        "SUP",
+        "stand",
+        "up"
+      ]
+    },
+    {
+      "localKey": "patinação no gelo",
+      "namePt": "patinação no gelo",
+      "searchTermsEn": [
+        "ice skating"
+      ],
+      "aliases": [
+        "patinação no gelo",
+        "ice skating",
+        "ice",
+        "skating"
+      ]
+    },
+    {
+      "localKey": "patins (rollerblading)",
+      "namePt": "patins (rollerblading)",
+      "searchTermsEn": [
+        "rollerblading inline skating"
+      ],
+      "aliases": [
+        "patins (rollerblading)",
+        "patins",
+        "rollerblading inline skating",
+        "rollerblading",
+        "inline",
+        "skating"
+      ]
+    },
+    {
+      "localKey": "pilates",
+      "namePt": "pilates",
+      "searchTermsEn": [
+        "pilates"
+      ],
+      "aliases": [
+        "pilates"
+      ]
+    },
+    {
+      "localKey": "pintar a casa",
+      "namePt": "pintar a casa",
+      "searchTermsEn": [
+        "pintar a casa"
+      ],
+      "aliases": [
+        "pintar a casa",
+        "pintar",
+        "a",
+        "casa"
+      ]
+    },
+    {
+      "localKey": "polo aquático",
+      "namePt": "polo aquático",
+      "searchTermsEn": [
+        "water polo"
+      ],
+      "aliases": [
+        "polo aquático",
+        "water polo",
+        "water",
+        "polo"
+      ]
+    },
+    {
+      "localKey": "prancha (plank)",
+      "namePt": "prancha (plank)",
+      "searchTermsEn": [
+        "plank exercise"
+      ],
+      "aliases": [
+        "prancha (plank)",
+        "prancha",
+        "plank exercise",
+        "plank",
+        "exercise"
+      ]
+    },
+    {
+      "localKey": "pular corda",
+      "namePt": "pular corda",
+      "searchTermsEn": [
+        "pular corda"
+      ],
+      "aliases": [
+        "pular corda",
+        "pular",
+        "corda"
+      ]
+    },
+    {
+      "localKey": "remo (máquina)",
+      "namePt": "remo (máquina)",
+      "searchTermsEn": [
+        "rowing machine"
+      ],
+      "aliases": [
+        "remo (máquina)",
+        "remo",
+        "rowing machine",
+        "rowing",
+        "machine"
+      ]
+    },
+    {
+      "localKey": "rugby",
+      "namePt": "rugby",
+      "searchTermsEn": [
+        "rugby"
+      ],
+      "aliases": [
+        "rugby"
+      ]
+    },
+    {
+      "localKey": "skate",
+      "namePt": "skate",
+      "searchTermsEn": [
+        "skate"
+      ],
+      "aliases": [
+        "skate"
+      ]
+    },
+    {
+      "localKey": "snowboarding",
+      "namePt": "snowboarding",
+      "searchTermsEn": [
+        "snowboarding"
+      ],
+      "aliases": [
+        "snowboarding"
+      ]
+    },
+    {
+      "localKey": "sombra (boxe)",
+      "namePt": "sombra (boxe)",
+      "searchTermsEn": [
+        "boxe"
+      ],
+      "aliases": [
+        "sombra (boxe)",
+        "sombra",
+        "boxe"
+      ]
+    },
+    {
+      "localKey": "spinning (aula)",
+      "namePt": "spinning (aula)",
+      "searchTermsEn": [
+        "spinning class indoor cycling"
+      ],
+      "aliases": [
+        "spinning (aula)",
+        "spinning",
+        "spinning class indoor cycling",
+        "aula",
+        "class",
+        "indoor",
+        "cycling"
+      ]
+    },
+    {
+      "localKey": "squash",
+      "namePt": "squash",
+      "searchTermsEn": [
+        "squash"
+      ],
+      "aliases": [
+        "squash"
+      ]
+    },
+    {
+      "localKey": "step (aula de aeróbica)",
+      "namePt": "step (aula de aeróbica)",
+      "searchTermsEn": [
+        "step aerobics"
+      ],
+      "aliases": [
+        "step (aula de aeróbica)",
+        "step",
+        "step aerobics",
+        "aerobics"
+      ]
+    },
+    {
+      "localKey": "subir escadas",
+      "namePt": "subir escadas",
+      "searchTermsEn": [
+        "subir escadas"
+      ],
+      "aliases": [
+        "subir escadas",
+        "subir",
+        "escadas"
+      ]
+    },
+    {
+      "localKey": "surf",
+      "namePt": "surf",
+      "searchTermsEn": [
+        "surf"
+      ],
+      "aliases": [
+        "surf"
+      ]
+    },
+    {
+      "localKey": "taekwondo",
+      "namePt": "taekwondo",
+      "searchTermsEn": [
+        "taekwondo"
+      ],
+      "aliases": [
+        "taekwondo"
+      ]
+    },
+    {
+      "localKey": "tai chi",
+      "namePt": "tai chi",
+      "searchTermsEn": [
+        "tai chi"
+      ],
+      "aliases": [
+        "tai chi",
+        "tai",
+        "chi"
+      ]
+    },
+    {
+      "localKey": "tênis",
+      "namePt": "tênis",
+      "searchTermsEn": [
+        "tennis"
+      ],
+      "aliases": [
+        "tênis",
+        "tennis"
+      ]
+    },
+    {
+      "localKey": "tênis de mesa",
+      "namePt": "tênis de mesa",
+      "searchTermsEn": [
+        "table tennis ping pong"
+      ],
+      "aliases": [
+        "tênis de mesa",
+        "table tennis ping pong",
+        "table",
+        "tennis",
+        "ping",
+        "pong"
+      ]
+    },
+    {
+      "localKey": "treinamento funcional",
+      "namePt": "treinamento funcional",
+      "searchTermsEn": [
+        "functional training"
+      ],
+      "aliases": [
+        "treinamento funcional",
+        "functional training",
+        "functional",
+        "training"
+      ]
+    },
+    {
+      "localKey": "treino em circuito",
+      "namePt": "treino em circuito",
+      "searchTermsEn": [
+        "circuit training"
+      ],
+      "aliases": [
+        "treino em circuito",
+        "circuit training",
+        "circuit",
+        "training"
+      ]
+    },
+    {
+      "localKey": "trilha (hiking)",
+      "namePt": "trilha (hiking)",
+      "searchTermsEn": [
+        "hiking trail hiking"
+      ],
+      "aliases": [
+        "trilha (hiking)",
+        "trilha",
+        "hiking trail hiking",
+        "hiking",
+        "trail"
+      ]
+    },
+    {
+      "localKey": "vôlei",
+      "namePt": "vôlei",
+      "searchTermsEn": [
+        "volleyball"
+      ],
+      "aliases": [
+        "vôlei",
+        "volleyball"
+      ]
+    },
+    {
+      "localKey": "yoga",
+      "namePt": "yoga",
+      "searchTermsEn": [
+        "yoga"
+      ],
+      "aliases": [
+        "yoga"
+      ]
+    },
+    {
+      "localKey": "yoga (hot yoga/bikram)",
+      "namePt": "yoga (hot yoga/bikram)",
+      "searchTermsEn": [
+        "hot yoga bikram yoga"
+      ],
+      "aliases": [
+        "yoga (hot yoga/bikram)",
+        "yoga",
+        "hot yoga bikram yoga",
+        "hot yoga",
+        "bikram",
+        "hot"
+      ]
+    },
+    {
+      "localKey": "zumba",
+      "namePt": "zumba",
+      "searchTermsEn": [
+        "zumba"
+      ],
+      "aliases": [
+        "zumba"
+      ]
+    }
+  ]
+}
