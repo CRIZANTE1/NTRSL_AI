@@ -1,9 +1,0 @@
-## Regras do projeto (Cursor)
-
-- Responda sempre em **português (pt-BR)**.
-- Ao criar/alterar UI, **use os tokens de cor do Design System** e evite introduzir novos hex.
-- Fonte da paleta e guidelines: `/.cursor/rules/design-system-colors.mdc`.
-
-- Preferir `colors.background` para fundo, `colors.surface`/`colors.surfaceWarm` para cards, `colors.textPrimary`/`textSecondary`/`textMuted` para texto.
-- Para ações/CTA, usar `colors.accent` (e `colors.accentSoft` como alternativa suave).
-- Para bordas/divisores, usar `colors.border`. Para badges, `colors.badge`. Para progresso/ok, `colors.points`.
