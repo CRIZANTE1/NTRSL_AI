@@ -191,8 +191,9 @@ export default function DiaryPage() {
   const totalKcal = liveSummary.consumidas - liveSummary.gastas;
 
   return (
-    <div className="pt-4 pb-32 space-y-4">
-      <div className="space-y-3">
+    <div className="flex flex-col h-full min-h-0 pt-4">
+      {/* Cabeçalho fixo: título + streak + calendário */}
+      <div className="shrink-0 space-y-3 pb-2">
         <div className="flex items-center gap-2 flex-wrap min-w-0">
           <h1 className="text-2xl font-light" style={{ color: colors.textPrimary }}>
             Diário
@@ -228,33 +229,39 @@ export default function DiaryPage() {
         />
       </div>
 
-      {dayLoading ? (
-        <div className="space-y-3" aria-label="Carregando diário…">
-          <Skeleton className="h-10 rounded-xl w-2/3" />
-          <Skeleton className="h-10 rounded-xl w-full" />
-          <Skeleton className="h-10 rounded-xl w-1/2" />
-        </div>
-      ) : (
-        <div>
-          {diaryEntries.map((entry) => (
-            <DiaryLine
-              key={entry.id}
-              entry={entry}
-              onDelete={handleDeleteEntry}
-              onEdit={handleEditEntry}
-            />
-          ))}
-          <DiaryInput onSubmit={handleAddEntry} disabled={dayLoading} />
-        </div>
-      )}
+      {/* Área de lançamentos: rola se ultrapassar a altura disponível */}
+      <div className="flex-1 min-h-0 overflow-y-auto hide-scrollbar">
+        {dayLoading ? (
+          <div className="space-y-3 pt-1" aria-label="Carregando diário…">
+            <Skeleton className="h-10 rounded-xl w-2/3" />
+            <Skeleton className="h-10 rounded-xl w-full" />
+            <Skeleton className="h-10 rounded-xl w-1/2" />
+          </div>
+        ) : (
+          <div>
+            {diaryEntries.map((entry) => (
+              <DiaryLine
+                key={entry.id}
+                entry={entry}
+                onDelete={handleDeleteEntry}
+                onEdit={handleEditEntry}
+              />
+            ))}
+            <DiaryInput onSubmit={handleAddEntry} disabled={dayLoading} />
+          </div>
+        )}
+      </div>
 
+      {/* Barra de totais: fixada no rodapé da página */}
       {hasTotals && (
-        <DiaryTotalsBar
-          kcal={totalKcal}
-          carbs={liveSummary.carboidratos}
-          protein={liveSummary.proteina}
-          fat={liveSummary.gordura}
-        />
+        <div className="shrink-0 pb-4">
+          <DiaryTotalsBar
+            kcal={totalKcal}
+            carbs={liveSummary.carboidratos}
+            protein={liveSummary.proteina}
+            fat={liveSummary.gordura}
+          />
+        </div>
       )}
     </div>
   );

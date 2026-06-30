@@ -15,7 +15,7 @@ export const AppBackground = ({ children }: { children: React.ReactNode }) => (
       className="absolute top-60 right-10 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"
       style={{ background: colors.gradientMid }}
     />
-    <div className={`w-full max-w-md bg-transparent relative z-10 flex flex-col min-h-screen ${MAIN_BOTTOM_PADDING_CLASS}`}>
+    <div className={`w-full max-w-md bg-transparent relative z-10 flex flex-col h-dvh ${MAIN_BOTTOM_PADDING_CLASS}`}>
       {children}
     </div>
   </div>

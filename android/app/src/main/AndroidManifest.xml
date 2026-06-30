@@ -53,8 +53,12 @@
 
     <!-- Câmera / galeria: NÃO necessário (avatar via URL, não upload local) -->
 
+    <!-- Ditado por voz no diário (Web Speech API) -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <!-- ── Features declaradas (informativas para o Play Store) ──────────── -->
     <!-- Marca a biometria como opcional (app funciona sem ela) -->
     <uses-feature android:name="android.hardware.fingerprint" android:required="false" />
     <uses-feature android:name="android.hardware.biometrics" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
 </manifest>

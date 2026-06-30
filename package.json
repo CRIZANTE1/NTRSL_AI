@@ -11,6 +11,7 @@
     "lint": "tsc --noEmit && eslint .",
     "lint:eslint": "eslint .",
     "cap:sync": "npm run build && npx cap sync",
+    "cap:assets": "node scripts/prepare-app-icons.mjs && npx @capacitor/assets generate --ios --android --iconBackgroundColor '#F5F0EA' --splashBackgroundColor '#F5F0EA'",
     "cap:open": "npx cap open android",
     "build:search-aliases": "node scripts/build-search-aliases.mjs"
   },
@@ -27,6 +28,7 @@
     "@capacitor/push-notifications": "^8.0.3",
     "@capacitor/splash-screen": "^8.0.1",
     "@capacitor/status-bar": "^8.0.2",
+    "@capgo/capacitor-speech-recognition": "^8.1.7",
     "@supabase/supabase-js": "^2.103.0",
     "@tanstack/react-query": "^5.99.0",
     "docx": "^9.7.1",
