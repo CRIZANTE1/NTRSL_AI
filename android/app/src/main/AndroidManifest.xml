@@ -51,7 +51,11 @@
     <!-- READ_EXTERNAL_STORAGE e WRITE_EXTERNAL_STORAGE NÃO são necessários
          pois o SQLite usa armazenamento interno do app (não cartão SD) -->
 
-    <!-- Câmera / galeria: NÃO necessário (avatar via URL, não upload local) -->
+    <!-- Câmera / galeria: foto de alimentos (base64 em memória, sem persistência) -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
 
     <!-- Ditado por voz no diário (Web Speech API) -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -61,4 +65,5 @@
     <uses-feature android:name="android.hardware.fingerprint" android:required="false" />
     <uses-feature android:name="android.hardware.biometrics" android:required="false" />
     <uses-feature android:name="android.hardware.microphone" android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 </manifest>

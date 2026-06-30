@@ -15,3 +15,6 @@ verify_jwt = true
 
 [functions.exercise-search]
 verify_jwt = true
+
+[functions.decipher-food-image]
+verify_jwt = true

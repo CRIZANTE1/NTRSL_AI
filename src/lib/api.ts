@@ -52,3 +52,12 @@ export async function postExerciseSearch(
     body: { query, limit },
   });
 }
+
+export async function postDecipherFoodImage(
+  imageBase64: string,
+  mimeType: string,
+): Promise<{ identified: boolean; description: string }> {
+  return callEdgeFunction<{ identified: boolean; description: string }>('decipher-food-image', {
+    body: { imageBase64, mimeType },
+  });
+}

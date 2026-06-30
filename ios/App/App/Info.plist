@@ -51,5 +51,9 @@
 	<string>O microfone é usado para ditar entradas no diário por voz.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>O reconhecimento de voz é usado para transcrever o que você fala no diário.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>A câmera é usada para fotografar refeições e descrever os alimentos no diário.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>A galeria é usada para selecionar fotos de refeições e descrever os alimentos no diário.</string>
 </dict>
 </plist>
