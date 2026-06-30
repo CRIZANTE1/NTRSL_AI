@@ -17,7 +17,7 @@ export function AdminRoute() {
   }
 
   if (!isAdminRole(profile?.role)) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/diario" replace />;
   }
 
   return <Outlet />;

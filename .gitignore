@@ -10,7 +10,6 @@ coverage/
 # IDE
 .idea/
 android/.idea/
-.cursor/rules/
 
 # Supabase CLI / deploy local
 supabase/.temp/

@@ -4,10 +4,6 @@ import type {
   FoodEntry,
   NutritionSummary,
 } from '../types/nutrition';
-import {
-  calcularCaloriasExercicioFromEntry,
-  calcularNutricaoFromEntry,
-} from './nutrition';
 
 export function buildSummaryFromDiary(entries: DiaryEntry[]): NutritionSummary {
   const settled = entries.filter((e) => e.status !== 'calculating');
@@ -65,28 +61,25 @@ export function parseDiaryFromStoredEntries(
 ): DiaryEntry[] {
   const now = new Date().toISOString();
 
-  const foodDiaryEntries: DiaryEntry[] = foods.map((f) => {
-    const macros = calcularNutricaoFromEntry(f);
-    return {
-      id: f.localKey ?? f.name,
-      rawText: f.name,
-      type: 'food' as const,
-      kcal: Math.round(macros.calorias),
-      protein: macros.proteina,
-      carbs: macros.carboidratos,
-      fat: macros.gordura,
-      status: 'idle' as const,
-      isNew: false,
-      createdAt: now,
-    };
-  });
+  const foodDiaryEntries: DiaryEntry[] = foods.map((f) => ({
+    id: f.localKey ?? f.name,
+    rawText: f.name,
+    type: 'food',
+    kcal: f.per100g ? Math.round(f.per100g.calorias) : undefined,
+    protein: f.per100g ? f.per100g.proteina : undefined,
+    carbs: f.per100g ? f.per100g.carboidratos : undefined,
+    fat: f.per100g ? f.per100g.gordura : undefined,
+    status: 'idle',
+    isNew: false,
+    createdAt: now,
+  }));
 
   const exerciseDiaryEntries: DiaryEntry[] = exercises.map((e) => ({
     id: e.localKey ?? e.name,
     rawText: e.name,
-    type: 'exercise' as const,
-    kcal: Math.round(calcularCaloriasExercicioFromEntry(e)),
-    status: 'idle' as const,
+    type: 'exercise',
+    kcal: e.caloriasPorMinuto ? Math.round(e.caloriasPorMinuto) : undefined,
+    status: 'idle',
     isNew: false,
     createdAt: now,
   }));

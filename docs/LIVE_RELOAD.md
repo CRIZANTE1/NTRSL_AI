@@ -47,7 +47,7 @@ No AVD Manager do Android Studio, use imagem **arm64-v8a** (não x86_64). Perfor
 ### Terminal 1: servidor de desenvolvimento
 
 ```bash
-cd NTRSL_AI
+cd NTRSL_ANDROID
 npm run dev
 ```
 
@@ -56,7 +56,7 @@ O Vite sobe em `http://localhost:3000`. **Mantenha este terminal aberto.**
 ### Terminal 2: emulador com live reload
 
 ```bash
-cd NTRSL_AI
+cd NTRSL_ANDROID
 npx cap run android \
   --live-reload \
   --host=localhost \

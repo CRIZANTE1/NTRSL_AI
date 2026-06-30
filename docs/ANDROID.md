@@ -151,97 +151,45 @@ org.gradle.java.home=C:/Program Files/Android/Android Studio/jbr
 
 **No Android Studio:** *Settings → Build, Execution, Deployment → Build Tools → Gradle → Gradle JDK* → escolha **Embedded JDK (jbr-21)**. Não selecione Java 25 do sistema.
 
-### 2. SSL — proxy / inspeção HTTPS na rede (rede corporativa)
+### 2. SSL — proxy / inspeção HTTPS na rede
 
-Em redes com proxy corporativo (Netskope, Zscaler, CA interna etc.), o Gradle não baixa dependências e o Android Studio exibe:
+Em redes com proxy corporativo (certificado interno), o Gradle pode não baixar dependências e o Android Studio exibe:
+
+```text
+Failed to resolve: net.zetetic:sqlcipher-android:4.10.0
+Failed to resolve: com.google.firebase:firebase-messaging:25.0.1
+```
+
+Ou, no log do Gradle:
 
 ```text
 PKIX path building failed: unable to find valid certification path to requested target
-(certificate_unknown) unable to find valid certification path to requested target
-Could not GET 'https://dl.google.com/dl/android/maven2/...'
+SSLInitializationException: WINDOWS-ROOT not found
 ```
 
-**Causa:** o JBR do Gradle não confia no certificado da empresa. O navegador e o Windows confiam; o Java do Gradle, não.
+**Causa:** o Java do Gradle usa o trust store padrão (`cacerts`), que **não** inclui o certificado da empresa. O navegador e o Windows confiam, mas o Gradle não.
 
-#### O que NÃO funciona com o JBR do Android Studio
-
-| Abordagem | Erro |
-|-----------|------|
-| `trustStoreType=Windows-ROOT` + `trustStore=C:/Windows/win.ini` | `Windows-ROOT KeyStore not available` |
-| Plugin `foojay-resolver-convention` em `settings.gradle` | Falha ao baixar o plugin (mesmo problema de rede) |
-| `distributionUrl=file:/Users/.../gradle-8.14.3-all.zip` (caminho de outra máquina) | Arquivo não encontrado no Windows |
-
-O projeto já evita esses casos: wrapper com URL HTTPS pública, sem plugin foojay, `org.gradle.java.home` apontando para o JBR.
-
-#### Solução validada (Windows + rede BR / Netskope)
-
-Gera um truststore JKS em `%USERPROFILE%\.gradle\windows-truststore.jks` e configura `%USERPROFILE%\.gradle\gradle.properties` (fora do git — por máquina).
-
-**Passo 1 — Exportar certificados da empresa**
-
-Abra `certmgr.msc` → **Autoridades de Certificação Raiz Confiáveis** → **Computador Local** e exporte em `.cer` (DER):
-
-| Certificado típico (rede BR) | Uso |
-|------------------------------|-----|
-| Netskope / proxy SSL | Inspeção HTTPS do proxy |
-| `BR Distribuidora CA Enterprise` | CA interna da empresa |
-| Outras CAs internas listadas pela TI | Se o sync ainda falhar após o primeiro |
-
-> Peça à TI a lista de CAs se não souber quais exportar.
-
-**Passo 2 — Importar no truststore do Gradle**
-
-Na raiz do repositório:
-
-```powershell
-# Certificado principal (ex.: Netskope)
-.\scripts\setup-gradle-ssl-windows.ps1 -CertFile C:\caminho\netskope.cer
-
-# Se ainda falhar PKIX, importe CAs adicionais no mesmo truststore:
-$keytool = "C:\Program Files\Android\Android Studio\jbr\bin\keytool.exe"
-& $keytool -importcert -noprompt -alias br-enterprise `
-  -file C:\caminho\br-distribuidora-enterprise.cer `
-  -keystore "$env:USERPROFILE\.gradle\windows-truststore.jks" `
-  -storepass changeit
-```
-
-O script [`scripts/setup-gradle-ssl-windows.ps1`](../scripts/setup-gradle-ssl-windows.ps1):
-
-1. Copia o `cacerts` do JBR como base
-2. Importa o `.cer` informado
-3. Grava em `~/.gradle/gradle.properties`:
+**Solução no projeto** (`android/gradle.properties`):
 
 ```properties
-# NTRSL — truststore Windows (scripts/setup-gradle-ssl-windows.ps1)
-systemProp.javax.net.ssl.trustStore=C:/Users/SEU_USUARIO/.gradle/windows-truststore.jks
-systemProp.javax.net.ssl.trustStorePassword=changeit
+org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8 \
+  -Djavax.net.ssl.trustStore=C:/Windows/win.ini \
+  -Djavax.net.ssl.trustStoreType=Windows-ROOT
+
+systemProp.javax.net.ssl.trustStore=C\:\\Windows\\win.ini
+systemProp.javax.net.ssl.trustStoreType=Windows-ROOT
 ```
 
-**Passo 3 — Reiniciar o Gradle e sincronizar**
+| Propriedade | Função |
+|-------------|--------|
+| `trustStoreType=Windows-ROOT` | Usa o repositório de certificados raiz do Windows |
+| `trustStore=C:/Windows/win.ini` | Arquivo “dummy” exigido pelo Gradle (o conteúdo é ignorado) |
 
-```powershell
-cd android
-.\gradlew --stop
-```
+**Importante:** definir **somente** `-Djavax.net.ssl.trustStoreType=WINDOWS-ROOT` em `jvmargs`, **sem** `trustStore`, causa `WINDOWS-ROOT not found`. Use sempre o par completo acima.
 
-No Android Studio:
+Há reforço adicional em [`android/settings.gradle`](../android/settings.gradle) e [`android/build.gradle`](../android/build.gradle) para o sync do Android Studio.
 
-1. *Settings → Gradle → Gradle JDK* → **Embedded JDK (jbr-21)**
-2. **File → Sync Project with Gradle Files**
-
-**Passo 4 — Validar (opcional)**
-
-```powershell
-cd android
-.\gradlew :app:dependencies --configuration debugRuntimeClasspath
-.\gradlew assembleDebug
-```
-
-#### Alternativa rápida (sem certificado)
-
-Build em rede **sem** inspeção SSL (ex.: hotspot do celular) → Sync no Studio. Útil para confirmar que o problema é só a rede corporativa.
-
-#### Dependências afetadas (normais do projeto)
+### Dependências afetadas (normais do projeto)
 
 | Artefato | Módulo | Repositório |
 |----------|--------|-------------|
@@ -289,11 +237,9 @@ WARNING: Using flatDir should be avoided because it doesn't support any meta-dat
 | `SDK location not found` | Crie `android/local.properties` com `sdk.dir` (ver acima) |
 | App abre em branco / config missing | Confira `.env.local`, rode `npm run cap:sync` de novo |
 | Mudanças da web não aparecem | `npm run cap:sync` antes de rodar no Studio |
-| `Failed to resolve: sqlcipher-android` ou `firebase-messaging` | Rede/proxy — ver [SSL rede corporativa](#2-ssl--proxy--inspeção-https-na-rede-rede-corporativa); `.\gradlew --stop` + sync |
-| `PKIX path building failed` / `certificate_unknown` | Rode `setup-gradle-ssl-windows.ps1` + importe CAs extras se necessário (seção SSL) |
-| `Windows-ROOT KeyStore not available` | Não use `Windows-ROOT` com JBR; use o script de truststore JKS |
-| `gradle-8.x-all.zip` em `/Users/...` (outro usuário) | Corrija `android/gradle/wrapper/gradle-wrapper.properties` para URL `https://services.gradle.org/...` |
-| `foojay-resolver-convention` not found | Remova o plugin de `android/settings.gradle` (não é necessário no Capacitor Android) |
+| `Failed to resolve: sqlcipher-android` ou `firebase-messaging` | Rede/proxy — ver seção [Ambiente Gradle](#ambiente-gradle-jdk--rede-corporativa); rode `.\gradlew --stop` e sync de novo |
+| `PKIX path building failed` | Mesma seção SSL acima |
+| `WINDOWS-ROOT not found` | Não use só `trustStoreType` sem `trustStore`; use o par em `gradle.properties` |
 | `Unsupported class file major version 69` | Java 25 no PATH; use JBR 21 (`org.gradle.java.home` ou Gradle JDK no Studio) |
 | Erro de Java / Gradle na CLI | Prefira compilar pelo Android Studio com Embedded JDK |
 | Push (FCM) | Requer `google-services.json` e config Firebase — ver [SUPABASE.md](./SUPABASE.md) |
