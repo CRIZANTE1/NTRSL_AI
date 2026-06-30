@@ -13,7 +13,7 @@
 
 ```bash
 git clone <url-do-repo>
-cd NTRSL_AI
+cd NTRSL_ANDROID
 npm install
 ```
 

@@ -41,14 +41,6 @@ Já existe um resumo calculado localmente com dados confiáveis do catálogo. Us
 NUNCA retorne zeros para campos em que a baseline é maior que zero.
 Ajuste apenas itens sem dados locais ou melhore estimativas claramente incorretas.
 
-REGRA DE QUANTIDADE:
-- O campo "quantity" no input é apenas fallback (100g).
-- Se o nome do alimento contém quantidade explícita (ex: "2 ovos", "1 fatia de pão", "200ml de leite",
-  "uma xícara de arroz", "meio filé"), EXTRAIA essa quantidade e use-a no cálculo.
-  Calcule as calorias totais para essa porção, NÃO para 100g.
-- Para unidades (ovos, fatias, colheres de sopa), use o peso médio típico em gramas.
-- Se nenhuma quantidade for detectável no texto, use o fallback de 100g.
-
 BASELINE (obrigatória como piso):
 ${JSON.stringify(localSummary)}
 

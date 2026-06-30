@@ -76,7 +76,7 @@ const config: CapacitorConfig = {
 **Terminal 1 — servidor de desenvolvimento:**
 
 ```bash
-cd NTRSL_AI
+cd NTRSL_ANDROID
 npm run dev
 ```
 

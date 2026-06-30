@@ -51,7 +51,7 @@ O NTRSL AI permite:
 ## Repositório
 
 ```
-NTRSL_AI/
+NTRSL_ANDROID/
 ├── src/                   # Frontend React + Capacitor
 ├── docs/                  # Esta pasta
 │   └── versions/          # Documentação por release
