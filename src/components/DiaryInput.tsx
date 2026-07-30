@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Camera, Mic } from 'lucide-react';
+import { Bookmark, Camera, Mic } from 'lucide-react';
 import { SkeletonText } from './SkeletonText';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 import { postDecipherFoodImage } from '../lib/api';
@@ -8,10 +8,11 @@ import { colors } from '../theme/colors';
 
 interface DiaryInputProps {
   onSubmit: (text: string) => void;
+  onSave?: (text: string) => void;
   disabled?: boolean;
 }
 
-export function DiaryInput({ onSubmit, disabled = false }: DiaryInputProps) {
+export function DiaryInput({ onSubmit, onSave, disabled = false }: DiaryInputProps) {
   const [value, setValue] = useState('');
   const [speechError, setSpeechError] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
@@ -62,11 +63,16 @@ export function DiaryInput({ onSubmit, disabled = false }: DiaryInputProps) {
     setSpeechError(null);
     setCameraError(null);
 
-    const photo = await captureFoodPhotoBase64();
-    if (!photo) {
-      setCameraError('Não foi possível acessar a câmera ou selecionar a foto.');
+    let photo;
+    try {
+      photo = await captureFoodPhotoBase64();
+    } catch (e) {
+      setCameraError(e instanceof Error ? e.message : 'Erro ao acessar a câmera.');
       return;
     }
+
+    // Usuário cancelou — sem erro, sem feedback
+    if (!photo) return;
 
     setIsAnalyzing(true);
     try {
@@ -84,9 +90,17 @@ export function DiaryInput({ onSubmit, disabled = false }: DiaryInputProps) {
     }
   };
 
+  const handleSaveClick = () => {
+    if (disabled || isAnalyzing || isListening || !onSave) return;
+    const trimmed = value.trim();
+    if (!trimmed) return;
+    onSave(trimmed);
+  };
+
   const isTyping = value.trim().length > 0;
   const showMic = !isTyping && isSupported && !isAnalyzing;
   const showCamera = !isTyping && !isListening && !isAnalyzing;
+  const showBookmark = isTyping && !isAnalyzing && !isListening && !!onSave;
   const showSkeleton = isTyping || isAnalyzing;
 
   return (
@@ -148,6 +162,18 @@ export function DiaryInput({ onSubmit, disabled = false }: DiaryInputProps) {
           }}
         >
           <Mic size={18} strokeWidth={1.75} />
+        </button>
+      )}
+      {showBookmark && (
+        <button
+          type="button"
+          onClick={handleSaveClick}
+          disabled={disabled}
+          aria-label="Salvar refeição para uso rápido"
+          className="diary-action-btn shrink-0 flex items-center justify-center border-none bg-transparent p-1 disabled:opacity-50"
+          style={{ color: colors.accent }}
+        >
+          <Bookmark size={18} strokeWidth={1.75} />
         </button>
       )}
       <style>{`

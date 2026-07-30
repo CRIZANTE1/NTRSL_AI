@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CloudOff, Flame } from 'lucide-react';
 import { DiaryInput } from '../components/DiaryInput';
+import { SavedMealsList } from '../components/SavedMealsList';
 import { DiaryLine } from '../components/DiaryLine';
 import { DiaryTotalsBar } from '../components/DiaryTotalsBar';
 import { Skeleton } from '../components/ui/Skeleton';
@@ -21,6 +22,7 @@ import { generateUUID } from '../lib/uuid';
 import { useDailyLog, useSaveDailyLog } from '../hooks/useDailyLog';
 import { useDailyLogHistory } from '../hooks/useDailyLogHistory';
 import { useDiaryProcessor } from '../hooks/useDiaryProcessor';
+import { useDeleteSavedMeal, useSavedMeals, useSaveMeal } from '../hooks/useSavedMeals';
 import { colors } from '../theme/colors';
 import type { DiaryEntry } from '../types/nutrition';
 
@@ -36,6 +38,9 @@ export default function DiaryPage() {
   const { data: dayData, isLoading: dayLoading } = useDailyLog(userId, selectedKey);
   const { data: historyRows = [] } = useDailyLogHistory(userId, 30);
   const saveMutation = useSaveDailyLog();
+  const { data: savedMeals = [] } = useSavedMeals(userId);
+  const saveMealMutation = useSaveMeal();
+  const deleteSavedMealMutation = useDeleteSavedMeal();
 
   const [diaryEntries, setDiaryEntries] = useState<DiaryEntry[]>([]);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
@@ -132,6 +137,22 @@ export default function DiaryPage() {
     };
     setDiaryEntries((prev) => [...prev, newEntry]);
   };
+
+  const handleSaveMeal = useCallback(
+    (text: string) => {
+      if (!userId) return;
+      saveMealMutation.mutate({ userId, text });
+    },
+    [userId, saveMealMutation],
+  );
+
+  const handleDeleteSavedMeal = useCallback(
+    (id: string) => {
+      if (!userId) return;
+      deleteSavedMealMutation.mutate({ id, userId });
+    },
+    [userId, deleteSavedMealMutation],
+  );
 
   const handleDeleteEntry = useCallback(
     (id: string) => {
@@ -247,7 +268,16 @@ export default function DiaryPage() {
                 onEdit={handleEditEntry}
               />
             ))}
-            <DiaryInput onSubmit={handleAddEntry} disabled={dayLoading} />
+            <SavedMealsList
+              meals={savedMeals}
+              onSelect={handleAddEntry}
+              onDelete={handleDeleteSavedMeal}
+            />
+            <DiaryInput
+              onSubmit={handleAddEntry}
+              onSave={handleSaveMeal}
+              disabled={dayLoading}
+            />
           </div>
         )}
       </div>
