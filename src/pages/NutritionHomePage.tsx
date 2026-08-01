@@ -110,10 +110,13 @@ export default function NutritionHomePage() {
     setAiResponse(null);
     setAiStructured(null);
     setAiError(null);
-    setAiRefineResult(null);
     setFoodStatuses({});
     setExerciseStatuses({});
   }, [dayData, dayLoading]);
+
+  useEffect(() => {
+    setAiRefineResult(null);
+  }, [selectedKey]);
 
   const liveSummary = useMemo(() => {
     if (exercises.length === 0 && foods.length === 0) return summary;
@@ -380,8 +383,9 @@ export default function NutritionHomePage() {
       : 'Calcular com IA';
 
   return (
-    <div className="pt-4 space-y-4">
-      <div className="space-y-3">
+    <div className="flex flex-col h-full min-h-0 pt-4">
+      {/* Cabeçalho fixo */}
+      <div className="shrink-0 space-y-3 pb-2">
         <div className="flex items-center gap-2 justify-between min-w-0">
           <div className="flex items-center gap-2 flex-wrap min-w-0 flex-1">
             <h1 className="text-2xl font-light" style={{ color: colors.textPrimary }}>
@@ -479,68 +483,73 @@ export default function NutritionHomePage() {
       </div>
 
       {liveSummary && (
-        <DaySummaryBar
-          summary={liveSummary}
-          showDashboardLink
-          dashboardDate={selectedKey}
-          goals={goals}
-          pulseKey={summaryPulseKey}
-        />
-      )}
-
-      {dayLoading ? (
-        <div className="space-y-3" aria-label="Carregando registro do dia…">
-          <Skeleton className="h-10 rounded-xl w-1/3" />
-          <Skeleton className="h-20 rounded-2xl w-full" />
-          <Skeleton className="h-10 rounded-xl w-1/3 mt-2" />
-          <Skeleton className="h-20 rounded-2xl w-full" />
+        <div className="shrink-0 pb-3">
+          <DaySummaryBar
+            summary={liveSummary}
+            showDashboardLink
+            dashboardDate={selectedKey}
+            goals={goals}
+            pulseKey={summaryPulseKey}
+          />
         </div>
-      ) : (
-        <>
-          {showExercises && (
-            <section className="space-y-3">
-              <h2
-                className="text-xs font-bold uppercase tracking-wide"
-                style={{ color: colors.textSecondary }}
-              >
-                Exercícios
-              </h2>
-              <ExercisePicker
-                entries={exercises}
-                onChange={handleExercisesChange}
-                inputRef={exerciseInputRef}
-                statuses={exerciseStatuses}
-              />
-            </section>
-          )}
-
-          {showFoods && (
-            <section className="space-y-3">
-              <h2
-                className="text-xs font-bold uppercase tracking-wide"
-                style={{ color: colors.textSecondary }}
-              >
-                Alimentos
-              </h2>
-              <FoodPicker entries={foods} onChange={handleFoodsChange} inputRef={foodInputRef} statuses={foodStatuses} />
-            </section>
-          )}
-        </>
       )}
 
-      {liveSummary && !dayLoading && <MacroChart summary={liveSummary} />}
+      {/* Área rolável: listas, gráfico e coach */}
+      <div className="flex-1 min-h-0 overflow-y-auto space-y-4 pb-2">
+        {dayLoading ? (
+          <div className="space-y-3" aria-label="Carregando registro do dia…">
+            <Skeleton className="h-10 rounded-xl w-1/3" />
+            <Skeleton className="h-20 rounded-2xl w-full" />
+            <Skeleton className="h-10 rounded-xl w-1/3 mt-2" />
+            <Skeleton className="h-20 rounded-2xl w-full" />
+          </div>
+        ) : (
+          <>
+            {showExercises && (
+              <section className="space-y-3">
+                <h2
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{ color: colors.textSecondary }}
+                >
+                  Exercícios
+                </h2>
+                <ExercisePicker
+                  entries={exercises}
+                  onChange={handleExercisesChange}
+                  inputRef={exerciseInputRef}
+                  statuses={exerciseStatuses}
+                />
+              </section>
+            )}
 
-      {!dayLoading && (
-        <CoachSection
-          onRequest={handleAiRecommendation}
-          isLoading={aiLoading}
-          cooldownSeconds={cooldownSeconds}
-          response={aiResponse}
-          structured={aiStructured}
-          error={aiError}
-          hasSummary={Boolean(summary ?? liveSummary)}
-        />
-      )}
+            {showFoods && (
+              <section className="space-y-3">
+                <h2
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{ color: colors.textSecondary }}
+                >
+                  Alimentos
+                </h2>
+                <FoodPicker entries={foods} onChange={handleFoodsChange} inputRef={foodInputRef} statuses={foodStatuses} />
+              </section>
+            )}
+          </>
+        )}
+
+        {liveSummary && !dayLoading && <MacroChart summary={liveSummary} />}
+
+        {!dayLoading && (
+          <CoachSection
+            onRequest={handleAiRecommendation}
+            isLoading={aiLoading}
+            cooldownSeconds={cooldownSeconds}
+            response={aiResponse}
+            structured={aiStructured}
+            error={aiError}
+            hasSummary={Boolean(summary ?? liveSummary)}
+          />
+        )}
+      </div>
 
       {aiRefineResult && (
         <AiRefineResultCard

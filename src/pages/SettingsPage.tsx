@@ -55,7 +55,7 @@ export default function SettingsPage() {
 
   return (
     <AppBackground>
-      <main className="flex-1 px-6 pt-6 pb-32">
+      <main className="flex-1 overflow-y-auto px-6 pt-6 pb-32">
         <div className="flex items-center gap-3 mb-6">
           <button
             type="button"

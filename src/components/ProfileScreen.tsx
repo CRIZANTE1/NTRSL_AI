@@ -158,7 +158,7 @@ export default function ProfileScreen() {
   const initials = getInitials(profile.display_name ?? null, displayEmail ?? null);
 
   return (
-    <div className="flex-1 pb-32">
+    <div className="flex-1 overflow-y-auto pb-32">
       <div
         className="rounded-b-[32px] px-6 pt-6 pb-5 text-center shadow-sm border-b"
         style={{ background: colors.surface, borderColor: colors.border }}
