@@ -38,9 +38,9 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // versionCode: incrementar a cada publicação no Play Store (nunca repetir)
-        versionCode 3
+        versionCode 5
         // versionName: alinhado com package.json "version"
-        versionName "1.0.3"
+        versionName "1.0.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
             // Files and dirs to omit from the packaged assets dir.
